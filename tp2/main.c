@@ -3,28 +3,27 @@
 
 int main ()
 {
-   int ano;
    char entrada;
 
-   scanf("%d", &ano);
+   struct agenda ag;
+   struct compromisso compr;
+   struct agenda *ptrAg = &ag;
+   struct compromisso *ptrCompr = &compr;
 
-   struct agenda ag = criaAgenda(ano);
+   scanf("%d", &ag.ano);
+   ag = criaAgenda(ag.ano);
 
    while (entrada != 's')
-   {    
-      struct compromisso compr;
-      leCompromisso(&ag, &compr);
+   {
+      if (leCompromisso (ptrAg, ptrCompr))
+         printf("Compromisso inserido com sucesso!\n");
+      else if (!verificaDisponibilidade(ptrAg, ptrCompr))
+         printf("Data/Hora ocupada, compromisso nao inserido\n");
+      else
+         printf("Data e/ou hora invalidos, compromiso nao inserido\n");
 
-      if (validaData(&ag, &compr.data_compr) == 1 && 
-      verificaDisponibilidade(&ag, &compr) == 1)
-      {
-         marcaCompromisso(&ag, &compr);
-         printf("Compromisso inserido com sucessso!\n");
-      }
-
-      printf("--> Digite um char qualquer ou s para sair\n");
-      scanf("%c", &entrada);
-   } 
+      scanf(" %c", &entrada);
+   }
 
    listaCompromissos(&ag);
 }
