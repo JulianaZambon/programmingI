@@ -117,7 +117,7 @@ int validaData(struct agenda *ag, struct data *d)
         }
     }
     
-    printf("Data invalida, compromisso nao inserido\n");
+    printf("Data e/ou hora invalidos, compromisso nao inserido\n");
 	return 0;
 }
 
@@ -128,6 +128,7 @@ int validaHora(struct compromisso *compr)
     if (!(compr -> hora_compr < 0 || compr -> hora_compr > 23))
         return 1;
 
+    printf("Data e/ou hora invalidos, compromisso nao inserido");
     return 0;
 }
 
@@ -138,6 +139,7 @@ int verificaDisponibilidade(struct agenda *ag, struct compromisso *compr)
     data_compr.mes].horas[compr ->hora_compr] == 0)
         return 1;
     
+    printf("Data/Hora ocupada, compromisso nao inserido");
     return 0;
 }
 
@@ -161,8 +163,11 @@ void listaCompromissos(struct agenda *ag)
         for (j = 0; j < HORAS_DO_DIA; j++)
         {
             if (ag -> agenda_do_ano[i].horas[j] == 1)
-                printf("dia: %d, ano: %d, hora: %d, compromisso!\n", 
-                i, ag -> ano, j);
+            {
+                printf ("dia: %3d, ", i);
+                printf ("ano: %4d, ", obtemAno (ag -> ano));
+                printf ("hora: %2d, compromisso!\n", j);
+            }
         }
     }
 }
