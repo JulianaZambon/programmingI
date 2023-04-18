@@ -93,9 +93,6 @@ int leCompromisso(struct agenda *ag, struct compromisso *compr)
         return 1;
     }
 
-    printf("%d", obtemDiaDoAno(compr -> data_compr));
-    printf("%d",compr -> data_compr.dia );
-
     return 0;
 }
 
