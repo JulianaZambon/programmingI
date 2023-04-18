@@ -28,7 +28,7 @@ struct agenda criaAgenda(int ano)
     {
         for (j = 0; j < HORAS_DO_DIA; j++)
         {
-            ag.agenda_do_ano[i].horas[j] = 0;
+            ag.agenda_do_ano[i].horas[j] = LIVRE;
         }
     }
     return ag;
@@ -138,7 +138,7 @@ int validaHora(struct compromisso *compr)
 int verificaDisponibilidade(struct agenda *ag, struct compromisso *compr)
 {
     if (ag -> agenda_do_ano[obtemDiaDoAno(compr -> 
-    data_compr)].horas[compr -> hora_compr] == 0)
+    data_compr)].horas[compr -> hora_compr] == LIVRE)
         return 1;
     
     return 0;
@@ -151,7 +151,7 @@ int verificaDisponibilidade(struct agenda *ag, struct compromisso *compr)
 void marcaCompromisso(struct agenda *ag, struct compromisso *compr)
 {
     (ag -> agenda_do_ano [obtemDiaDoAno(compr -> data_compr)].horas
-    [compr -> hora_compr] = 1); 
+    [compr -> hora_compr] = OCUPADA); 
 }
 
 /* Mostra as datas e horas de todos os compromissos marcados na agenda.
@@ -164,7 +164,7 @@ void listaCompromissos(struct agenda *ag)
     {
         for (j = 0; j < HORAS_DO_DIA; j++)
         {
-            if (ag -> agenda_do_ano[i].horas[j] == 1)
+            if (ag -> agenda_do_ano[i].horas[j] == OCUPADA)
             {
                 printf ("dia: %3d, ", i);
                 printf ("ano: %4d, ", obtemAno(ag));
