@@ -92,7 +92,10 @@ int leCompromisso(struct agenda *ag, struct compromisso *compr)
         marcaCompromisso(ag, compr);
         return 1;
     }
-    
+
+    printf("%d", obtemDiaDoAno(compr -> data_compr));
+    printf("%d",compr -> data_compr.dia );
+
     return 0;
 }
 
@@ -112,7 +115,7 @@ int validaData(struct agenda *ag, struct data *d)
 
             /*meses com 30 dias*/
             if ((d -> mes == 4 || d -> mes == 6 || d -> mes == 9 ||
-            d -> mes == 11) && d -> dia > 0 && d -> dia < 32)
+            d -> mes == 11) && d -> dia > 0 && d -> dia < 31)
                 return 1;
             
             /*mes com 28 dias*/
@@ -121,7 +124,6 @@ int validaData(struct agenda *ag, struct data *d)
         }
     }
     
-    /*printf("Data e/ou hora invalidos, compromisso nao inserido\n");*/
 	return 0;
 }
 
@@ -132,18 +134,16 @@ int validaHora(struct compromisso *compr)
     if (!(compr -> hora_compr < 0 || compr -> hora_compr > 23))
         return 1;
 
-    /*printf("Data e/ou hora invalidos, compromisso nao inserido");*/
     return 0;
 }
 
 /* Retorna 0 se data e horario já estiverem ocupados, ou 1 caso contrario */
 int verificaDisponibilidade(struct agenda *ag, struct compromisso *compr)
 {
-    if (ag -> agenda_do_ano[compr -> data_compr.dia * compr -> 
-    data_compr.mes].horas[compr ->hora_compr] == 0)
+    if (ag -> agenda_do_ano[obtemDiaDoAno(compr -> 
+    data_compr)].horas[compr -> hora_compr] == 0)
         return 1;
     
-    /*printf("Data/Hora ocupada, compromisso nao inserido");*/
     return 0;
 }
 

@@ -15,9 +15,9 @@ int main ()
 
    while (entrada != 's')
    {
-      if (leCompromisso (ptrAg, ptrCompr))
+      if (leCompromisso (ptrAg, ptrCompr) == 1)
          printf("Compromisso inserido com sucesso!\n");
-      else if (!verificaDisponibilidade(ptrAg, ptrCompr))
+      else if (!(verificaDisponibilidade(ptrAg, ptrCompr) == 1))
          printf("Data/Hora ocupada, compromisso nao inserido\n");
       else
          printf("Data e/ou hora invalidos, compromiso nao inserido\n");
