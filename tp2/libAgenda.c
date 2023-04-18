@@ -165,7 +165,7 @@ void listaCompromissos(struct agenda *ag)
             if (ag -> agenda_do_ano[i].horas[j] == 1)
             {
                 printf ("dia: %3d, ", i);
-                printf ("ano: %4d, ", obtemAno (ag -> ano));
+                printf ("ano: %4d, ", obtemAno(ag));
                 printf ("hora: %2d, compromisso!\n", j);
             }
         }

@@ -6,7 +6,6 @@ int main ()
    int ano;
    char entrada;
 
-   printf("--> Entre com o ano:\n");
    scanf("%d", &ano);
 
    struct agenda ag = criaAgenda(ano);
@@ -16,7 +15,7 @@ int main ()
       struct compromisso compr;
       leCompromisso(&ag, &compr);
 
-      if (validaData(&ag, &compr) == 1 && 
+      if (validaData(&ag, &compr.data_compr) == 1 && 
       verificaDisponibilidade(&ag, &compr) == 1)
       {
          marcaCompromisso(&ag, &compr);
