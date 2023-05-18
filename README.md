@@ -29,7 +29,7 @@ utilizados
 ### Trabalho Pequeno 4 
 Este trabalho consiste na implementação do programa libfila.c com base
 no libfila.h fornecido.
-Sua implementação deve usar uma lista ligada com nodo cabe ̧ca que
+Sua implementação deve usar uma lista ligada com nodo cabeça que
 implementa a política FIFO (First In First Out), isto  é, uma política que
 implementa um Tipo Abstrato de Dados Fila.
 O desafio é aprender a usar alocaçãoo dinâmica e manter a lista sempre
