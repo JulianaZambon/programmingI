@@ -47,7 +47,7 @@ um apontador para int.
 Para testar sua implementação, construa um arquivo testa_lista_ordenada.c 
 <br />
 ### Preparatório 2 para o T1
-Este trabalho preparat ́orio consiste na implementaçãoo do programa liblista_circular.c
+Este trabalho preparatório consiste na implementaçãoo do programa liblista_circular.c
 com base no liblista_circular.h fornecido e de um testador para ele
 como programa main.
 Basicamente, consiste em modificar o preparatório 1 para implementar
