@@ -27,9 +27,14 @@ typedef struct lista {
 /* 
  * Cria uma Lista vazia 
 */
-lista_t *lista_cria ()
+lista_t *lista_cria()
 {
-
+    lista_t *lista = (lista_t *)malloc(sizeof(lista_t));
+    if (lista == NULL)
+        return NULL;
+    
+    lista->ini = NULL;
+    return lista;
 }
 
 /* 
@@ -37,7 +42,21 @@ lista_t *lista_cria ()
 */ 
 void lista_destroi (lista_t **l)
 {
-
+    if (*l == NULL)
+        return;
+    
+    nodo_t *atual = (*l)->ini;
+    nodo_t *proximo;
+    
+    while (atual != NULL) {
+        proximo = atual->prox;
+        free(atual->elemento);
+        free(atual);
+        atual = proximo;
+    }
+    
+    free(*l);
+    *l = NULL;
 }
 
 /* 
