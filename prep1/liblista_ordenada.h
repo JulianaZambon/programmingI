@@ -12,11 +12,13 @@
  * do nodo conter um int, ele contem um apontador para uma struct
  * que contem um int.
 */
+#ifndef LIBLISTA_ORDENADA_H
+#define LIBLISTA_ORDENADA_H
 
 /*
  * elemento_t possui o campo chave, quem sabe pode ter mais coisas depois
 */
-typedef struct elemento {
+typedef struct elemento_t {
     int chave;  /* chave da struct */
     /* pode ter mais campos, mas a chave sera usada sempre nas operacoes */
 } elemento_t;
@@ -59,3 +61,5 @@ int lista_insere_ordenado (lista_t *l, elemento_t *elemento);
  * Retorna 1 em caso de sucesso e 0 caso elemento nao esteja na Lista.
 */
 int lista_remove_ordenado (lista_t *l, elemento_t *elemento);
+
+#endif

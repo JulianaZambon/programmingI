@@ -54,7 +54,6 @@ void lista_destroi (lista_t **l)
         free(atual);
         atual = proximo;
     }
-    
     free(*l);
     *l = NULL;
 }
@@ -63,16 +62,77 @@ void lista_destroi (lista_t **l)
  * Adiciona um elemento em ordem de acordo com o valor elemento->chave na Lista. 
  * Retorna 1 em caso de sucesso e 0 caso contrario.
 */
-int lista_insere_ordenado (lista_t *l, elemento_t *elemento)
+int lista_insere_ordenado(lista_t *l, elemento_t *elemento)
 {
-
+    if (l == NULL || elemento == NULL)
+        return 0;
+    
+    nodo_t *novo_nodo = (nodo_t *)malloc(sizeof(nodo_t));
+    if (novo_nodo == NULL)
+        return 0;
+    
+    novo_nodo->elemento = elemento;
+    novo_nodo->prox = NULL;
+    
+    if (l->ini == NULL) {
+        /*se a lista estiver vazia, o novo nodo se torna o primeiro elemento*/
+        l->ini = novo_nodo;
+        return 1;
+    }
+    
+    nodo_t *atual = l->ini;
+    nodo_t *anterior = NULL;
+    
+    /*percorre a lista ate encontrar a posicao correta para inserir o novo elemento*/
+    while (atual != NULL && atual->elemento->chave < elemento->chave) {
+        anterior = atual;
+        atual = atual->prox;
+    }
+    
+    if (anterior == NULL) {
+        /*se o novo elemento deve ser inserido no início da lista*/
+        novo_nodo->prox = l->ini;
+        l->ini = novo_nodo;
+    } else {
+        /*se o novo elemento deve ser inserido no meio ou final da lista*/
+        anterior->prox = novo_nodo;
+        novo_nodo->prox = atual;
+    }   
+    return 1;
 }
 
 /* 
  * Retira o elemento da Lista e a mantem em ordem.
  * Retorna 1 em caso de sucesso e 0 caso elemento nao esteja na Lista.
 */
-int lista_remove_ordenado (lista_t *l, elemento_t *elemento)
+int lista_remove_ordenado(lista_t *l, elemento_t *elemento)
 {
+    if (l == NULL || elemento == NULL || l->ini == NULL) 
+        return 0;
     
+    nodo_t *atual = l->ini;
+    nodo_t *anterior = NULL;
+    
+    /* compara o elemento atual da lista com o elemento recebido */
+    while (atual != NULL && atual->elemento != elemento) {
+        anterior = atual;
+        atual = atual->prox;
+    }
+    
+    if (atual == NULL)
+        /*se o elemento nao foi encontrado na lista*/
+        return 0;
+
+    /*se o elemento foi encontrado*/
+    if (anterior == NULL) {
+        /*o elemento a ser removido eh o primeiro da lista*/
+        l->ini = atual->prox;
+    } else {
+        /*o campo prox do elemento anterior é atualizado para pular o 
+        elemento a ser removido, mantendo a ordem da lista.*/
+        anterior->prox = atual->prox;
+    }
+    free(atual->elemento);
+    free(atual);
+    return 1;
 }
