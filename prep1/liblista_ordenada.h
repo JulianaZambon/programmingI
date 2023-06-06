@@ -18,7 +18,7 @@
 /*
  * elemento_t possui o campo chave, quem sabe pode ter mais coisas depois
 */
-typedef struct elemento_t {
+typedef struct elemento {
     int chave;  /* chave da struct */
     /* pode ter mais campos, mas a chave sera usada sempre nas operacoes */
 } elemento_t;

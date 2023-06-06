@@ -2,28 +2,6 @@
 #include <stdlib.h>
 #include "liblista_ordenada.h"
 
-typedef struct elemento {
-    int chave;  /* chave da struct */
-    /* pode ter mais campos, mas a chave sera usada sempre nas operacoes */
-} elemento_t;
-
-/*
- * nodo_t eh uma estrutura interna que representa cada nodo da Lista.
- * Externamente o usuario da biblioteca nao vai poder usa-la, pois
- * nao pode ter acesso direto ao ponteiro prox.
-*/
-typedef struct nodo {
-    elemento_t *elemento;
-    struct nodo *prox;
-} nodo_t;
-
-/*
- * Representacao da Lista 
-*/
-typedef struct lista {
-    nodo_t *ini;
-} lista_t;
-
 /* 
  * Cria uma Lista vazia 
 */
