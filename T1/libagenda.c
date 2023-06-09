@@ -145,20 +145,31 @@ compromisso_t *compr_agenda(agenda_t *agenda, int dia)
  * para o prox. Retorna NULL se a lista esta vazia, ou seja, sem compromissos.*/
 compromisso_t *prox_compr(compromisso_t *compr)
 {
+   if (compr == NULL)
+   {
+      return NULL;
+   }
+   else
+   {
+      return compr->prox;
+   }
 }
 
 /* As funcoes abaixo sao usadas para acessar os membros da struct compromisso
    obtidos com a funcao prox_compr. */
 horario_compromisso_t hc_compr(compromisso_t *compr)
 {
+   compr->inicio;
 }
 
 int id_compr(compromisso_t *compr)
 {
+   return compr->id;
 }
 
 char *descricao_compr(compromisso_t *compr)
 {
+   return compr->descricao;
 }
 
 /* Essa funcao nao eh extritamente necessaria, o objetivo e' que o programa
