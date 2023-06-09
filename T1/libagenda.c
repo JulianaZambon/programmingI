@@ -11,16 +11,13 @@ compromisso_t *cria_compromisso(horario_compromisso_t hc, int id, char *descrica
    compromisso_t *novo_compromisso = malloc(sizeof(compromisso_t));
 
    if (novo_compromisso == NULL)
-   {
       return NULL; /*caso tenha falha na alocacao de memoria*/
-   }
 
    novo_compromisso->id = id;
 
    /*aloca memoria pra descricao e copia o conteudo*/
    novo_compromisso->descricao = malloc(strlen(descricao) + 1);
-   if (novo_compromisso->descricao == NULL)
-   {
+   if (novo_compromisso->descricao == NULL) {
       free(novo_compromisso);
       return NULL; /*caso tenha falha na alocacao de memoria*/
    }
@@ -37,8 +34,7 @@ void destroi_agenda(agenda_t *agenda)
 
    /*percorrer todos os compromissos*/
    compromisso_t *atual = atual->inicio;
-   while (atual != NULL)
-   {
+   while (atual != NULL) {
       compromisso_t *proximo = atual->prox;
 
       // libera a memoria alocada pra descricao
@@ -69,8 +65,7 @@ int marca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
    compromisso_t *atual = atual->inicio;
    compromisso_t *anterior = NULL;
 
-   while (atual != NULL)
-   {
+   while (atual != NULL) {
       /*verificar a intersecao entre os horarios de inicio e fim*/
       if (compr->fim > atual->inicio && compr->inicio < atual->fim)
          return -1; /*intersecao*/
@@ -81,13 +76,10 @@ int marca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
    }
 
    /*inserir o novo compromisso na posição correta na lista ordenada*/
-   if (anterior == NULL)
-   {
+   if (anterior == NULL) {
       /*novo compromisso será o primeiro da lista*/
       atual->inicio = compr;
-   }
-   else
-   {
+   } else {
       /*novo compromisso será inserido após o compromisso anterior*/
       anterior->prox = compr;
    }
@@ -144,14 +136,13 @@ compromisso_t *compr_agenda(agenda_t *agenda, int dia)
 
    compromisso_t *compr = compr->inicio;
 
-   while (compr != NULL)
-   {
+   while (compr != NULL) {
+      /*procura compromissos que tenham o mesmo dia informado como parametro*/
       if (compr->inicio == dia)
          return compr;
 
       compr = compr->prox;
    }
-
    return NULL;
 }
 
@@ -159,12 +150,9 @@ compromisso_t *compr_agenda(agenda_t *agenda, int dia)
  * para o prox. Retorna NULL se a lista esta vazia, ou seja, sem compromissos.*/
 compromisso_t *prox_compr(compromisso_t *compr)
 {
-   if (compr == NULL)
-   {
+   if (compr == NULL) {
       return NULL;
-   }
-   else
-   {
+   } else {
       return compr->prox;
    }
 }
@@ -190,4 +178,17 @@ char *descricao_compr(compromisso_t *compr)
 principal apresente os dados. Porem pode ser util para voces durante o desenvolvimento */
 void imprime_agenda_mes(agenda_t *agenda)
 {
+   if (agenda == NULL)
+      return;
+
+   compromisso_t *compr = compr->inicio;
+
+   printf("Agenda do mês %d:\n", agenda->mes_atual);
+
+   while (compr != NULL) {
+      if (agenda->mes_atual == agenda->ptr_mes_atual)
+         printf("Dia %d: %s\n", agenda->mes_atual, compr->descricao);
+
+      compr = compr->prox;
+   }
 }
