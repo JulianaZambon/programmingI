@@ -17,7 +17,7 @@ O desafio é aprender a usar alocação dinâmica e manter a lista sempre
 ligada, sem perder ponteiros.
 <br /> 
 ### Trabalho Pequeno 3b (parenteses) 
-Implementar um programa que verifica se uma expressão ar timética digitada pelo usuário está com 
+Implementar um programa que verifica se uma expressão aritimética digitada pelo usuário está com 
 os parênteses balanceados, considerando que existem alguns tipos de “parênteses” tais como os próprio
 parênteses ((, )), colchetes ([ ]), chaves ({, }), dentre outros.
 Não é necessário fazer a conta, é só para verificar os parênteses. Basta
