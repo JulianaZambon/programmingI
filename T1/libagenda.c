@@ -17,6 +17,7 @@ compromisso_t *cria_compromisso(horario_compromisso_t hc, int id, char *descrica
 
    /*aloca memoria pra descricao e copia o conteudo*/
    novo_compromisso->descricao = malloc(strlen(descricao) + 1);
+
    if (novo_compromisso->descricao == NULL) {
       free(novo_compromisso);
       return NULL; /*caso tenha falha na alocacao de memoria*/
@@ -100,17 +101,37 @@ int desmarca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
 /* Imprime a agenda do mes atual (mes atual) */
 void imprime_agenda_mes(agenda_t *agenda)
 {
+   if (agenda == NULL)
+      return;
+
+   int mes_atual = agenda->mes_atual;
+
+   printf("Agenda do mês %d:\n", mes_atual);
+
+   compromisso_t *compr = agenda->mes_atual;
+
+  /* while (compr != NULL) {
+      if (agenda->mes_atual == mes_atual) {
+         printf("Dia %d: %s\n", agenda->mes_atual, compr->descricao);
+      }
+      compr = compr->prox;
+   }
+   */
 }
 
 /* Retorna o mes atual da agenda. */
 int mes_atual_agenda(agenda_t *agenda)
 {
+   if (agenda == NULL)
+      return;
 }
 
 /* Ajusta o mes_atual para 1; caso o mes esteja alocado, ptr_mes_atual
  * apontara para o mes 1, caso contrario para NULL. */
 void prim_mes_agenda(agenda_t *agenda)
 {
+   if (agenda == NULL)
+      return;
 }
 
 /* Avanca a agenda para o proximo mes, incrementando mes_atual.
