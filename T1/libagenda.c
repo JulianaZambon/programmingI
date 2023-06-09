@@ -93,7 +93,6 @@ int marca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
    }
 
    compr->prox = atual; /*para ajustar os ponteiros*/
-
    return 1;
 }
 
