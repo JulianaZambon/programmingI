@@ -139,6 +139,20 @@ int ant_mes_agenda(agenda_t *agenda)
    usando-se a funcao prox_compr. */
 compromisso_t *compr_agenda(agenda_t *agenda, int dia)
 {
+   if (agenda == NULL)
+      return NULL;
+
+   compromisso_t *compr = compr->inicio;
+
+   while (compr != NULL)
+   {
+      if (compr->inicio == dia)
+         return compr;
+
+      compr = compr->prox;
+   }
+
+   return NULL;
 }
 
 /* Retorna o primeiro compromisso da lista de compromissos compr e avanca
