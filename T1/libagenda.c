@@ -123,7 +123,9 @@ void imprime_agenda_mes(agenda_t *agenda)
 int mes_atual_agenda(agenda_t *agenda)
 {
    if (agenda == NULL)
-      return;
+      return 0;
+
+   return agenda->mes_atual;
 }
 
 /* Ajusta o mes_atual para 1; caso o mes esteja alocado, ptr_mes_atual
