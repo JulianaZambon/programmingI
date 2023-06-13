@@ -134,6 +134,14 @@ void prim_mes_agenda(agenda_t *agenda)
 {
    if (agenda == NULL)
       return;
+   /*ajuste*/
+   agenda->mes_atual = 1;
+   /*verifica se esta alocado*/
+   if (agenda->mes_atual != NULL)
+      agenda->ptr_mes_atual = agenda->mes_atual;
+   else
+      agenda->ptr_mes_atual = NULL;
+
 }
 
 /* Avanca a agenda para o proximo mes, incrementando mes_atual.
@@ -142,6 +150,21 @@ void prim_mes_agenda(agenda_t *agenda)
  * mes_atual em caso de sucesso ou 0 caso contrario.  */
 int prox_mes_agenda(agenda_t *agenda)
 {
+   if (agenda == NULL)
+      return 0;
+
+   agenda->mes_atual++;
+   agenda->ptr_mes_atual = NULL; /*atualiza o ponteiro*/
+
+   /*verifica se o mes existe*/
+   if (agenda->mes_atual > 0 && agenda->mes_atual <= 12)
+   {
+      agenda->ptr_mes_atual = malloc(sizeof(mes_t));
+      if (agenda->ptr_mes_atual == NULL)
+         return 0;
+   }
+   /*sucesso*/
+   return agenda->mes_atual;
 }
 
 /* Analogo ao prox_mes_agenda porem decrementa mes_atual. */
