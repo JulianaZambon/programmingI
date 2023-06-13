@@ -153,7 +153,7 @@ int prox_mes_agenda(agenda_t *agenda)
    if (agenda == NULL)
       return 0;
 
-   agenda->mes_atual++;
+   agenda->mes_atual++; /*incrementa*/
    agenda->ptr_mes_atual = NULL; /*atualiza o ponteiro*/
 
    /*verifica se o mes existe*/
@@ -170,6 +170,21 @@ int prox_mes_agenda(agenda_t *agenda)
 /* Analogo ao prox_mes_agenda porem decrementa mes_atual. */
 int ant_mes_agenda(agenda_t *agenda)
 {
+   if (agenda == NULL)
+      return 0;
+
+   agenda->mes_atual++; /*decrementa*/
+   agenda->ptr_mes_atual = NULL; /*atualiza o ponteiro*/
+
+   /*verifica se o mes existe*/
+   if (agenda->mes_atual > 0 && agenda->mes_atual <= 12)
+   {
+      agenda->ptr_mes_atual = malloc(sizeof(mes_t));
+      if (agenda->ptr_mes_atual == NULL)
+         return 0;
+   }
+   /*sucesso*/
+   return agenda->mes_atual;
 }
 
 /* Retorna um ponteiro para a lista ligada de compromissos de um dia do mes
