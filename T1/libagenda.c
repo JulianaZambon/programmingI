@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "libagenda.h"
 
 /* Cria um compromisso:
@@ -96,6 +97,30 @@ int marca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
     0: caso nao tenha encontrado o compr */
 int desmarca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
 {
+   if (agenda == NULL || compr == NULL)
+      return 0;
+      
+   compromisso_t *atual = agenda->mes_atual;
+   compromisso_t *anterior = NULL;
+
+   while (atual != NULL) {
+      if (atual == compr) {
+         if (anterior == NULL) {
+            agenda->mes_atual = atual->prox;
+         } else {
+            anterior->prox = atual->prox;
+         }
+
+         free(atual->descricao);
+         free(atual);
+         return 1;
+      }
+
+      anterior = atual;
+      atual = atual->prox;
+   }
+
+   return 0;
 }
 
 /* Imprime a agenda do mes atual (mes atual) */
@@ -104,19 +129,14 @@ void imprime_agenda_mes(agenda_t *agenda)
    if (agenda == NULL)
       return;
 
-   int mes_atual = agenda->mes_atual;
-
-   printf("Agenda do mês %d:\n", mes_atual);
+   printf("Agenda do mês %d:\n", agenda->mes_atual);
 
    compromisso_t *compr = agenda->mes_atual;
 
-  /* while (compr != NULL) {
-      if (agenda->mes_atual == mes_atual) {
-         printf("Dia %d: %s\n", agenda->mes_atual, compr->descricao);
-      }
+   while (compr != NULL) {
+      printf("Dia %d: %s\n", compr->inicio, compr->descricao);
       compr = compr->prox;
    }
-   */
 }
 
 /* Retorna o mes atual da agenda. */
