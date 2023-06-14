@@ -15,8 +15,14 @@ function status() {
 
 #3)qual o maximo de vezes que um individuo cursou a discplina antes de ser aprovado? 
 #quantos individuos possuem o mesmo numero maximo de vezes cursadas ate a aprovacao?
+function aprovacao() {
+    #f1,5 matricula, periodo e o ano
+    cut -d',' -f1,4,5 resultado.csv | grep 'Aprovado' | cut -d',' -f1,3 | 
+    sort | uniq -c | sort -nr | head -n 1
+            #-c faz com que o uniq exiba o numero de ocorrencias de cada linha
+}
 
-#4)qual a porcentagem de aprovação/reprovação por ano?
+#4)qual a porcentagem de aprovacaoo/reprovacaoo por ano?
 
 #5)qual eh a media de nota dos aprovados (no periodo total e por ano)?
 
