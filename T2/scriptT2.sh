@@ -59,7 +59,7 @@ function media_nota_aprovados() {
 
     for ano in "${!notas[@]}"; do
         media=$(echo "scale=2; ${notas[$ano]} / ${count[$ano]}" | bc)
-        printf "%s: Média de nota dos aprovados: %.2f\n" "$ano" "$media"
+        printf "%s: Media de nota dos aprovados: %.2f\n" "$ano" "$media"
     done
 }
 
@@ -73,7 +73,7 @@ function media_nota_reprovados() {
 
     for ano in "${!notas[@]}"; do
         media=$(echo "scale=2; ${notas[$ano]} / ${count[$ano]}" | bc)
-        printf "%s: Média de nota dos reprovados: %.2f\n" "$ano" "$media"
+        printf "%s: Media de nota dos reprovados: %.2f\n" "$ano" "$media"
     done
 }
 
