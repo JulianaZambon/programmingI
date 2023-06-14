@@ -15,7 +15,7 @@ function status() {
             #f10 indica o campo
     cut -d',' -f10 resultado.csv | sort | uniq -c
     while read -r count status; do
-        printf "%s: %s indivíduo(s) com status '%s'\n" "$count" "$status" "$(echo "$status"
+        printf "%s: %s individuo(s) com status '%s'\n" "$count" "$status" "$(echo "$status"
         | tr '[:lower:]' '[:upper:]')"
     done
 }
