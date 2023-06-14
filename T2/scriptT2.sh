@@ -163,13 +163,13 @@ function comparacao() {
     fi
     
     #resultados 
-    printf "Comparação de 2022 periodo 1 com anos de pandemia e anos anteriores:\n"
-    printf "Aprovações:\n"
+    printf "Comparacao de 2022 periodo 1 com anos de pandemia e anos anteriores:\n"
+    printf "Aprovacoes:\n"
     printf "2022 periodo 1: %d\n" "$aprovados_2022"
     printf "Pandemia (2020 e 2021): %d\n" "$aprovados_pandemia"
     printf "Anos anteriores: %d\n" "$aprovados_anteriores"
     printf "\n"
-    printf "Reprovações:\n"
+    printf "Reprovacoes:\n"
     printf "2022 periodo 1: %d\n" "$reprovados_2022"
     printf "Pandemia (2020 e 2021): %d\n" "$reprovados_pandemia"
     printf "Anos anteriores: %d\n" "$reprovados_anteriores"
@@ -182,20 +182,50 @@ function comparacao() {
     printf "Anos anteriores: %d\n" "$cancelamentos_anteriores"
 }
 
+#main-----------------------------------------------------------------------------------
 
-#funcao principal do script -----------------------------------------------------------------------
-function main() {
-    remove_2semestre
-    status
-    aprovacao
-    porcentagem_aprovacao_reprovacao
-    media_nota_aprovados
-    media_nota_reprovados
-    media_frequencia_reprovados_nota
-    porcent_evasoes
-    rendimento_pandemia
-    comparacao
+main() {
+    clear
+    printf "Analise de Dados do Curso de Algoritmos e Estrutura de Dados 1\n\n"
+    printf "1) Remover 2º semestre de 2022\n"
+    printf "2) Numero de individuos por status\n"
+    printf "3) Maximo de vezes cursadas antes da aprovacao\n"
+    printf "4) Porcentagem de aprovação/reprovação por ano\n"
+    printf "5) Media de nota dos aprovados por ano\n"
+    printf "6) Media de nota dos reprovados por ano\n"
+    printf "7) Media de frequencia dos reprovados\n"
+    printf "8) Porcentagem de evasoes\n"
+    printf "9) Rendimento durante os anos de pandemia (2020 e 2021) comparado com anos anteriores\n"
+    printf "10) Comparacao da aula hibrida com os anos anteriores\n" 
+    printf "11) Sair\n\n"
+
+    printf "Selecione uma opcao: "
+    read -r option
+
+    case $option in
+        1) remove_2semestre ;;
+        2) status ;;
+        3) aprovacao ;;
+        4) porcentagem_aprovacao_reprovacao ;;
+        5) media_nota_aprovados ;;
+        6) media_nota_reprovados ;;
+        7) media_frequencia_reprovados_nota ;;
+        8) porcentagem_evasoes ;;
+        9) rendimento_pandemia;;
+        10) comparacao;;
+        11) exit ;;
+        *) printf "opcaoo invalida\n" ;;
+    esac
+
+    printf "\npressione qualquer tecla para voltar"
+    read -n 1 -s
+    main
 }
 
-#para chamar a funcao principal -------------------------------------------------------------------
-main
+#execucao -----------------------------------------------------------------------------------------
+
+if [ -f "historico-alg1_SIGA_ANONIMIZADO.csv" ]; then
+    main
+else
+    printf "arquivo historico-alg1_SIGA_ANONIMIZADO.csv nao encontrado.\n"
+fi
