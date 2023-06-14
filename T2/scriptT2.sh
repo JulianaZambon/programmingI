@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#funcoes
+#funcoes --------------------------------------------------------------------
 
 #1)remova todas as linhas que facam parte do 2o semestre de 2022 (periodo 2, ano 2022)
 function remove_2semestre() {
@@ -40,10 +40,10 @@ function aprovacao() {
 #10)compare a volta as aulas hibrida (2022 periodo 1) com os anos de pandemia e 
 #os anos anteriores em relacao as aprovacoes, reprovacoes, mediana das notas e cancelamentos.
 
-#funcao principal do script
+#funcao principal do script -------------------------------------------------
 function main() {
     #chama as funcoes
 }
 
-#para chamar a funcao principal
+#para chamar a funcao principal ---------------------------------------------
 main
