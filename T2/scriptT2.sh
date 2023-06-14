@@ -24,6 +24,7 @@ function status() {
 #quantos individuos possuem o mesmo numero maximo de vezes cursadas ate a aprovacao?
 function aprovacao() {
     #f1,5 matricula, periodo e o ano
+                # $() eh executado e seu resultado eh atribuido a variavel
     max_cursadas=$(cut -d',' -f1,4,5 resultado.csv | grep 'Aprovado' | cut -d',' -f1,3 |
         sort | uniq -c | sort -nr | head -n 1 | awk '{print $1}')
     count_max_cursadas=$(cut -d',' -f1,4,5 resultado.csv | grep 'Aprovado' | cut -d',' -f1,3 |
@@ -57,6 +58,8 @@ function media_nota_aprovados() {
         count[$ano]=$((${count[$ano]} + 1))
     done
 
+                # @ indica que queremos todas as chaves
+                # ! indica que queremos as chaves, em vez dos valores correspondentes
     for ano in "${!notas[@]}"; do
         media=$(echo "scale=2; ${notas[$ano]} / ${count[$ano]}" | bc)
         printf "%s: Media de nota dos aprovados: %.2f\n" "$ano" "$media"
