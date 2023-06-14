@@ -12,10 +12,12 @@ function remove_2semestre() {
 #"status" diz a situação de cada individuo (se cancelou a materia, foi aprovado, reprovou, etc.).
 #2)para cada status, calcule o numero de individuos unicos naquele status
 function status() {
-            #f10 indica o campo
-    cut -d',' -f10 resultado.csv | sort | uniq -c
+    #campo de status (coluna 10) do arquivo resultado.csv
+    cut -d',' -f10 resultado.csv | sort | uniq -c |
     while read -r count status; do
-        printf "%s: %s individuo(s) com status '%s'\n" "$count" "$status" "$(echo "$status" | tr '[:upper:]' '[:lower:]')"
+        #conversao do status para minusculas
+        lower_status=$(echo "$status" | tr '[:upper:]' '[:lower:]')
+        printf "%s: %s indivíduo(s) com status '%s'\n" "$count" "$status" "$lower_status"
     done
 }
 
@@ -23,13 +25,20 @@ function status() {
 #quantos individuos possuem o mesmo numero maximo de vezes cursadas ate a aprovacao?
 function aprovacao() {
     #f1,5 matricula, periodo e o ano
-                # $() eh executado e seu resultado eh atribuido a variavel
+    # $() eh executado e seu resultado eh atribuido a variavel
+
+    #extracao das colunas matricula, periodo e ano a partir do arquivo resultado.csv
+    #filtragem dos registros aprovados
+    #contagem do numero maximo de vezes cursadas antes da aprovacao
     max_cursadas=$(cut -d',' -f1,4,5 resultado.csv | grep 'Aprovado' | cut -d',' -f1,3 |
         sort | uniq -c | sort -nr | head -n 1 | awk '{print $1}')
+
+    #contagem do número de individuos com o mesmo numero maximo de vezes cursadas
     count_max_cursadas=$(cut -d',' -f1,4,5 resultado.csv | grep 'Aprovado' | cut -d',' -f1,3 |
         sort | uniq -c | grep "$max_cursadas " | wc -l)
-    printf "Maximo de vezes cursadas antes da aprovacao: %s\n" "$max_cursadas"
-    printf "Numero de individuos com o mesmo numero maximo de vezes cursadas: %s\n" "$count_max_cursadas"
+
+    printf "Máximo de vezes cursadas antes da aprovação: %s\n" "$max_cursadas"
+    printf "Número de indivíduos com o mesmo número máximo de vezes cursadas: %s\n" "$count_max_cursadas"
 
             #-c faz com que o uniq exiba o numero de ocorrencias de cada linha
 }
@@ -42,7 +51,7 @@ function porcentagem_aprovacao_reprovacao() {
         # verifica se o total de alunos eh igual a zero
         # evita divisao por zero
         if [ "$total_alunos" -eq 0 ]; then
-            printf "%s: Nenhum aluno registrado.\n" "$ano"
+            printf "%s: nenhum aluno registrado.\n" "$ano"
             continue
         fi
 
@@ -102,13 +111,12 @@ function media_frequencia_reprovados_nota() {
 
 #8)qual a porcentagem de evasoes (total e anual)?
 function porcentagem_evasoes() {
-    cut -d',' -f5,10 resultado.csv | sort | uniq -c |
-    while IFS=',' read -r ano status count; do
+   while IFS=',' read -r ano status count; do
         total_alunos=$(grep -c "$ano" resultado.csv)
         porcent_evasoes=$(grep -c "$ano,Cancelado" resultado.csv)
-        porcent_evasoes=$(echo "scale=2; ($porcent_evasoes / $total_alunos) * 100" | bc)
-        printf "%s: Porcentagem de evasoes: %.2f%%\n" "$ano" "$porcent_evasoes"
-    done
+        porcent_evasoes=$(awk "BEGIN { printf \"%.2f\", ($porcent_evasoes / $total_alunos) * 100 }")
+        printf "%s: Porcentagem de evasões: %.2f%%\n" "$ano" "$porcent_evasoes"
+    done < <(cut -d',' -f5,10 resultado.csv | sort | uniq -c)
 }
 
 #9)como os anos de pandemia impactaram no rendimento dos estudantes em relacao aos anos anteriores? 
@@ -116,20 +124,18 @@ function porcentagem_evasoes() {
 #considere como anos de pandemia os anos de 2020 e 2021. 
 #(EXEMPLO: qual o percentual de aumento ou diminuicao de notas, frequencias, aprovacoes/reprovacoes e cancelamentos).
 function rendimento_pandemia() {
-    total_aprovados=$(cut -d',' -f10 resultado.csv | grep 'Aprovado' | wc -l)
-    total_cancelamentos=$(cut -d',' -f10 resultado.csv | grep 'Cancelado' | wc -l)
-    total_reprovados=$(cut -d',' -f10 resultado.csv | grep 'Reprovado' | wc -l)
+     total_aprovados=$(grep -c 'Aprovado' resultado.csv)
+    total_cancelamentos=$(grep -c 'Cancelado' resultado.csv)
+    total_reprovados=$(grep -c 'Reprovado' resultado.csv)
     
-    total_pandemia=$(grep '2020\|2021' resultado.csv | wc -l)
-    aprovados_pandemia=$(grep '2020\|2021' resultado.csv | grep 'Aprovado' | wc -l)
-    cancelamentos_pandemia=$(grep '2020\|2021' resultado.csv | grep 'Cancelado' | wc -l)
-    reprovados_pandemia=$(grep '2020\|2021' resultado.csv | grep 'Reprovado' | wc -l)
+    total_pandemia=$(grep -cE '2020|2021' resultado.csv)
+    aprovados_pandemia=$(grep -cE '2020|2021' resultado.csv | grep -c 'Aprovado')
+    cancelamentos_pandemia=$(grep -cE '2020|2021' resultado.csv | grep -c 'Cancelado')
+    reprovados_pandemia=$(grep -cE '2020|2021' resultado.csv | grep -c 'Reprovado')
     
-    #bc eh calculadora de linha de comando
-                            #definir a casa decimal
-    percent_aprovados=$(bc <<< "scale=2; ($aprovados_pandemia / $total_pandemia) * 100")
-    percent_cancelamentos=$(bc <<< "scale=2; ($cancelamentos_pandemia / $total_pandemia) * 100")
-    percent_reprovados=$(bc <<< "scale=2; ($reprovados_pandemia / $total_pandemia) * 100")
+    percent_aprovados=$(awk "BEGIN { printf \"%.2f\", ($aprovados_pandemia / $total_pandemia) * 100 }")
+    percent_cancelamentos=$(awk "BEGIN { printf \"%.2f\", ($cancelamentos_pandemia / $total_pandemia) * 100 }")
+    percent_reprovados=$(awk "BEGIN { printf \"%.2f\", ($reprovados_pandemia / $total_pandemia) * 100 }")
     
     printf "Rendimento dos aprovados durante a pandemia (2020 e 2021): %.2f%%\n" "$percent_aprovados"
     printf "Taxa de cancelamento durante a pandemia (2020 e 2021): %.2f%%\n" "$percent_cancelamentos"
@@ -141,34 +147,30 @@ function rendimento_pandemia() {
 #os anos anteriores em relacao as aprovacoes, reprovacoes, mediana das notas e cancelamentos.
 function comparacao() {
     #aprovacoes, reprovacoes e cancelamentos em 2022.1
-    aprovados_2022=$(grep '1,2022' resultado.csv | grep 'Aprovado' | wc -l)
-    reprovados_2022=$(grep '1,2022' resultado.csv | grep 'Reprovado' | wc -l)
-    cancelamentos_2022=$(grep '1,2022' resultado.csv | grep 'Cancelado' | wc -l)
+    aprovados_2022=$(grep -c '1,2022,Aprovado' resultado.csv)
+    reprovados_2022=$(grep -c '1,2022,Reprovado' resultado.csv)
+    cancelamentos_2022=$(grep -c '1,2022,Cancelado' resultado.csv)
     
     #aprovacoes, reprovacoes e cancelamentos na pandemia (2020 e 2021)
-    aprovados_pandemia=$(grep '2020\|2021' resultado.csv | grep 'Aprovado' | wc -l)
-    reprovados_pandemia=$(grep '2020\|2021' resultado.csv | grep 'Reprovado' | wc -l)
-    cancelamentos_pandemia=$(grep '2020\|2021' resultado.csv | grep 'Cancelado' | wc -l)
+    aprovados_pandemia=$(grep -cE '2020|2021,Aprovado' resultado.csv)
+    reprovados_pandemia=$(grep -cE '2020|2021,Reprovado' resultado.csv)
+    cancelamentos_pandemia=$(grep -cE '2020|2021,Cancelado' resultado.csv)
     
     #aprovacoes, reprovacoes e cancelamentos nos anos anteriores a 2022
-                                #filtra as linhas que nao contem os anos de 2020, 2021 ou 2022
-    aprovados_anteriores=$(grep -v '2020\|2021\|2022' resultado.csv | grep 'Aprovado' | wc -l)
-    reprovados_anteriores=$(grep -v '2020\|2021\|2022' resultado.csv | grep 'Reprovado' | wc -l)
-    cancelamentos_anteriores=$(grep -v '2020\|2021\|2022' resultado.csv | grep 'Cancelado' | wc -l)
+    aprovados_anteriores=$(grep -vcE '2020|2021|2022' resultado.csv | grep -c 'Aprovado')
+    reprovados_anteriores=$(grep -vcE '2020|2021|2022' resultado.csv | grep -c 'Reprovado')
+    cancelamentos_anteriores=$(grep -vcE '2020|2021|2022' resultado.csv | grep -c 'Cancelado')
     
     #mediana das notas em 2022.1
     notas_2022=$(grep '1,2022' resultado.csv | cut -d',' -f7 | sort -n)
-                                            #wc -l eh para contar o numero de linhas
     total_notas_2022=$(echo "$notas_2022" | wc -l)
     metade=$((total_notas_2022 / 2))
     if ((total_notas_2022 % 2 == 0)); then
-                                            #sed para extrair uma linha especifica (no caso a mediana)
         mediana_2022=$(echo "$notas_2022" | sed -n "$metade p")
     else
         mediana_2022=$(echo "$notas_2022" | sed -n "$((metade + 1)) p")
     fi
     
-    #resultados 
     printf "Comparacao de 2022 periodo 1 com anos de pandemia e anos anteriores:\n"
     printf "Aprovacoes:\n"
     printf "2022 periodo 1: %d\n" "$aprovados_2022"
@@ -187,6 +189,7 @@ function comparacao() {
     printf "Pandemia (2020 e 2021): %d\n" "$cancelamentos_pandemia"
     printf "Anos anteriores: %d\n" "$cancelamentos_anteriores"
 }
+
 
 #main-----------------------------------------------------------------------------------
 
