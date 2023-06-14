@@ -4,7 +4,7 @@
 
 #1)remova todas as linhas que facam parte do 2o semestre de 2022 (periodo 2, ano 2022)
 function remove_2semestre() {
-    grep -v '2022,2' historico-alg1_SIGA_ANONIMIZADO.csv > resultado.csv
+    grep -v '2,2022' historico-alg1_SIGA_ANONIMIZADO.csv > resultado.csv
 }
 
 #"status" diz a situação de cada individuo (se cancelou a materia, foi aprovado, reprovou, etc.).
@@ -42,7 +42,7 @@ function aprovacao() {
 
 #funcao principal do script -------------------------------------------------
 function main() {
-    #chama as funcoes
+    remove_2semestre
 }
 
 #para chamar a funcao principal ---------------------------------------------
