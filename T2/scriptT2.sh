@@ -15,9 +15,13 @@ function status() {
     #campo de status (coluna 10) do arquivo resultado.csv
     cut -d',' -f10 resultado.csv | sort | uniq -c |
     while read -r count status; do
-        #conversao do status para minusculas
         lower_status=$(echo "$status" | tr '[:upper:]' '[:lower:]')
-        printf "%s: %s indivíduo(s) com status '%s'\n" "$count" "$status" "$lower_status"
+        if [ "$lower_status" != "status" ]; then
+            if [ "$lower_status" = "matriculado" ]; then
+                count=$(grep -wc "$status" resultado.csv)
+            fi
+            printf "%s indivíduo(s) com status '%s'\n" "$count" "$lower_status"
+        fi
     done
 }
 
