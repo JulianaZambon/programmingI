@@ -8,10 +8,31 @@ function remove_2semestre() {
 }
 
 #"status" diz a situação de cada individuo (se cancelou a materia, foi aprovado, reprovou, etc.).
-#2)para cada status, calcule o número de individuos unicos naquele status
+#2)para cada status, calcule o numero de individuos unicos naquele status
 function status() {
     cut -d',' -f10 resultado.csv | sort | uniq -c
 }
+
+#3)qual o maximo de vezes que um individuo cursou a discplina antes de ser aprovado? 
+#quantos individuos possuem o mesmo numero maximo de vezes cursadas ate a aprovacao?
+
+#4)qual a porcentagem de aprovação/reprovação por ano?
+
+#5)qual eh a media de nota dos aprovados (no periodo total e por ano)?
+
+#6)qual eh a media de nota dos reprovados por nota (periodo total e ano)?
+
+#7)qual eh a media da frequencia dos reprovados por nota (periodo total e por ano)?
+
+#8)qual a porcentagem de evasoes (total e anual)?
+
+#9)como os anos de pandemia impactaram no rendimento dos estudantes em relacao aos anos anteriores? 
+#calcule em percentual o rendimento dos aprovados, a taxa de cancelamento e de reprovacoes. 
+#considere como anos de pandemia os anos de 2020 e 2021. 
+#(EXEMPLO: qual o percentual de aumento ou diminuicao de notas, frequencias, aprovacoes/reprovacoes e cancelamentos).
+
+#10)compare a volta as aulas hibrida (2022 periodo 1) com os anos de pandemia e 
+#os anos anteriores em relacao as aprovacoes, reprovacoes, mediana das notas e cancelamentos.
 
 #funcao principal do script
 function main() {
