@@ -4,6 +4,7 @@
 
 #1)remova todas as linhas que facam parte do 2o semestre de 2022 (periodo 2, ano 2022)
 function remove_2semestre() {
+    #grep eh comando de busca
     grep -v '2,2022' historico-alg1_SIGA_ANONIMIZADO.csv > resultado.csv
     printf "Remoção do 2º semestre de 2022 concluida.\n"
 }
@@ -11,6 +12,7 @@ function remove_2semestre() {
 #"status" diz a situação de cada individuo (se cancelou a materia, foi aprovado, reprovou, etc.).
 #2)para cada status, calcule o numero de individuos unicos naquele status
 function status() {
+            #f10 indica o campo
     cut -d',' -f10 resultado.csv | sort | uniq -c
     while read -r count status; do
         printf "%s: %s indivíduo(s) com status '%s'\n" "$count" "$status" "$(echo "$status"
@@ -114,6 +116,8 @@ function rendimento_pandemia() {
     cancelamentos_pandemia=$(grep '2020\|2021' resultado.csv | grep 'Cancelado' | wc -l)
     reprovados_pandemia=$(grep '2020\|2021' resultado.csv | grep 'Reprovado' | wc -l)
     
+    #bc eh calculadora de linha de comando
+                            #definir a casa decimal
     percent_aprovados=$(bc <<< "scale=2; ($aprovados_pandemia / $total_pandemia) * 100")
     percent_cancelamentos=$(bc <<< "scale=2; ($cancelamentos_pandemia / $total_pandemia) * 100")
     percent_reprovados=$(bc <<< "scale=2; ($reprovados_pandemia / $total_pandemia) * 100")
@@ -138,36 +142,39 @@ function comparacao() {
     cancelamentos_pandemia=$(grep '2020\|2021' resultado.csv | grep 'Cancelado' | wc -l)
     
     #aprovacoes, reprovacoes e cancelamentos nos anos anteriores a 2022
+                                #filtra as linhas que nao contem os anos de 2020, 2021 ou 2022
     aprovados_anteriores=$(grep -v '2020\|2021\|2022' resultado.csv | grep 'Aprovado' | wc -l)
     reprovados_anteriores=$(grep -v '2020\|2021\|2022' resultado.csv | grep 'Reprovado' | wc -l)
     cancelamentos_anteriores=$(grep -v '2020\|2021\|2022' resultado.csv | grep 'Cancelado' | wc -l)
     
     #mediana das notas em 2022.1
     notas_2022=$(grep '1,2022' resultado.csv | cut -d',' -f7 | sort -n)
+                                            #wc -l eh para contar o numero de linhas
     total_notas_2022=$(echo "$notas_2022" | wc -l)
     metade=$((total_notas_2022 / 2))
     if ((total_notas_2022 % 2 == 0)); then
+                                            #sed para extrair uma linha especifica (no caso a mediana)
         mediana_2022=$(echo "$notas_2022" | sed -n "$metade p")
     else
         mediana_2022=$(echo "$notas_2022" | sed -n "$((metade + 1)) p")
     fi
     
     #resultados 
-    printf "Comparação de 2022 período 1 com anos de pandemia e anos anteriores:\n"
+    printf "Comparação de 2022 periodo 1 com anos de pandemia e anos anteriores:\n"
     printf "Aprovações:\n"
-    printf "2022 período 1: %d\n" "$aprovados_2022"
+    printf "2022 periodo 1: %d\n" "$aprovados_2022"
     printf "Pandemia (2020 e 2021): %d\n" "$aprovados_pandemia"
     printf "Anos anteriores: %d\n" "$aprovados_anteriores"
     printf "\n"
     printf "Reprovações:\n"
-    printf "2022 período 1: %d\n" "$reprovados_2022"
+    printf "2022 periodo 1: %d\n" "$reprovados_2022"
     printf "Pandemia (2020 e 2021): %d\n" "$reprovados_pandemia"
     printf "Anos anteriores: %d\n" "$reprovados_anteriores"
     printf "\n"
-    printf "Mediana das notas em 2022 período 1: %.2f\n" "$mediana_2022"
+    printf "Mediana das notas em 2022 periodo 1: %.2f\n" "$mediana_2022"
     printf "\n"
     printf "Cancelamentos:\n"
-    printf "2022 período 1: %d\n" "$cancelamentos_2022"
+    printf "2022 periodo 1: %d\n" "$cancelamentos_2022"
     printf "Pandemia (2020 e 2021): %d\n" "$cancelamentos_pandemia"
     printf "Anos anteriores: %d\n" "$cancelamentos_anteriores"
 }
