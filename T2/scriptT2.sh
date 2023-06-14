@@ -28,21 +28,28 @@ function status() {
 #3)qual o maximo de vezes que um individuo cursou a discplina antes de ser aprovado? 
 #quantos individuos possuem o mesmo numero maximo de vezes cursadas ate a aprovacao?
 function aprovacao() {
-    #f1,5 matricula, periodo e o ano
     # $() eh executado e seu resultado eh atribuido a variavel
 
-    #extracao das colunas matricula, periodo e ano a partir do arquivo resultado.csv
-    #filtragem dos registros aprovados
-    #contagem do numero maximo de vezes cursadas antes da aprovacao
-    max_cursadas=$(cut -d',' -f1,4,5 resultado.csv | grep 'Aprovado' | cut -d',' -f1,3 |
-        sort | uniq -c | sort -nr | head -n 1 | awk '{print $1}')
+    #extrair as matrículas dos registros aprovados
+    matriculas=$(awk -F',' '$10 == "Aprovado" {print $1}' resultado.csv)
 
-    #contagem do número de individuos com o mesmo numero maximo de vezes cursadas
-    count_max_cursadas=$(cut -d',' -f1,4,5 resultado.csv | grep 'Aprovado' | cut -d',' -f1,3 |
-        sort | uniq -c | grep "$max_cursadas " | wc -l)
+    #inicializa as var para rastrear o maximo de vezes cursadas e o numero de individuos com esse maximo
+    max_cursadas=0
+    count_max_cursadas=0
 
-    printf "Máximo de vezes cursadas antes da aprovação: %s\n" "$max_cursadas"
-    printf "Número de indivíduos com o mesmo número máximo de vezes cursadas: %s\n" "$count_max_cursadas"
+    #percorre as matriculas e conta o numero de vezes cursadas antes da aprovacao
+    for matricula in $matriculas; do
+        num_cursadas=$(grep -c "^$matricula," resultado.csv)
+        if ((num_cursadas > max_cursadas)); then
+            max_cursadas=$num_cursadas
+            count_max_cursadas=1
+        elif ((num_cursadas == max_cursadas)); then
+            ((count_max_cursadas++))
+        fi
+    done
+
+    printf "maximo de vezes cursadas antes da aprovacao: %s\n" "$max_cursadas"
+    printf "numero de indivíduos com o mesmo número maximo de vezes cursadas: %s\n" "$count_max_cursadas"
 
             #-c faz com que o uniq exiba o numero de ocorrencias de cada linha
 }
@@ -227,7 +234,7 @@ main() {
         9) rendimento_pandemia;;
         10) comparacao;;
         11) exit ;;
-        *) printf "opcaoo invalida\n" ;;
+        *) printf "opcao invalida\n" ;;
     esac
 
     printf "\npressione qualquer tecla para voltar"
