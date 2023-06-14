@@ -15,8 +15,7 @@ function status() {
             #f10 indica o campo
     cut -d',' -f10 resultado.csv | sort | uniq -c
     while read -r count status; do
-        printf "%s: %s individuo(s) com status '%s'\n" "$count" "$status" "$(echo "$status"
-        | tr '[:lower:]' '[:upper:]')"
+        printf "%s: %s individuo(s) com status '%s'\n" "$count" "$status" "$(echo "$status" | tr '[:upper:]' '[:lower:]')"
     done
 }
 
@@ -29,25 +28,32 @@ function aprovacao() {
         sort | uniq -c | sort -nr | head -n 1 | awk '{print $1}')
     count_max_cursadas=$(cut -d',' -f1,4,5 resultado.csv | grep 'Aprovado' | cut -d',' -f1,3 |
         sort | uniq -c | grep "$max_cursadas " | wc -l)
-    printf "Máximo de vezes cursadas antes da aprovação: %s\n" "$max_cursadas"
-    printf "Número de indivíduos com o mesmo número máximo de vezes cursadas: %s\n" "$count_max_cursadas"
+    printf "Maximo de vezes cursadas antes da aprovacao: %s\n" "$max_cursadas"
+    printf "Numero de individuos com o mesmo numero maximo de vezes cursadas: %s\n" "$count_max_cursadas"
 
             #-c faz com que o uniq exiba o numero de ocorrencias de cada linha
 }
 
-#4)qual a porcentagem de aprovacaoo/reprovacaoo por ano?
+#4)qual a porcentagem de aprovacaoo/reprovacao por ano?
 function porcentagem_aprovacao_reprovacao() {
-    cut -d',' -f5,10 resultado.csv | sort | uniq -c |
-
-    while IFS=',' read -r ano status count; do
+   while IFS=',' read -r ano status count; do
         total_alunos=$(grep -c "$ano" resultado.csv)
+        
+        # verifica se o total de alunos eh igual a zero
+        # evita divisao por zero
+        if [ "$total_alunos" -eq 0 ]; then
+            printf "%s: Nenhum aluno registrado.\n" "$ano"
+            continue
+        fi
+
         porcent_aprovados=$(grep -c "$ano,Aprovado" resultado.csv)
         porcent_reprovados=$(grep -c "$ano,Reprovado" resultado.csv)
-                                #scale define a precisão decimal utilizada pelo bc
-        porcent_aprovados=$(echo "scale=2; ($porcent_aprovados / $total_alunos) * 100" | bc)
-        porcent_reprovados=$(echo "scale=2; ($porcent_reprovados / $total_alunos) * 100" | bc)
+        
+        porcent_aprovados=$(awk "BEGIN { printf \"%.2f\", ($porcent_aprovados / $total_alunos) * 100 }")
+        porcent_reprovados=$(awk "BEGIN { printf \"%.2f\", ($porcent_reprovados / $total_alunos) * 100 }")
+        
         printf "%s: Aprovados: %.2f%%, Reprovados: %.2f%%\n" "$ano" "$porcent_aprovados" "$porcent_reprovados"
-    done
+    done < <(cut -d',' -f5,10 resultado.csv | sort | uniq -c)
 }
 
 #5)qual eh a media de nota dos aprovados (no periodo total e por ano)?
