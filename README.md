@@ -69,3 +69,5 @@ outra dupla circular), modificadas para atender às novas especificações.
 Os desafios são:
 • Adaptar os códigos já feitos;
 • Implementar as funções adicionais.
+### T2 - Shell
+Faça um script shell com funções que respondam as questões a respeito do rendimento de alunos de um curso em algumas disciplinas ao longo dos anos.
