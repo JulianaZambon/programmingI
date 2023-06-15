@@ -56,6 +56,7 @@ function aprovacao() {
 }
 
 #4)qual a porcentagem de aprovacaoo/reprovacao por ano?
+#imprime as porcentagens em 0
 function porcentagem_aprovacao_reprovacao() {
   while IFS=',' read -r count ano status; do
         total_alunos=$(grep -c ",$ano" resultado.csv)
