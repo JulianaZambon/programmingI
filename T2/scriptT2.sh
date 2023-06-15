@@ -55,30 +55,46 @@ function aprovacao() {
             #-c faz com que o uniq exiba o numero de ocorrencias de cada linha
 }
 
-#4)qual a porcentagem de aprovacaoo/reprovacao por ano?
-#imprime as porcentagens em 0
+#4)qual a porcentagem de aprovacao/reprovacao por ano?
 function porcentagem_aprovacao_reprovacao() {
-  while IFS=',' read -r count ano status; do
-        total_alunos=$(grep -c ",$ano" resultado.csv)
-        
-        # Verifica se o total de alunos é igual a zero
-        # Evita divisão por zero
-        if [ "$total_alunos" -eq 0 ]; then
-            printf "%s: nenhum aluno registrado.\n" "$ano"
-            continue
-        fi
-
-        porcent_aprovados=$(awk -F',' -v ano="$ano" -v total_alunos="$total_alunos" '$2 == ano && $10 == "Aprovado" {count++} END {if (total_alunos > 0) printf "%.2f", (count / total_alunos) * 100; else printf "0"}' resultado.csv)
-        porcent_reprovados=$(awk -F',' -v ano="$ano" -v total_alunos="$total_alunos" '$2 == ano && $10 == "Reprovado" {count++} END {if (total_alunos > 0) printf "%.2f", (count / total_alunos) * 100; else printf "0"}' resultado.csv)
-        
-        printf "%s: Aprovados: %.2f%%, Reprovados: %.2f%%\n" "$ano" "$porcent_aprovados" "$porcent_reprovados"
-    done < <(cut -d',' -f2,5,10 resultado.csv | sort | uniq -c)
+    awk -F',' '
+        BEGIN {
+            printf "Ano: Aprovados: Reprovados:\n"
+        }
+        NR > 1 {
+            if ($10 == "Aprovado") {
+                count[$5, "Aprovado"]++
+            } else if ($10 ~ /^R-/) {
+                count[$5, "Reprovado"]++
+            }
+            total_alunos[$5]++
+        }
+        END {
+            for (ano_status in count) {
+                split(ano_status, arr, SUBSEP)
+                ano = arr[1]
+                status = arr[2]
+                porcentagem = (count[ano_status] / total_alunos[ano]) * 100
+                if (status == "Aprovado") {
+                    porcent_aprovados[ano] = porcentagem
+                } else if (status == "Reprovado") {
+                    porcent_reprovados[ano] = porcentagem
+                }
+            }
+            
+            for (ano in total_alunos) {
+                if (!(ano in porcent_aprovados)) {
+                    porcent_aprovados[ano] = 0
+                }
+                if (!(ano in porcent_reprovados)) {
+                    porcent_reprovados[ano] = 0
+                }
+                printf "%s: %.2f%%, %.2f%%\n", ano, porcent_aprovados[ano], porcent_reprovados[ano]
+            }
+        }' historico-alg1_SIGA_ANONIMIZADO.csv | sort
 }
 
-
-
 #5)qual eh a media de nota dos aprovados (no periodo total e por ano)?
-# ta imprimindo a media em 0!
 function media_nota_aprovados() {
     declare -A notas
     declare -A count
@@ -89,60 +105,80 @@ function media_nota_aprovados() {
         nota=${nota/,/.}  # Substituir vírgula por ponto
         notas[$ano]=$(awk -v nota="$nota" -v total="${notas[$ano]}" 'BEGIN { printf "%.2f", total + nota }')
         count[$ano]=$((${count[$ano]} + 1))
-    done < <(grep 'Aprovado' resultado.csv | cut -d',' -f5,6,10)
+    done < <(grep 'Aprovado' historico-alg1_SIGA_ANONIMIZADO.csv | cut -d',' -f5,8,10)
 
     for ano in "${!notas[@]}"; do
-        local media=$(awk -v total="${notas[$ano]}" -v count="${count[$ano]}" 'BEGIN { printf "%.2f", total / count }')
+        local media=0
+        if [ "${count[$ano]}" -ne 0 ]; then
+            media=$(awk -v total="${notas[$ano]}" -v count="${count[$ano]}" 'BEGIN { printf "%.2f", total / count }')
+        fi
         printf "%s: Média de nota dos aprovados: %.2f\n" "$ano" "$media"
         total_media=$(awk -v total_media="$total_media" -v count="${count[$ano]}" -v media="$media" 'BEGIN { printf "%.2f", total_media + (media * count) }')
-        total_alunos=$(($total_alunos + ${count[$ano]}))
-    done
+        total_alunos=$((total_alunos + ${count[$ano]}))
+    done | sort -k1n
 
-    local media_total=$(awk -v total_media="$total_media" -v total_alunos="$total_alunos" 'BEGIN { printf "%.2f", total_media / total_alunos }')
-    printf "Média de nota dos aprovados no período total: %.2f\n" "$media_total"
+    if [ "$total_alunos" -ne 0 ]; then
+        local media_total=$(awk -v total_media="$total_media" -v total_alunos="$total_alunos" 'BEGIN { printf "%.2f", total_media / total_alunos }')
+        printf "Média de nota dos aprovados no período total: %.2f\n" "$media_total"
+    else
+        printf "Não há alunos aprovados no período.\n"
+    fi
 }
-
-
-
 
 #6)qual eh a media de nota dos reprovados por nota (periodo total e ano)?
 function media_nota_reprovados() {
     declare -A notas
     declare -A count
+    local total_media=0
+    local total_alunos=0
 
     while IFS=',' read -r ano nota status; do
-        if [[ $status == "Reprovado" ]]; then
-            nota=${nota/,/.}
-            if [[ -z ${notas[$ano]} ]]; then
-                notas[$ano]=$nota
-            else
-                notas[$ano]=$(echo "${notas[$ano]} + $nota" | bc)
-            fi
-            count[$ano]=$((${count[$ano]} + 1))
-        fi
-    done < resultado.csv
+        nota=${nota/,/.}  # Substituir vírgula por ponto
+        notas[$ano]=$(awk -v nota="$nota" -v total="${notas[$ano]}" 'BEGIN { printf "%.2f", total + nota }')
+        count[$ano]=$((${count[$ano]} + 1))
+    done < <(grep -E 'R-nota|R-freq' historico-alg1_SIGA_ANONIMIZADO.csv | cut -d',' -f5,8,10)
 
     for ano in "${!notas[@]}"; do
-        media=$(echo "scale=2; ${notas[$ano]} / ${count[$ano]}" | bc)
+        local media=0
+        if [ "${count[$ano]}" -ne 0 ]; then
+            media=$(awk -v total="${notas[$ano]}" -v count="${count[$ano]}" 'BEGIN { printf "%.2f", total / count }')
+        fi
         printf "%s: Média de nota dos reprovados: %.2f\n" "$ano" "$media"
-    done
+        total_media=$(awk -v total_media="$total_media" -v count="${count[$ano]}" -v media="$media" 'BEGIN { printf "%.2f", total_media + (media * count) }')
+        total_alunos=$((total_alunos + ${count[$ano]}))
+    done | sort -k1n
+
+    if [ "$total_alunos" -ne 0 ]; then
+        local media_total=$(awk -v total_media="$total_media" -v total_alunos="$total_alunos" 'BEGIN { printf "%.2f", total_media / total_alunos }')
+        printf "Média de nota dos reprovados no período total: %.2f\n" "$media_total"
+    else
+        printf "Não há alunos reprovados no período.\n"
+    fi
 }
-
-
-
 
 #7)qual eh a media da frequencia dos reprovados por nota (periodo total e por ano)?
 function media_frequencia_reprovados_nota() {
-    cut -d',' -f5,7,10 resultado.csv | grep 'Reprovado' |
-    while IFS=',' read -r ano frequencia status; do
-        frequencias[$ano]=$(echo "${frequencias[$ano]} + $frequencia" | bc)
-        count[$ano]=$((${count[$ano]} + 1))
-    done
+    declare -A soma_frequencias
+    declare -A count_notas
+    local total_soma=0
+    local total_count=0
 
-    for ano in "${!frequencias[@]}"; do
-        media=$(echo "scale=2; ${frequencias[$ano]} / ${count[$ano]}" | bc)
-        printf "%s: Media da frequencia dos reprovados: %.2f\n" "$ano" "$media"
-    done
+    while IFS=',' read -r ano frequencia status; do
+        if [[ $status == R-* ]]; then
+            soma_frequencias[$ano]=$(awk "BEGIN{ printf \"%.2f\", ${soma_frequencias[$ano]} + $frequencia }")
+            count_notas[$ano]=$((${count_notas[$ano]} + 1))
+            total_soma=$(awk "BEGIN{ printf \"%.2f\", $total_soma + $frequencia }")
+            total_count=$(($total_count + 1))
+        fi
+    done < <(cut -d',' -f5,9,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep 'R-*')
+
+    for ano in $(echo "${!soma_frequencias[@]}" | tr ' ' '\n' | sort -n); do
+        media=$(awk "BEGIN{ printf \"%.2f\", ${soma_frequencias[$ano]} / ${count_notas[$ano]} }")
+        printf "%s: Média da frequência dos reprovados por nota: %.2f\n" "$ano" "$media"
+    done | sort -k1n
+
+    media_total=$(awk "BEGIN{ printf \"%.2f\", $total_soma / $total_count }")
+    printf "Média da frequência dos reprovados por nota no período total: %.2f\n" "$media_total"
 }
 
 #8)qual a porcentagem de evasoes (total e anual)?
