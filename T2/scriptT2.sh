@@ -77,6 +77,7 @@ function porcentagem_aprovacao_reprovacao() {
 
 
 #5)qual eh a media de nota dos aprovados (no periodo total e por ano)?
+# ta imprimindo a media em 0!
 function media_nota_aprovados() {
     declare -A notas
     declare -A count
