@@ -107,17 +107,29 @@ function media_nota_aprovados() {
 
 #6)qual eh a media de nota dos reprovados por nota (periodo total e ano)?
 function media_nota_reprovados() {
-    cut -d',' -f5,6,10 resultado.csv | grep 'Reprovado' |
+    declare -A notas
+    declare -A count
+
     while IFS=',' read -r ano nota status; do
-        notas[$ano]=$(echo "${notas[$ano]} + $nota" | bc)
-        count[$ano]=$((${count[$ano]} + 1))
-    done
+        if [[ $status == "Reprovado" ]]; then
+            nota=${nota/,/.}
+            if [[ -z ${notas[$ano]} ]]; then
+                notas[$ano]=$nota
+            else
+                notas[$ano]=$(echo "${notas[$ano]} + $nota" | bc)
+            fi
+            count[$ano]=$((${count[$ano]} + 1))
+        fi
+    done < resultado.csv
 
     for ano in "${!notas[@]}"; do
         media=$(echo "scale=2; ${notas[$ano]} / ${count[$ano]}" | bc)
-        printf "%s: Media de nota dos reprovados: %.2f\n" "$ano" "$media"
+        printf "%s: Média de nota dos reprovados: %.2f\n" "$ano" "$media"
     done
 }
+
+
+
 
 #7)qual eh a media da frequencia dos reprovados por nota (periodo total e por ano)?
 function media_frequencia_reprovados_nota() {
@@ -135,12 +147,12 @@ function media_frequencia_reprovados_nota() {
 
 #8)qual a porcentagem de evasoes (total e anual)?
 function porcentagem_evasoes() {
-   while IFS=',' read -r ano status count; do
-        total_alunos=$(grep -c "$ano" resultado.csv)
-        porcent_evasoes=$(grep -c "$ano,Cancelado" resultado.csv)
+    while IFS=',' read -r ano status count; do
+        total_alunos=$(grep -c ",$ano" resultado.csv)
+        porcent_evasoes=$(grep -c ",$ano,Cancelado" resultado.csv)
         porcent_evasoes=$(awk "BEGIN { printf \"%.2f\", ($porcent_evasoes / $total_alunos) * 100 }")
         printf "%s: Porcentagem de evasões: %.2f%%\n" "$ano" "$porcent_evasoes"
-    done < <(cut -d',' -f5,10 resultado.csv | sort | uniq -c)
+    done < <(cut -d',' -f10,5 resultado.csv | sort | uniq -c)
 }
 
 #9)como os anos de pandemia impactaram no rendimento dos estudantes em relacao aos anos anteriores? 
