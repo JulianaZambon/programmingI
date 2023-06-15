@@ -198,7 +198,7 @@ function porcentagem_evasoes() {
 function rendimento_pandemia() {
     total_aprovados=$(grep -c 'Aprovado' historico-alg1_SIGA_ANONIMIZADO.csv)
     total_cancelamentos=$(grep -c 'Cancelado' historico-alg1_SIGA_ANONIMIZADO.csv)
-    total_reprovados=$(grep -c 'Reprovado' historico-alg1_SIGA_ANONIMIZADO.csv)
+    total_reprovados=$(grep -c 'R-' historico-alg1_SIGA_ANONIMIZADO.csv)
     
     total_pandemia=$(grep -cE '2020|2021' historico-alg1_SIGA_ANONIMIZADO.csv)
     aprovados_pandemia=$(grep -cE '2020|2021' historico-alg1_SIGA_ANONIMIZADO.csv | grep -c 'Aprovado')
