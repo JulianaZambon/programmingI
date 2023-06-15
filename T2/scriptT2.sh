@@ -184,11 +184,11 @@ function media_frequencia_reprovados_nota() {
 #8)qual a porcentagem de evasoes (total e anual)?
 function porcentagem_evasoes() {
     while IFS=',' read -r ano status count; do
-        total_alunos=$(grep -c ",$ano" resultado.csv)
-        porcent_evasoes=$(grep -c ",$ano,Cancelado" resultado.csv)
+        total_alunos=$(grep -c ",$ano" historico-alg1_SIGA_ANONIMIZADO.csv)
+        porcent_evasoes=$(grep -c ",$ano,Cancelado" historico-alg1_SIGA_ANONIMIZADO.csv)
         porcent_evasoes=$(awk "BEGIN { printf \"%.2f\", ($porcent_evasoes / $total_alunos) * 100 }")
         printf "%s: Porcentagem de evasões: %.2f%%\n" "$ano" "$porcent_evasoes"
-    done < <(cut -d',' -f10,5 resultado.csv | sort | uniq -c)
+    done < <(cut -d',' -f5,10 historico-alg1_SIGA_ANONIMIZADO.csv | sort | uniq -c)
 }
 
 #9)como os anos de pandemia impactaram no rendimento dos estudantes em relacao aos anos anteriores? 
@@ -196,14 +196,14 @@ function porcentagem_evasoes() {
 #considere como anos de pandemia os anos de 2020 e 2021. 
 #(EXEMPLO: qual o percentual de aumento ou diminuicao de notas, frequencias, aprovacoes/reprovacoes e cancelamentos).
 function rendimento_pandemia() {
-     total_aprovados=$(grep -c 'Aprovado' resultado.csv)
-    total_cancelamentos=$(grep -c 'Cancelado' resultado.csv)
-    total_reprovados=$(grep -c 'Reprovado' resultado.csv)
+    total_aprovados=$(grep -c 'Aprovado' historico-alg1_SIGA_ANONIMIZADO.csv)
+    total_cancelamentos=$(grep -c 'Cancelado' historico-alg1_SIGA_ANONIMIZADO.csv)
+    total_reprovados=$(grep -c 'Reprovado' historico-alg1_SIGA_ANONIMIZADO.csv)
     
-    total_pandemia=$(grep -cE '2020|2021' resultado.csv)
-    aprovados_pandemia=$(grep -cE '2020|2021' resultado.csv | grep -c 'Aprovado')
-    cancelamentos_pandemia=$(grep -cE '2020|2021' resultado.csv | grep -c 'Cancelado')
-    reprovados_pandemia=$(grep -cE '2020|2021' resultado.csv | grep -c 'Reprovado')
+    total_pandemia=$(grep -cE '2020|2021' historico-alg1_SIGA_ANONIMIZADO.csv)
+    aprovados_pandemia=$(grep -cE '2020|2021' historico-alg1_SIGA_ANONIMIZADO.csv | grep -c 'Aprovado')
+    cancelamentos_pandemia=$(grep -cE '2020|2021' historico-alg1_SIGA_ANONIMIZADO.csv | grep -c 'Cancelado')
+    reprovados_pandemia=$(grep -cE '2020|2021' historico-alg1_SIGA_ANONIMIZADO.csv | grep -c 'R-')
     
     percent_aprovados=$(awk "BEGIN { printf \"%.2f\", ($aprovados_pandemia / $total_pandemia) * 100 }")
     percent_cancelamentos=$(awk "BEGIN { printf \"%.2f\", ($cancelamentos_pandemia / $total_pandemia) * 100 }")
@@ -219,19 +219,19 @@ function rendimento_pandemia() {
 #os anos anteriores em relacao as aprovacoes, reprovacoes, mediana das notas e cancelamentos.
 function comparacao() {
     #aprovacoes, reprovacoes e cancelamentos em 2022.1
-    aprovados_2022=$(grep -c '1,2022,Aprovado' resultado.csv)
-    reprovados_2022=$(grep -c '1,2022,Reprovado' resultado.csv)
-    cancelamentos_2022=$(grep -c '1,2022,Cancelado' resultado.csv)
+    aprovados_2022=$(grep -c '1,2022,Aprovado' historico-alg1_SIGA_ANONIMIZADO.csv)
+    reprovados_2022=$(grep -c '1,2022,Reprovado' historico-alg1_SIGA_ANONIMIZADO.csv)
+    cancelamentos_2022=$(grep -c '1,2022,Cancelado' historico-alg1_SIGA_ANONIMIZADO.csv)
     
     #aprovacoes, reprovacoes e cancelamentos na pandemia (2020 e 2021)
-    aprovados_pandemia=$(grep -cE '2020|2021,Aprovado' resultado.csv)
-    reprovados_pandemia=$(grep -cE '2020|2021,Reprovado' resultado.csv)
-    cancelamentos_pandemia=$(grep -cE '2020|2021,Cancelado' resultado.csv)
+    aprovados_pandemia=$(grep -cE '2020|2021,Aprovado' historico-alg1_SIGA_ANONIMIZADO.csv)
+    reprovados_pandemia=$(grep -cE '2020|2021,Reprovado' historico-alg1_SIGA_ANONIMIZADO.csv)
+    cancelamentos_pandemia=$(grep -cE '2020|2021,Cancelado' historico-alg1_SIGA_ANONIMIZADO.csv)
     
     #aprovacoes, reprovacoes e cancelamentos nos anos anteriores a 2022
-    aprovados_anteriores=$(grep -vcE '2020|2021|2022' resultado.csv | grep -c 'Aprovado')
-    reprovados_anteriores=$(grep -vcE '2020|2021|2022' resultado.csv | grep -c 'Reprovado')
-    cancelamentos_anteriores=$(grep -vcE '2020|2021|2022' resultado.csv | grep -c 'Cancelado')
+    aprovados_anteriores=$(grep -vcE '2020|2021|2022' historico-alg1_SIGA_ANONIMIZADO.csv | grep -c 'Aprovado')
+    reprovados_anteriores=$(grep -vcE '2020|2021|2022' historico-alg1_SIGA_ANONIMIZADO.csv | grep -c 'R-')
+    cancelamentos_anteriores=$(grep -vcE '2020|2021|2022' historico-alg1_SIGA_ANONIMIZADO.csv | grep -c 'Cancelado')
     
     #mediana das notas em 2022.1
     notas_2022=$(grep '1,2022' resultado.csv | cut -d',' -f7 | sort -n)
