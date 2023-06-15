@@ -220,12 +220,12 @@ function rendimento_pandemia() {
 function comparacao() {
     #aprovacoes, reprovacoes e cancelamentos em 2022.1
     aprovados_2022=$(grep -c '1,2022,Aprovado' historico-alg1_SIGA_ANONIMIZADO.csv)
-    reprovados_2022=$(grep -c '1,2022,Reprovado' historico-alg1_SIGA_ANONIMIZADO.csv)
+    reprovados_2022=$(grep -c '1,2022,R-' historico-alg1_SIGA_ANONIMIZADO.csv)
     cancelamentos_2022=$(grep -c '1,2022,Cancelado' historico-alg1_SIGA_ANONIMIZADO.csv)
     
     #aprovacoes, reprovacoes e cancelamentos na pandemia (2020 e 2021)
     aprovados_pandemia=$(grep -cE '2020|2021,Aprovado' historico-alg1_SIGA_ANONIMIZADO.csv)
-    reprovados_pandemia=$(grep -cE '2020|2021,Reprovado' historico-alg1_SIGA_ANONIMIZADO.csv)
+    reprovados_pandemia=$(grep -cE '2020|2021,R-' historico-alg1_SIGA_ANONIMIZADO.csv)
     cancelamentos_pandemia=$(grep -cE '2020|2021,Cancelado' historico-alg1_SIGA_ANONIMIZADO.csv)
     
     #aprovacoes, reprovacoes e cancelamentos nos anos anteriores a 2022
@@ -234,7 +234,7 @@ function comparacao() {
     cancelamentos_anteriores=$(grep -vcE '2020|2021|2022' historico-alg1_SIGA_ANONIMIZADO.csv | grep -c 'Cancelado')
     
     #mediana das notas em 2022.1
-    notas_2022=$(grep '1,2022' resultado.csv | cut -d',' -f7 | sort -n)
+    notas_2022=$(grep '1,2022' historico-alg1_SIGA_ANONIMIZADO.csv | cut -d',' -f8 | sort -n)
     total_notas_2022=$(echo "$notas_2022" | wc -l)
     metade=$((total_notas_2022 / 2))
     if ((total_notas_2022 % 2 == 0)); then
