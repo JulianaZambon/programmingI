@@ -4,18 +4,18 @@ LDFLAGS = -lm
 CC = gcc
 
 # arquivos-objeto
-objects = testa_agenda.o libagenda.o 
+objects = agenda.o libagenda.o 
 
 all: testa_agenda
 
-testa_agenda: $(objects)
-	$(CC) -o testa_agenda $(objects) $(LDFLAGS)
+agenda: $(objects)
+	$(CC) -o agenda $(objects) $(LDFLAGS)
 
 libagenda.o: libagenda.c
-	$(CC) -c $(CFLAGS) liblista_ordenada.c
+	$(CC) -c $(CFLAGS) libagenda.c
 
-testa_agenda.o: testa_agenda.c
-	$(CC) -c $(CFLAGS) testa_agenda.c
+agenda.o: testa_agenda.c
+	$(CC) -c $(CFLAGS) agenda.c
 
 clean:
-	rm -f $(objects) testa_agenda
+	rm -f $(objects) agenda
