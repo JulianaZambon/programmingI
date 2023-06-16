@@ -4,6 +4,8 @@
 #include <time.h>
 #include "libagenda.h"
 
+#define TAREFAS 100
+
 /*struct para o funcionario*/
 /*30 funcionarios*/
 typedef struct
@@ -41,7 +43,7 @@ int aleatorio(int min, int max)
 /*Se o líder tem disponibilidade em sua agenda nos horários*/
 int verificaDisponibilidade(reuniao reunioes[], int indice_membro, int hora_ini, int minuto_ini, int hora_fim, int minuto_fim, int dia)
 {
-  for (int i = 0; i < tarefa; i++)
+  for (int i = 0; i < TAREFAS; i++)
   {
     reuniao reuniao = reunioes[i];
     if (i != indice_membro && reuniao.dia == dia)
@@ -80,7 +82,7 @@ int main()
   /*array de 100 tarefas*/
   tarefa tarefas[100];
   /*array de reunioes*/
-  reuniao reunioes[tarefa];
+  reuniao reunioes[TAREFAS];
 
   /*parametros dos funcionarios*/
   for (int i = 0; i < 30; i++)
