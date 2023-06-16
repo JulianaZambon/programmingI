@@ -32,7 +32,7 @@ function status() {
 function aprovacao() {
     # $() eh executado e seu resultado eh atribuido a variavel
 
-    #extrair as matrículas dos registros aprovados
+    #extrair os aprovados
     matriculas=$(awk -F',' '$10 == "Aprovado" {print $1}' historico-alg1_SIGA_ANONIMIZADO.csv)
 
     #inicializa as var para rastrear o maximo de vezes cursadas e o numero de individuos com esse maximo
@@ -56,43 +56,36 @@ function aprovacao() {
 
 #4)qual a porcentagem de aprovacao/reprovacao por ano?
 function porcentagem_aprovacao_reprovacao() {
-    awk -F',' '
-        BEGIN {
-            printf "Ano: Aprovados: Reprovados:\n"
-        }
-        NR > 1 {
-            if ($10 == "Aprovado") {
-                count[$5, "Aprovado"]++
-            } else if ($10 ~ /^R-/) {
-                count[$5, "Reprovado"]++
-            }
-            total_alunos[$5]++
-        }
-        END {
-            for (ano_status in count) {
-                #utiliza uma array
-                split(ano_status, arr, SUBSEP)
-                ano = arr[1]
-                status = arr[2]
-                porcentagem = (count[ano_status] / total_alunos[ano]) * 100
-                if (status == "Aprovado") {
-                    porcent_aprovados[ano] = porcentagem
-                } else if (status == "Reprovado") {
-                    porcent_reprovados[ano] = porcentagem
-                }
-            }
-            
-            for (ano in total_alunos) {
-                if (!(ano in porcent_aprovados)) {
-                    porcent_aprovados[ano] = 0
-                }
-                if (!(ano in porcent_reprovados)) {
-                    porcent_reprovados[ano] = 0
-                }
-                printf "%s: %.2f%%, %.2f%%\n", ano, porcent_aprovados[ano], porcent_reprovados[ano]
-            }
-        }' historico-alg1_SIGA_ANONIMIZADO.csv | sort
+    declare -A count_aprovados
+    declare -A count_reprovados
+    declare -A total_alunos
+
+    while IFS=',' read -r ano status; do
+    #arrar de aprovacao e reprovacao
+        if [[ $status == "Aprovado" ]]; then
+            ((count_aprovados[$ano]++))
+        elif [[ $status == R-* ]]; then
+            ((count_reprovados[$ano]++))
+        fi
+        ((total_alunos[$ano]++)) #array do total de alunos
+    done < historico-alg1_SIGA_ANONIMIZADO.csv
+
+    printf "Ano: Aprovados: Reprovados:\n"
+    #percorre tanto as chaves do array count_aprovados quanto as chaves do array count_reprovados
+    #faz com que garanta que 2012 esteja na saida, por ex, ja que ese ano nao tem aprovados
+    for ano in $(printf '%s\n' "${!count_aprovados[@]}" "${!count_reprovados[@]}" | sort -n | uniq); do
+        porcentagem_aprovados=0
+        porcentagem_reprovados=0
+
+        if [[ ${total_alunos[$ano]} -ne 0 ]]; then
+            porcentagem_aprovados=$(bc <<< "scale=2; (${count_aprovados[$ano]} / ${total_alunos[$ano]}) * 100" 2>/dev/null)
+            porcentagem_reprovados=$(bc <<< "scale=2; (${count_reprovados[$ano]} / ${total_alunos[$ano]}) * 100" 2>/dev/null)
+        fi
+
+        printf "%s: %.2f%% %.2f%%\n" "$ano" "$porcentagem_aprovados" "$porcentagem_reprovados"
+    done
 }
+
 
 #5)qual eh a media de nota dos aprovados (no periodo total e por ano)?
 function media_nota_aprovados() {
