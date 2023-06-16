@@ -1,5 +1,6 @@
 /*inclui as libs e funcoes que serao usadas*/
 #include <stdio.h>
+#include <string.h> /*para usar sprintf*/
 #include <stdlib.h>
 #include <time.h>
 #include "libagenda.h"
@@ -100,6 +101,83 @@ int main()
   /*------------------------------------------------------------------------*/
   /* Marcar todas reuniões */
 
-  /*------------------------------------------------------------------------*/
-  /* Realizar todas as reuniões marcadas*/
+  /*Para cada mês de 1 até 12:
+    - Marcar 100 reuniões:*/
+
+  for (int mes = 1; mes <= 12; mes++)
+  {
+    for (int i = 0; i < 100; i++)
+    {
+
+      /*  - Escolher aleatoriamente um líder entre os funcionários cuja
+            liderança esteja entre 30 e 70.*/
+      int lider;
+
+      do
+      {
+        lider = aleatorio(0, 29);                                                         /*aleatorio*/
+      } while (funcionarios[lider].lideranca < 30 || funcionarios[lider].lideranca > 70); /*lideranca*/
+
+      /*- Criar uma nova reunião com os seguintes parâmetros:
+                  - Hora de início (hc.ini_h): um valor aleatório entre 8 e 12.
+                  - Minuto de início (hc.ini_m): um valor aleatório múltiplo
+                    de 15 entre 0 e 45.
+                  - Hora de término (hc.fim_h): hora de início mais um valor
+                    aleatório entre 1h e 4h.
+                  - Minuto de término (hc.fim_m): mesmo minuto de início.
+                  - Dia: um valor aleatório entre 1 e 31.
+                  - ID: um número aleatório entre 0 e TAREFAS-1, que representa
+                    uma tarefa a ser discutida na reunião.*/
+
+      reunioes[i].hc_ini_h = aleatorio(8, 12);
+      reunioes[i].hc_ini_m = aleatorio(0, 3) * 15;
+      reunioes[i].hc_fim_h = reunioes[i].hc_ini_h + aleatorio(1, 4);
+      reunioes[i].hc_fim_m = reunioes[i].hc_ini_m;
+      reunioes[i].dia = aleatorio(1, 31);
+      reunioes[i].id = aleatorio(0, TAREFAS - 1);
+
+      /* - Descrição: uma string descrevendo a reunião.*/
+      sprintf(reunioes[i].descricao, "REUNIR L %.2d %.2d/%.2d %.2d:%.2d %.2d:%.2d T %.2d", lider, reunioes[i].dia, mes_atual,
+              reunioes[i].hc_ini_h, reunioes[i].hc_ini_m, reunioes[i].hc_fim_h, reunioes[i].hc_fim_m, reunioes[i].id);
+
+      /* - Se o líder tem disponibilidade em sua agenda nos horários
+                escolhidos:
+                  - Sortear ALEAT(2,6) membros (funcionários) */
+
+      int num_membros = aleatorio(2, 6);
+      int membros[num_membros];
+
+      /*sorteio dos membros*/
+      for (int j = 0; j < num_membros; j++)
+      {
+        int membro;
+        do
+        {
+          membro = aleatorio(0, 29);
+        } while (membro == lider);
+
+        membros[j] = membro;
+      }
+      /*verifica a lideranca e disponibilidade*/
+      int marcada = 0;
+      for (int j = 0; j < num_membros; j++)
+      {
+        int membro = membros[j];
+
+        if (verificaLideranca(funcionarios[lider], funcionarios[membro]))
+        {
+          if (verificaDisponibilidade(reunioes, membro, reunioes[i].hc_ini_h, reunioes[i].hc_ini_m,
+                                      reunioes[i].hc_fim_h, reunioes[i].hc_fim_m, reunioes[i].dia))
+          {
+            marcada = 1; /*pode marcar a reuniao*/
+            break;
+          }
+        }
+      }
+    }
+
+    /*------------------------------------------------------------------------*/
+    /* Realizar todas as reuniões marcadas*/
+  }
+  return 0;
 }
