@@ -6,6 +6,7 @@ export LC_NUMERIC="en_US.UTF-8"
 #1)remova todas as linhas que facam parte do 2o semestre de 2022 (periodo 2, ano 2022)
 function remove_2semestre() {
     #grep eh comando de busca
+                    # resultado.csv eh o arquivo com a remocao
     grep -v '2,2022' historico-alg1_SIGA_ANONIMIZADO.csv > resultado.csv
     printf "Remoção do 2º semestre de 2022 concluida.\n"
 }
@@ -13,7 +14,7 @@ function remove_2semestre() {
 #"status" diz a situação de cada individuo (se cancelou a materia, foi aprovado, reprovou, etc.).
 #2)para cada status, calcule o numero de individuos unicos naquele status
 function status() {
-    #campo de status (coluna 10) do arquivo
+    #campo de status do arquivo
     cut -d',' -f10 historico-alg1_SIGA_ANONIMIZADO.csv | sort | uniq -c |
     while read -r count status; do
         lower_status=$(echo "$status" | tr '[:upper:]' '[:lower:]')
@@ -51,8 +52,6 @@ function aprovacao() {
 
     printf "maximo de vezes cursadas antes da aprovacao: %s\n" "$max_cursadas"
     printf "numero de indivíduos com o mesmo número maximo de vezes cursadas: %s\n" "$count_max_cursadas"
-
-            #-c faz com que o uniq exiba o numero de ocorrencias de cada linha
 }
 
 #4)qual a porcentagem de aprovacao/reprovacao por ano?
@@ -71,6 +70,7 @@ function porcentagem_aprovacao_reprovacao() {
         }
         END {
             for (ano_status in count) {
+                #utiliza uma array
                 split(ano_status, arr, SUBSEP)
                 ano = arr[1]
                 status = arr[2]
@@ -102,7 +102,7 @@ function media_nota_aprovados() {
     local total_alunos=0
 
     while IFS=',' read -r ano nota status; do
-        nota=${nota/,/.}  # Substituir vírgula por ponto
+        nota=${nota/,/.}  # substituir virgula por ponto
         notas[$ano]=$(awk -v nota="$nota" -v total="${notas[$ano]}" 'BEGIN { printf "%.2f", total + nota }')
         count[$ano]=$((${count[$ano]} + 1))
     done < <(grep 'Aprovado' historico-alg1_SIGA_ANONIMIZADO.csv | cut -d',' -f5,8,10)
@@ -115,7 +115,7 @@ function media_nota_aprovados() {
         printf "%s: Média de nota dos aprovados: %.2f\n" "$ano" "$media"
         total_media=$(awk -v total_media="$total_media" -v count="${count[$ano]}" -v media="$media" 'BEGIN { printf "%.2f", total_media + (media * count) }')
         total_alunos=$((total_alunos + ${count[$ano]}))
-    done | sort -k1n
+    done | sort -k1n #para ordenar primeira coluna de forma numerica
 
     if [ "$total_alunos" -ne 0 ]; then
         local media_total=$(awk -v total_media="$total_media" -v total_alunos="$total_alunos" 'BEGIN { printf "%.2f", total_media / total_alunos }')
@@ -220,6 +220,7 @@ function rendimento_pandemia() {
     total_cancelamentos=$(awk -F',' '/Cancelado/ && /2020|2021/ {count++} END {print count}' historico-alg1_SIGA_ANONIMIZADO.csv)
     total_reprovados=$(awk -F',' '/R-/ && /2020|2021/ {count++} END {print count}' historico-alg1_SIGA_ANONIMIZADO.csv)
 
+    #pandemia
     total_pandemia=$(awk -F',' '/2020|2021/ {count++} END {print count}' historico-alg1_SIGA_ANONIMIZADO.csv)
     aprovados_pandemia=$(awk -F',' '/Aprovado/ && /2020|2021/ {count++} END {print count}' historico-alg1_SIGA_ANONIMIZADO.csv)
     cancelamentos_pandemia=$(awk -F',' '/Cancelado/ && /2020|2021/ {count++} END {print count}' historico-alg1_SIGA_ANONIMIZADO.csv)
@@ -259,6 +260,7 @@ function comparacao() {
     if ((total_notas_2022 % 2 == 0)); then
         mediana_2022=$(echo "$notas_2022" | sed -n "$metade,$((metade + 1))p" | awk '{sum+=$1} END{printf "%.2f", sum/2}')
     else
+        #caso impar
         mediana_2022=$(echo "$notas_2022" | sed -n "$((metade + 1))p")
     fi
 
