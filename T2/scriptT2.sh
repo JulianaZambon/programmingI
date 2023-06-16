@@ -184,12 +184,19 @@ function media_frequencia_reprovados_nota() {
 #8)qual a porcentagem de evasoes (total e anual)?
 function porcentagem_evasoes() {
     while IFS=',' read -r ano status count; do
-        total_alunos=$(grep -c ",$ano" historico-alg1_SIGA_ANONIMIZADO.csv)
-        porcent_evasoes=$(grep -c ",$ano,Cancelado" historico-alg1_SIGA_ANONIMIZADO.csv)
-        porcent_evasoes=$(awk "BEGIN { printf \"%.2f\", ($porcent_evasoes / $total_alunos) * 100 }")
-        printf "%s: Porcentagem de evasões: %.2f%%\n" "$ano" "$porcent_evasoes"
-    done < <(cut -d',' -f5,10 historico-alg1_SIGA_ANONIMIZADO.csv | sort | uniq -c)
+        if [ "$status" == "Cancelado" ]; then
+            total_alunos=$(grep -c ",$ano" historico-alg1_SIGA_ANONIMIZADO.csv)
+            
+            if [ "$total_alunos" -eq 0 ]; then
+                printf "%s: nenhum aluno registrado.\n" "$ano"
+            else
+                porcent_evasoes=$(awk -v total_alunos="$total_alunos" -v count="$count" 'BEGIN { printf "%.2f", (count / total_alunos) * 100 }')
+                printf "%s: Porcentagem de evasões: %.2f%%\n" "$ano" "$porcent_evasoes"
+            fi
+        fi
+    done < <(cut -d',' -f5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep "Cancelado" | sort | uniq -c)
 }
+
 
 #9)como os anos de pandemia impactaram no rendimento dos estudantes em relacao aos anos anteriores? 
 #calcule em percentual o rendimento dos aprovados, a taxa de cancelamento e de reprovacoes. 
@@ -201,9 +208,9 @@ function rendimento_pandemia() {
     total_reprovados=$(grep -c 'R-' historico-alg1_SIGA_ANONIMIZADO.csv)
     
     total_pandemia=$(grep -cE '2020|2021' historico-alg1_SIGA_ANONIMIZADO.csv)
-    aprovados_pandemia=$(grep -cE '2020|2021' historico-alg1_SIGA_ANONIMIZADO.csv | grep -c 'Aprovado')
-    cancelamentos_pandemia=$(grep -cE '2020|2021' historico-alg1_SIGA_ANONIMIZADO.csv | grep -c 'Cancelado')
-    reprovados_pandemia=$(grep -cE '2020|2021' historico-alg1_SIGA_ANONIMIZADO.csv | grep -c 'R-')
+    aprovados_pandemia=$(grep -cE 'Aprovado' historico-alg1_SIGA_ANONIMIZADO.csv | grep -cE '2020|2021')
+    cancelamentos_pandemia=$(grep -cE 'Cancelado' historico-alg1_SIGA_ANONIMIZADO.csv | grep -cE '2020|2021')
+    reprovados_pandemia=$(grep -cE 'R-' historico-alg1_SIGA_ANONIMIZADO.csv | grep -cE '2020|2021')
     
     percent_aprovados=$(awk "BEGIN { printf \"%.2f\", ($aprovados_pandemia / $total_pandemia) * 100 }")
     percent_cancelamentos=$(awk "BEGIN { printf \"%.2f\", ($cancelamentos_pandemia / $total_pandemia) * 100 }")
@@ -218,45 +225,45 @@ function rendimento_pandemia() {
 #10)compare a volta as aulas hibrida (2022 periodo 1) com os anos de pandemia e 
 #os anos anteriores em relacao as aprovacoes, reprovacoes, mediana das notas e cancelamentos.
 function comparacao() {
-    #aprovacoes, reprovacoes e cancelamentos em 2022.1
-    aprovados_2022=$(grep -c '1,2022,Aprovado' historico-alg1_SIGA_ANONIMIZADO.csv)
-    reprovados_2022=$(grep -c '1,2022,R-' historico-alg1_SIGA_ANONIMIZADO.csv)
-    cancelamentos_2022=$(grep -c '1,2022,Cancelado' historico-alg1_SIGA_ANONIMIZADO.csv)
-    
-    #aprovacoes, reprovacoes e cancelamentos na pandemia (2020 e 2021)
-    aprovados_pandemia=$(grep -cE '2020|2021,Aprovado' historico-alg1_SIGA_ANONIMIZADO.csv)
-    reprovados_pandemia=$(grep -cE '2020|2021,R-' historico-alg1_SIGA_ANONIMIZADO.csv)
-    cancelamentos_pandemia=$(grep -cE '2020|2021,Cancelado' historico-alg1_SIGA_ANONIMIZADO.csv)
-    
-    #aprovacoes, reprovacoes e cancelamentos nos anos anteriores a 2022
-    aprovados_anteriores=$(grep -vcE '2020|2021|2022' historico-alg1_SIGA_ANONIMIZADO.csv | grep -c 'Aprovado')
-    reprovados_anteriores=$(grep -vcE '2020|2021|2022' historico-alg1_SIGA_ANONIMIZADO.csv | grep -c 'R-')
-    cancelamentos_anteriores=$(grep -vcE '2020|2021|2022' historico-alg1_SIGA_ANONIMIZADO.csv | grep -c 'Cancelado')
-    
-    #mediana das notas em 2022.1
-    notas_2022=$(grep '1,2022' historico-alg1_SIGA_ANONIMIZADO.csv | cut -d',' -f8 | sort -n)
+    # aprovacoes, reprovacoes e cancelamentos em 2022.1
+    aprovados_2022=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -c '1,2022,Aprovado')
+    reprovados_2022=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -c '1,2022,R-')
+    cancelamentos_2022=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -c '1,2022,Cancelado')
+
+    # aprovacoes, reprovacoes e cancelamentos na pandemia (2020 e 2021)
+    aprovados_pandemia=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -E -c '2020|2021,Aprovado')
+    reprovados_pandemia=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -E -c '2020|2021,R-')
+    cancelamentos_pandemia=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -E -c '2020|2021,Cancelado')
+
+    # aprovacoes, reprovacoes e cancelamentos nos anos anteriores a 2022
+    aprovados_anteriores=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -Ev -c '2020|2021|2022,Aprovado')
+    reprovados_anteriores=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -Ev -c '2020|2021|2022,R-')
+    cancelamentos_anteriores=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -Ev -c '2020|2021|2022,Cancelado')
+
+    # mediana das notas em 2022.1
+    notas_2022=$(awk -F',' '$4 == "1" && $5 == "2022" {print $8}' historico-alg1_SIGA_ANONIMIZADO.csv | sort -n)
     total_notas_2022=$(echo "$notas_2022" | wc -l)
     metade=$((total_notas_2022 / 2))
     if ((total_notas_2022 % 2 == 0)); then
-        mediana_2022=$(echo "$notas_2022" | sed -n "$metade p")
+        mediana_2022=$(echo "$notas_2022" | sed -n "$metade,$((metade + 1))p" | awk '{sum+=$1} END{printf "%.2f", sum/2}')
     else
-        mediana_2022=$(echo "$notas_2022" | sed -n "$((metade + 1)) p")
+        mediana_2022=$(echo "$notas_2022" | sed -n "$((metade + 1))p")
     fi
-    
+
     printf "Comparacao de 2022 periodo 1 com anos de pandemia e anos anteriores:\n"
     printf "Aprovacoes:\n"
     printf "2022 periodo 1: %d\n" "$aprovados_2022"
     printf "Pandemia (2020 e 2021): %d\n" "$aprovados_pandemia"
     printf "Anos anteriores: %d\n" "$aprovados_anteriores"
-    printf "\n"
-    printf "Reprovacoes:\n"
+
+    printf "\nReprovacoes:\n"
     printf "2022 periodo 1: %d\n" "$reprovados_2022"
     printf "Pandemia (2020 e 2021): %d\n" "$reprovados_pandemia"
     printf "Anos anteriores: %d\n" "$reprovados_anteriores"
-    printf "\n"
-    printf "Mediana das notas em 2022 periodo 1: %.2f\n" "$mediana_2022"
-    printf "\n"
-    printf "Cancelamentos:\n"
+
+    printf "\nMediana das notas em 2022 periodo 1: %.2f\n" "$mediana_2022"
+
+    printf "\nCancelamentos:\n"
     printf "2022 periodo 1: %d\n" "$cancelamentos_2022"
     printf "Pandemia (2020 e 2021): %d\n" "$cancelamentos_pandemia"
     printf "Anos anteriores: %d\n" "$cancelamentos_anteriores"
