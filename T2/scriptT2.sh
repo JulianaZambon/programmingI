@@ -183,18 +183,34 @@ function media_frequencia_reprovados_nota() {
 
 #8)qual a porcentagem de evasoes (total e anual)?
 function porcentagem_evasoes() {
-    while IFS=',' read -r ano status count; do
-        if [ "$status" == "Cancelado" ]; then
-            total_alunos=$(grep -c ",$ano" historico-alg1_SIGA_ANONIMIZADO.csv)
-            
-            if [ "$total_alunos" -eq 0 ]; then
-                printf "%s: nenhum aluno registrado.\n" "$ano"
-            else
-                porcent_evasoes=$(awk -v total_alunos="$total_alunos" -v count="$count" 'BEGIN { printf "%.2f", (count / total_alunos) * 100 }')
-                printf "%s: Porcentagem de evasões: %.2f%%\n" "$ano" "$porcent_evasoes"
-            fi
+    # Contagem total de alunos
+    total_alunos=$(wc -l < "historico-alg1_SIGA_ANONIMIZADO.csv")
+
+    if [[ $total_alunos -eq 0 ]]; then
+        echo "Nenhum aluno registrado no arquivo."
+        return
+    fi
+
+    # Porcentagem de evasões total
+    evasoes_total=$(grep -c "Cancelado" "historico-alg1_SIGA_ANONIMIZADO.csv")
+    porcentagem_total=$(awk -v total_alunos="$total_alunos" -v evasoes_total="$evasoes_total" 'BEGIN { printf "%.2f", (evasoes_total / total_alunos) * 100 }')
+
+    echo "Porcentagem de evasões total: $porcentagem_total%"
+
+    # Porcentagem de evasões anualmente
+    echo "Porcentagem de evasões anualmente:"
+    cut -d',' -f5 "historico-alg1_SIGA_ANONIMIZADO.csv" | sort | uniq -c | while read -r count ano; do
+        if [[ $ano == "Cancelado" ]]; then
+            continue
         fi
-    done < <(cut -d',' -f5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep "Cancelado" | sort | uniq -c)
+
+        porcentagem_anual=$(awk -v total_alunos="$total_alunos" -v count="$count" 'BEGIN { printf "%.2f", (count / total_alunos) * 100 }')
+        if [[ $porcentagem_anual == 0 ]]; then
+            continue
+        fi
+
+        echo "$ano: $porcentagem_anual%"
+    done
 }
 
 
