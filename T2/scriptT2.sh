@@ -203,24 +203,23 @@ function porcentagem_evasoes() {
 #considere como anos de pandemia os anos de 2020 e 2021. 
 #(EXEMPLO: qual o percentual de aumento ou diminuicao de notas, frequencias, aprovacoes/reprovacoes e cancelamentos).
 function rendimento_pandemia() {
-    total_aprovados=$(grep -c 'Aprovado' historico-alg1_SIGA_ANONIMIZADO.csv)
-    total_cancelamentos=$(grep -c 'Cancelado' historico-alg1_SIGA_ANONIMIZADO.csv)
-    total_reprovados=$(grep -c 'R-' historico-alg1_SIGA_ANONIMIZADO.csv)
-    
-    total_pandemia=$(grep -cE '2020|2021' historico-alg1_SIGA_ANONIMIZADO.csv)
-    aprovados_pandemia=$(grep -cE 'Aprovado' historico-alg1_SIGA_ANONIMIZADO.csv | grep -cE '2020|2021')
-    cancelamentos_pandemia=$(grep -cE 'Cancelado' historico-alg1_SIGA_ANONIMIZADO.csv | grep -cE '2020|2021')
-    reprovados_pandemia=$(grep -cE 'R-' historico-alg1_SIGA_ANONIMIZADO.csv | grep -cE '2020|2021')
-    
+    total_aprovados=$(awk -F',' '/Aprovado/ && /2020|2021/ {count++} END {print count}' historico-alg1_SIGA_ANONIMIZADO.csv)
+    total_cancelamentos=$(awk -F',' '/Cancelado/ && /2020|2021/ {count++} END {print count}' historico-alg1_SIGA_ANONIMIZADO.csv)
+    total_reprovados=$(awk -F',' '/R-/ && /2020|2021/ {count++} END {print count}' historico-alg1_SIGA_ANONIMIZADO.csv)
+
+    total_pandemia=$(awk -F',' '/2020|2021/ {count++} END {print count}' historico-alg1_SIGA_ANONIMIZADO.csv)
+    aprovados_pandemia=$(awk -F',' '/Aprovado/ && /2020|2021/ {count++} END {print count}' historico-alg1_SIGA_ANONIMIZADO.csv)
+    cancelamentos_pandemia=$(awk -F',' '/Cancelado/ && /2020|2021/ {count++} END {print count}' historico-alg1_SIGA_ANONIMIZADO.csv)
+    reprovados_pandemia=$(awk -F',' '/R-/ && /2020|2021/ {count++} END {print count}' historico-alg1_SIGA_ANONIMIZADO.csv)
+
     percent_aprovados=$(awk "BEGIN { printf \"%.2f\", ($aprovados_pandemia / $total_pandemia) * 100 }")
     percent_cancelamentos=$(awk "BEGIN { printf \"%.2f\", ($cancelamentos_pandemia / $total_pandemia) * 100 }")
     percent_reprovados=$(awk "BEGIN { printf \"%.2f\", ($reprovados_pandemia / $total_pandemia) * 100 }")
-    
+
     printf "Rendimento dos aprovados durante a pandemia (2020 e 2021): %.2f%%\n" "$percent_aprovados"
     printf "Taxa de cancelamento durante a pandemia (2020 e 2021): %.2f%%\n" "$percent_cancelamentos"
     printf "Taxa de reprovação durante a pandemia (2020 e 2021): %.2f%%\n" "$percent_reprovados"
 }
-
 
 #10)compare a volta as aulas hibrida (2022 periodo 1) com os anos de pandemia e 
 #os anos anteriores em relacao as aprovacoes, reprovacoes, mediana das notas e cancelamentos.
@@ -268,7 +267,6 @@ function comparacao() {
     printf "Pandemia (2020 e 2021): %d\n" "$cancelamentos_pandemia"
     printf "Anos anteriores: %d\n" "$cancelamentos_anteriores"
 }
-
 
 #main-----------------------------------------------------------------------------------
 
