@@ -177,8 +177,13 @@ int main()
         }
       }
     }
+    /*acabou a inicializacao das agendas e tarefas.*/
+
     /*------------------------------------------------------------------------*/
     /* Realizar todas as reuniões marcadas*/
+
+    /*- Voltar para o mês 1 da agenda para "TRABALHAR":*/
+    mes_atual = 1;
+
+    return 0;
   }
-  return 0;
-}
