@@ -121,6 +121,8 @@ function media_nota_aprovados() {
     fi
 }
 
+#a function 6 tem a mesma logica da function 5, a unica diferenca eh que ela
+#considera os reprovados para realizar os calculos
 
 #6)qual eh a media de nota dos reprovados por nota (periodo total e ano)?
 function media_nota_reprovados() {
@@ -154,6 +156,7 @@ function media_nota_reprovados() {
 }
 
 #7)qual eh a media da frequencia dos reprovados por nota (periodo total e por ano)?
+#seleciona os reprovados, analisa as frequencia e realiza o calculo da media
 function media_frequencia_reprovados_nota() {
     declare -A soma_frequencias
     declare -A count_notas
