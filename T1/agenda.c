@@ -23,10 +23,10 @@ typedef struct
 /*struct para as reunioes*/
 typedef struct
 {
-  int hc_ini;          /*hora inicio*/
-  int hc_ini_min;      /*minuto inicio*/
-  int hc_fim;          /*hora fim*/
-  int hc_fim_min;      /*minuto fim*/
+  int hc_ini_h;        /*hora inicio*/
+  int hc_ini_m;        /*minuto inicio*/
+  int hc_fim_h;        /*hora fim*/
+  int hc_fim_m;        /*minuto fim*/
   int dia;             /*dia*/
   int id;              /*id tarefa*/
   char descricao[100]; /*descricao*/
@@ -36,6 +36,34 @@ typedef struct
 int aleatorio(int min, int max)
 {
   return min + rand() % (max - min + 1);
+}
+
+/*Se o líder tem disponibilidade em sua agenda nos horários*/
+int verificaDisponibilidade(reuniao reunioes[], int indice_membro, int hora_ini, int minuto_ini, int hora_fim, int minuto_fim, int dia)
+{
+  for (int i = 0; i < tarefa; i++)
+  {
+    reuniao reuniao = reunioes[i];
+    if (i != indice_membro && reuniao.dia == dia)
+    {
+      if (!((hora_fim < reuniao.hc_ini_h) || (hora_ini > reuniao.hc_fim_h) ||
+            (hora_fim == reuniao.hc_ini_h && minuto_fim <= reuniao.hc_ini_m) ||
+            (hora_ini == reuniao.hc_fim_h && minuto_ini >= reuniao.hc_fim_m)))
+      {
+        return 0; /*membro nao disponivel*/
+      }
+    }
+  }
+  return 1; /*membro disponivel*/
+}
+
+/*Para cada membro verificar:
+ se liderança líder > liderança membro +ALEAT(-20,10) */
+int verificaLideranca(funcionario lider, funcionario membro)
+{
+  int limite_superior = lider.lideranca;
+  int limite_inferior = lider.lideranca - 20;
+  return (membro.lideranca >= limite_inferior && membro.lideranca <= limite_superior);
 }
 
 int main()
