@@ -233,22 +233,22 @@ function rendimento_pandemia() {
 #10)compare a volta as aulas hibrida (2022 periodo 1) com os anos de pandemia e 
 #os anos anteriores em relacao as aprovacoes, reprovacoes, mediana das notas e cancelamentos.
 function comparacao() {
-    # aprovacoes, reprovacoes e cancelamentos em 2022.1
+    #aprovacoes, reprovacoes e cancelamentos em 2022.1
     aprovados_2022=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -c '1,2022,Aprovado')
     reprovados_2022=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -c '1,2022,R-')
     cancelamentos_2022=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -c '1,2022,Cancelado')
 
-    # aprovacoes, reprovacoes e cancelamentos na pandemia (2020 e 2021)
+    #aprovacoes, reprovacoes e cancelamentos na pandemia (2020 e 2021)
     aprovados_pandemia=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -E -c '2020|2021,Aprovado')
     reprovados_pandemia=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -E -c '2020|2021,R-')
     cancelamentos_pandemia=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -E -c '2020|2021,Cancelado')
 
-    # aprovacoes, reprovacoes e cancelamentos nos anos anteriores a 2022
+    #aprovacoes, reprovacoes e cancelamentos nos anos anteriores a 2022
     aprovados_anteriores=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -Ev -c '2020|2021|2022,Aprovado')
     reprovados_anteriores=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -Ev -c '2020|2021|2022,R-')
     cancelamentos_anteriores=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -Ev -c '2020|2021|2022,Cancelado')
 
-    # mediana das notas em 2022.1
+    #mediana das notas em 2022.1
     notas_2022=$(awk -F',' '$4 == "1" && $5 == "2022" {print $8}' historico-alg1_SIGA_ANONIMIZADO.csv | sort -n)
     total_notas_2022=$(echo "$notas_2022" | wc -l)
     metade=$((total_notas_2022 / 2))
@@ -259,6 +259,8 @@ function comparacao() {
         mediana_2022=$(echo "$notas_2022" | sed -n "$((metade + 1))p")
     fi
 
+
+    #saida
     printf "Comparacao de 2022 periodo 1 com anos de pandemia e anos anteriores:\n"
     printf "Aprovacoes:\n"
     printf "2022 periodo 1: %d\n" "$aprovados_2022"
@@ -282,6 +284,10 @@ function comparacao() {
 
 main() {
     clear
+
+    #especie de "menu" para facilitar a visualizacao das respostas/saidas 
+    #de cada pergunta
+
     printf "Analise de Dados do Curso de Algoritmos e Estrutura de Dados 1\n\n"
     printf "1) Remover 2º semestre de 2022\n"
     printf "2) Numero de individuos por status\n"
