@@ -13,13 +13,13 @@ function remove_2semestre() {
 #"status" diz a situação de cada individuo (se cancelou a materia, foi aprovado, reprovou, etc.).
 #2)para cada status, calcule o numero de individuos unicos naquele status
 function status() {
-    #campo de status (coluna 10) do arquivo resultado.csv
-    cut -d',' -f10 resultado.csv | sort | uniq -c |
+    #campo de status (coluna 10) do arquivo
+    cut -d',' -f10 historico-alg1_SIGA_ANONIMIZADO.csv | sort | uniq -c |
     while read -r count status; do
         lower_status=$(echo "$status" | tr '[:upper:]' '[:lower:]')
         if [ "$lower_status" != "status" ]; then
             if [ "$lower_status" = "matriculado" ]; then
-                count=$(grep -wc "$status" resultado.csv)
+                count=$(grep -wc "$status" historico-alg1_SIGA_ANONIMIZADO.csv)
             fi
             printf "%s indivíduo(s) com status '%s'\n" "$count" "$lower_status"
         fi
@@ -32,7 +32,7 @@ function aprovacao() {
     # $() eh executado e seu resultado eh atribuido a variavel
 
     #extrair as matrículas dos registros aprovados
-    matriculas=$(awk -F',' '$10 == "Aprovado" {print $1}' resultado.csv)
+    matriculas=$(awk -F',' '$10 == "Aprovado" {print $1}' historico-alg1_SIGA_ANONIMIZADO.csv)
 
     #inicializa as var para rastrear o maximo de vezes cursadas e o numero de individuos com esse maximo
     max_cursadas=0
@@ -40,7 +40,7 @@ function aprovacao() {
 
     #percorre as matriculas e conta o numero de vezes cursadas antes da aprovacao
     for matricula in $matriculas; do
-        num_cursadas=$(grep -c "^$matricula," resultado.csv)
+        num_cursadas=$(grep -c "^$matricula," historico-alg1_SIGA_ANONIMIZADO.csv)
         if ((num_cursadas > max_cursadas)); then
             max_cursadas=$num_cursadas
             count_max_cursadas=1
