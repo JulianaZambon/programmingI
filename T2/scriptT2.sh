@@ -200,19 +200,16 @@ function porcentagem_evasoes() {
     # Porcentagem de evasões anualmente
     echo "Porcentagem de evasões anualmente:"
     cut -d',' -f5 "historico-alg1_SIGA_ANONIMIZADO.csv" | sort | uniq -c | while read -r count ano; do
-        if [[ $ano == "Cancelado" ]]; then
+        if [[ $ano == "Cancelado" || ! $ano =~ ^[0-9]{4}$ ]]; then
             continue
         fi
 
         porcentagem_anual=$(awk -v total_alunos="$total_alunos" -v count="$count" 'BEGIN { printf "%.2f", (count / total_alunos) * 100 }')
-        if [[ $porcentagem_anual == 0 ]]; then
-            continue
+        if (( $(bc <<< "$porcentagem_anual > 0") )); then
+            echo "$ano: $porcentagem_anual%"
         fi
-
-        echo "$ano: $porcentagem_anual%"
-    done
+    done | sed -e '1d' -e '/[0-9]\{4\}: 0.00%/d'
 }
-
 
 #9)como os anos de pandemia impactaram no rendimento dos estudantes em relacao aos anos anteriores? 
 #calcule em percentual o rendimento dos aprovados, a taxa de cancelamento e de reprovacoes. 
