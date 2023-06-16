@@ -163,6 +163,7 @@ function media_frequencia_reprovados_nota() {
     local total_soma=0
     local total_count=0
 
+    #calcula o total de frequencia dos reprovados por nota
     while IFS=',' read -r ano frequencia status; do
         if [[ $status == R-* ]]; then
             soma_frequencias[$ano]=$(awk "BEGIN{ printf \"%.2f\", ${soma_frequencias[$ano]} + $frequencia }")
@@ -172,18 +173,20 @@ function media_frequencia_reprovados_nota() {
         fi
     done < <(cut -d',' -f5,9,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep 'R-*')
 
+    #calcula a media por ano
     for ano in $(echo "${!soma_frequencias[@]}" | tr ' ' '\n' | sort -n); do
         media=$(awk "BEGIN{ printf \"%.2f\", ${soma_frequencias[$ano]} / ${count_notas[$ano]} }")
         printf "%s: Média da frequência dos reprovados por nota: %.2f\n" "$ano" "$media"
     done | sort -k1n
 
+    #realiza o calculo da media no periodo total
     media_total=$(awk "BEGIN{ printf \"%.2f\", $total_soma / $total_count }")
     printf "Média da frequência dos reprovados por nota no período total: %.2f\n" "$media_total"
 }
 
 #8)qual a porcentagem de evasoes (total e anual)?
 function porcentagem_evasoes() {
-    # Contagem total de alunos
+    #quantidade total de alunos
     total_alunos=$(wc -l < "historico-alg1_SIGA_ANONIMIZADO.csv")
 
     if [[ $total_alunos -eq 0 ]]; then
@@ -191,13 +194,13 @@ function porcentagem_evasoes() {
         return
     fi
 
-    # Porcentagem de evasões total
+    #porcentagem de evasoes total
     evasoes_total=$(grep -c "Cancelado" "historico-alg1_SIGA_ANONIMIZADO.csv")
     porcentagem_total=$(awk -v total_alunos="$total_alunos" -v evasoes_total="$evasoes_total" 'BEGIN { printf "%.2f", (evasoes_total / total_alunos) * 100 }')
 
     echo "Porcentagem de evasões total: $porcentagem_total%"
 
-    # Porcentagem de evasões anualmente
+    #porcentagem de evasoes para cada ano
     echo "Porcentagem de evasões anualmente:"
     cut -d',' -f5 "historico-alg1_SIGA_ANONIMIZADO.csv" | sort | uniq -c | while read -r count ano; do
         if [[ $ano == "Cancelado" || ! $ano =~ ^[0-9]{4}$ ]]; then
