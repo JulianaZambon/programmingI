@@ -8,7 +8,7 @@ function remove_2semestre() {
     #grep eh comando de busca
                     # resultado.csv eh o arquivo com a remocao
     grep -v '2,2022' historico-alg1_SIGA_ANONIMIZADO.csv > resultado.csv
-    printf "Remoção do 2º semestre de 2022 concluida.\n"
+    printf "Remoção do 2º semestre de 2022 concluída.\n"
 }
 
 #"status" diz a situação de cada individuo (se cancelou a materia, foi aprovado, reprovou, etc.).
