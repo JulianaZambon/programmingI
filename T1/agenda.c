@@ -20,6 +20,18 @@ typedef struct
   int dificuldade;
 } tarefa;
 
+/*struct para as reunioes*/
+typedef struct
+{
+  int hc_ini;          /*hora inicio*/
+  int hc_ini_min;      /*minuto inicio*/
+  int hc_fim;          /*hora fim*/
+  int hc_fim_min;      /*minuto fim*/
+  int dia;             /*dia*/
+  int id;              /*id tarefa*/
+  char descricao[100]; /*descricao*/
+} reuniao;
+
 /*function para gerar min e max random */
 int aleatorio(int min, int max)
 {
@@ -28,6 +40,8 @@ int aleatorio(int min, int max)
 
 int main()
 {
+
+  /*------------------------------------------------------------------------*/
   /* Inicialização */
 
   /*inicializa o gerador random*/
@@ -37,6 +51,8 @@ int main()
   funcionario funcionarios[30];
   /*array de 100 tarefas*/
   tarefa tarefas[100];
+  /*array de reunioes*/
+  reuniao reunioes[tarefa];
 
   /*parametros dos funcionarios*/
   for (int i = 0; i < 30; i++)
@@ -51,8 +67,9 @@ int main()
     tarefas[i].tempo_conclusao = aleatorio(600, 800);
     tarefas[i].dificuldade = aleatorio(30, 80);
   }
-
+  /*------------------------------------------------------------------------*/
   /* Marcar todas reuniões */
 
+  /*------------------------------------------------------------------------*/
   /* Realizar todas as reuniões marcadas*/
 }
