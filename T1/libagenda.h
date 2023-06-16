@@ -130,8 +130,7 @@ int ant_mes_agenda(agenda_t* agenda);
    usando-se a funcao prox_compr. */ 
 compromisso_t* compr_agenda(agenda_t* agenda, int dia);
 
-/* Retorna o primeiro compromisso da lista de compromissos compr e avanca
- * para o prox. Retorna NULL se a lista esta vazia, ou seja, sem compromissos.*/
+/* Retorna o proximo compromisso da lista de compromissos compr.*/
 compromisso_t* prox_compr(compromisso_t* compr);
 
 /* As funcoes abaixo sao usadas para acessar os membros da struct compromisso
