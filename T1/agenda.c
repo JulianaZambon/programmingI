@@ -226,7 +226,7 @@ int main()
             tarefas[T].tempo_conclusao = 0;
           }
 
-
+        
           /* Incrementar a experiência do funcionário em uma unidade (limitar em 100) */
           funcionarios[X].experiencia++;
           if (funcionarios[X].experiencia > 100) {
@@ -236,4 +236,6 @@ int main()
       }
     }
   }
+  
+  return 0;
 }
