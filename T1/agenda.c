@@ -5,8 +5,8 @@
 #include <time.h>
 #include "libagenda.h"
 
-#define TAREFAS 100
-#define MES 12
+#define TAREFAS 100 /*qntd tarefas*/
+#define MES 12      /*qntd de meses*/
 
 /*struct para o funcionario*/
 /*30 funcionarios*/
@@ -70,6 +70,7 @@ int verificaLideranca(funcionario lider, funcionario membro)
   return (membro.lideranca >= limite_inferior && membro.lideranca <= limite_superior);
 }
 
+/*principal*/
 int main()
 {
 
@@ -87,13 +88,15 @@ int main()
   reuniao reunioes[TAREFAS];
 
   /*parametros dos funcionarios*/
-  for (int i = 0; i < 30; i++) {
+  for (int i = 0; i < 30; i++)
+  {
     funcionarios[i].lideranca = aleatorio(0, 100);
     funcionarios[i].experiencia = aleatorio(20, 100);
   }
 
   /*parametros das tarefas*/
-  for (int i = 0; i < 100; i++) {
+  for (int i = 0; i < 100; i++)
+  {
     tarefas[i].tempo_conclusao = aleatorio(600, 800);
     tarefas[i].dificuldade = aleatorio(30, 80);
   }
@@ -104,14 +107,17 @@ int main()
     - Marcar 100 reuniões:*/
 
   int mes_atual;
-  for (mes_atual = 1; mes_atual <= MES; mes_atual++) {
-    for (int i = 0; i < 100; i++) {
+  for (mes_atual = 1; mes_atual <= MES; mes_atual++)
+  {
+    for (int i = 0; i < 100; i++)
+    {
 
       /*  - Escolher aleatoriamente um líder entre os funcionários cuja
             liderança esteja entre 30 e 70.*/
       int lider;
 
-      do {
+      do
+      {
         lider = aleatorio(0, 29);                                                         /*aleatorio*/
       } while (funcionarios[lider].lideranca < 30 || funcionarios[lider].lideranca > 70); /*lideranca*/
 
@@ -143,9 +149,11 @@ int main()
       int membros[num_membros];
 
       /*sorteio dos membros*/
-      for (int j = 0; j < num_membros; j++) {
+      for (int j = 0; j < num_membros; j++)
+      {
         int membro;
-        do {
+        do
+        {
           membro = aleatorio(0, 29);
         } while (membro == lider);
 
@@ -153,12 +161,15 @@ int main()
       }
       /*verifica a lideranca e disponibilidade*/
       int marcada = 0;
-      for (int j = 0; j < num_membros; j++) {
+      for (int j = 0; j < num_membros; j++)
+      {
         int membro = membros[j];
 
-        if (verificaLideranca(funcionarios[lider], funcionarios[membro])) {
+        if (verificaLideranca(funcionarios[lider], funcionarios[membro]))
+        {
           if (verificaDisponibilidade(reunioes, membro, reunioes[i].hc_ini_h, reunioes[i].hc_ini_m,
-                                      reunioes[i].hc_fim_h, reunioes[i].hc_fim_m, reunioes[i].dia)) {
+                                      reunioes[i].hc_fim_h, reunioes[i].hc_fim_m, reunioes[i].dia))
+          {
             marcada = 1; /*pode marcar a reuniao*/
             break;
           }
@@ -174,22 +185,43 @@ int main()
     mes_atual = 1;
 
     /*
-    - Para cada dia entre 1 e 31 e para cada funcionário X 
+    - Para cada dia entre 1 e 31 e para cada funcionário X
     - Obter lista de compromissos e para cada compromisso
-        - Se a tarefa[T] ainda não foi concluída 
-          (tarefas[T].tempo_conclusao > 0):
-            - Reduzir o tempo restante para concluir a tarefa de acordo com a
-              seguinte fórmula: 
-                tarefas[T].tempo_conclusao -= min_trab * (funcs[X].experiencia / 100.0) * ((100 - tarefas[T].dificuldade) / 100.0);
-
-            - Se o tempo restante para concluir a tarefa for menor ou igual 
-              a zero:
-                tarefas[T].tempo_conclusao = 0;
-
-            - Incrementar a experiência do funcionário em uma unidade 
-              (limitar em 100)
-
     */
+    int min_trab = 60; /*duracao em minutos*/
 
-    return 0;
+    /*percorrer o mes*/
+    for (int dia = 1; dia <= 31; dia++)
+    {
+      /*percorre os funcionarios*/
+      /*para cada funcionario X*/
+      for (int X = 0; X < 30; X++)
+      {
+        /*lista de comprimissos do funcionario*/
+        for (int i = 0; i < 100; i++)
+        {
+          /*se a tarefa[T] ainda nao foi concluida*/
+          if (tarefas[i].tempo_conclusao > 0)
+          {
+            /*reduzir o tempo restante para concluir a tarefa de acordo com a fórmula*/
+            tarefas[i].tempo_conclusao -= min_trab * (funcionarios[X].experiencia / 100.0) * ((100 - tarefas[i].dificuldade) / 100.0);
+
+            /*se o tempo restante para concluir a tarefa é menor ou igual a zero*/
+            if (tarefas[i].tempo_conclusao <= 0)
+            {
+              tarefas[i].tempo_conclusao = 0;
+            }
+
+            /*Incrementar a experiência do funcionário em uma unidade (limitar em 100)*/
+            funcionarios[X].experiencia++;
+            if (funcionarios[X].experiencia > 100)
+            {
+              funcionarios[X].experiencia = 100;
+            }
+          }
+        }
+      }
+
+      return 0;
+    }
   }
