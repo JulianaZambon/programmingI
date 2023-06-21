@@ -210,36 +210,30 @@ int main()
   int min_trab = 60; /*duração em minutos*/
 
   /*percorrer o mês*/
-  for (int dia = 1; dia <= 31; dia++)
-  {
+  for (int dia = 1; dia <= 31; dia++) {
     /*percorre os funcionários*/
     /*para cada funcionário X*/
-    for (int X = 0; X < 30; X++)
-    {
+    for (int X = 0; X < 30; X++) {
       /* lista de compromissos do funcionário */
-      for (int T = 0; T < TAREFAS; T++)
-      {
+      for (int T = 0; T < TAREFAS; T++) {
         /* se a tarefa[T] ainda não foi concluída */
-        if (tarefas[T].tempo_conclusao > 0)
-        {
+        if (tarefas[T].tempo_conclusao > 0) {
           /* reduzir o tempo restante para concluir a tarefa de acordo com a fórmula */
           tarefas[T].tempo_conclusao -= min_trab * (funcionarios[X].experiencia / 100.0) * ((100 - tarefas[T].dificuldade) / 100.0);
 
           /* se o tempo restante para concluir a tarefa é menor ou igual a zero */
-          if (tarefas[T].tempo_conclusao <= 0)
-          {
+          if (tarefas[T].tempo_conclusao <= 0) {
             tarefas[T].tempo_conclusao = 0;
           }
 
+
           /* Incrementar a experiência do funcionário em uma unidade (limitar em 100) */
           funcionarios[X].experiencia++;
-          if (funcionarios[X].experiencia > 100)
-          {
+          if (funcionarios[X].experiencia > 100) {
             funcionarios[X].experiencia = 100;
           }
         }
       }
     }
   }
-}
 }
