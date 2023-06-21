@@ -111,11 +111,9 @@ int main()
     printf("M %d \n", mes_atual); /*imprime a agenda do mes atual*/
 
     for (int i = 0; i < TAREFAS; i++) {
-
       /*  - Escolher aleatoriamente um líder entre os funcionários cuja
             liderança esteja entre 30 e 70.*/
       int lider;
-
       do {
         lider = aleatorio(0, 29);                                                         /*aleatorio*/
       } while (funcionarios[lider].lideranca < 30 || funcionarios[lider].lideranca > 70); /*lideranca*/
