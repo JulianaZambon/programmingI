@@ -200,22 +200,22 @@ int main()
         /*para cada funcionário X*/
         for (int X = 0; X < 30; X++)
         {
-          /*lista de compromissos do funcionário*/
+          /* lista de compromissos do funcionário */
           for (int T = 0; T < TAREFAS; T++)
           {
-            /*se a tarefa[T] ainda não foi concluída*/
+            /* se a tarefa[T] ainda não foi concluída */
             if (tarefas[T].tempo_conclusao > 0)
             {
-              /*reduzir o tempo restante para concluir a tarefa de acordo com a fórmula*/
+              /* reduzir o tempo restante para concluir a tarefa de acordo com a fórmula */
               tarefas[T].tempo_conclusao -= min_trab * (funcionarios[X].experiencia / 100.0) * ((100 - tarefas[T].dificuldade) / 100.0);
 
-              /*se o tempo restante para concluir a tarefa é menor ou igual a zero*/
+              /* se o tempo restante para concluir a tarefa é menor ou igual a zero */
               if (tarefas[T].tempo_conclusao <= 0)
               {
                 tarefas[T].tempo_conclusao = 0;
               }
 
-              /*Incrementar a experiência do funcionário em uma unidade (limitar em 100)*/
+              /* Incrementar a experiência do funcionário em uma unidade (limitar em 100) */
               funcionarios[X].experiencia++;
               if (funcionarios[X].experiencia > 100)
               {
