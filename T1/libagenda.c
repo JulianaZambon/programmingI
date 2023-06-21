@@ -19,8 +19,7 @@ compromisso_t *cria_compromisso(horario_compromisso_t hc, int id, char *descrica
    /* aloca memoria para descricao e copia o conteudo */
    novo_compromisso->descricao = malloc(strlen(descricao) + 1);
 
-   if (novo_compromisso->descricao == NULL)
-   {
+   if (novo_compromisso->descricao == NULL) {
       free(novo_compromisso);
       return NULL; /* caso tenha falha na alocacao de memoria */
    }
@@ -37,8 +36,7 @@ void destroi_agenda(agenda_t *agenda)
 
    /* percorrer todos os compromissos */
    compromisso_t *atual = agenda->mes_atual;
-   while (atual != NULL)
-   {
+   while (atual != NULL) {
       compromisso_t *proximo = atual->prox;
 
       // libera a memoria alocada para descricao
@@ -69,8 +67,7 @@ int marca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
    compromisso_t *atual = agenda->mes_atual;
    compromisso_t *anterior = NULL;
 
-   while (atual != NULL)
-   {
+   while (atual != NULL) {
       /* verificar a intersecao entre os horarios de inicio e fim */
       if (compr->fim > atual->inicio && compr->inicio < atual->fim)
          return -1; /* intersecao */
@@ -81,13 +78,10 @@ int marca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
    }
 
    /* inserir o novo compromisso na posição correta na lista ordenada */
-   if (anterior == NULL)
-   {
+   if (anterior == NULL) {
       /* novo compromisso será o primeiro da lista */
       agenda->mes_atual = compr;
-   }
-   else
-   {
+   } else {
       /* novo compromisso será inserido após o compromisso anterior */
       anterior->prox = compr;
    }
@@ -109,16 +103,11 @@ int desmarca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
    compromisso_t *atual = agenda->mes_atual;
    compromisso_t *anterior = NULL;
 
-   while (atual != NULL)
-   {
-      if (atual == compr)
-      {
-         if (anterior == NULL)
-         {
+   while (atual != NULL) {
+      if (atual == compr) {
+         if (anterior == NULL) {
             agenda->mes_atual = atual->prox;
-         }
-         else
-         {
+         } else {
             anterior->prox = atual->prox;
          }
 
@@ -144,8 +133,7 @@ void imprime_agenda_mes(agenda_t *agenda)
 
    compromisso_t *compr = agenda->mes_atual;
 
-   while (compr != NULL)
-   {
+   while (compr != NULL) {
       printf("Dia %d: %s\n", compr->inicio, compr->descricao);
       compr = compr->prox;
    }
@@ -188,8 +176,7 @@ int prox_mes_agenda(agenda_t *agenda)
    agenda->ptr_mes_atual = NULL; /* atualiza o ponteiro */
 
    /* verifica se o mes existe */
-   if (agenda->mes_atual > 0 && agenda->mes_atual <= 12)
-   {
+   if (agenda->mes_atual > 0 && agenda->mes_atual <= 12) {
       agenda->ptr_mes_atual = malloc(sizeof(mes_t));
       if (agenda->ptr_mes_atual == NULL)
          return 0;
@@ -208,8 +195,7 @@ int ant_mes_agenda(agenda_t *agenda)
    agenda->ptr_mes_atual = NULL; /* atualiza o ponteiro */
 
    /* verifica se o mes existe */
-   if (agenda->mes_atual > 0 && agenda->mes_atual <= 12)
-   {
+   if (agenda->mes_atual > 0 && agenda->mes_atual <= 12) {
       agenda->ptr_mes_atual = malloc(sizeof(mes_t));
       if (agenda->ptr_mes_atual == NULL)
          return 0;
@@ -228,8 +214,7 @@ compromisso_t *compr_agenda(agenda_t *agenda, int dia)
 
    compromisso_t *compr = agenda->mes_atual;
 
-   while (compr != NULL)
-   {
+   while (compr != NULL) {
       /* procura compromissos que tenham o mesmo dia informado como parametro */
       if (compr->inicio == dia)
          return compr;
@@ -243,13 +228,10 @@ compromisso_t *compr_agenda(agenda_t *agenda, int dia)
  * para o prox. Retorna NULL se a lista esta vazia, ou seja, sem compromissos. */
 compromisso_t *prox_compr(compromisso_t *compr)
 {
-   if (compr == NULL)
-   {
+   if (compr == NULL) {
       return NULL;
-   }
-   else
-   {
-      return compr->prox;
+      } else {
+         return compr->prox;
    }
 }
 
@@ -257,7 +239,7 @@ compromisso_t *prox_compr(compromisso_t *compr)
    obtidos com a funcao prox_compr. */
 horario_compromisso_t hc_compr(compromisso_t *compr)
 {
-   compr->inicio;
+   compr->inicio;   
 }
 
 int id_compr(compromisso_t *compr)
