@@ -76,166 +76,166 @@ int verificaLideranca(funcionario lider, funcionario membro)
 int main()
 {
 
-    /*------------------------------------------------------------------------*/
-    /* Inicialização */
+  /*------------------------------------------------------------------------*/
+  /* Inicialização */
 
-    /*inicializa o gerador random*/
-    srand(time(NULL));
+  /*inicializa o gerador random*/
+  srand(time(NULL));
 
-    /*array de 30 funcionarios*/
-    funcionario funcionarios[30];
-    /*array de 100 tarefas*/
-    tarefa tarefas[100];
-    /*array de reunioes*/
-    reuniao reunioes[TAREFAS];
+  /*array de 30 funcionarios*/
+  funcionario funcionarios[30];
+  /*array de 100 tarefas*/
+  tarefa tarefas[100];
+  /*array de reunioes*/
+  reuniao reunioes[TAREFAS];
 
-    /*parametros dos funcionarios*/
-    for (int i = 0; i < 30; i++)
+  /*parametros dos funcionarios*/
+  for (int i = 0; i < 30; i++)
+  {
+    funcionarios[i].lideranca = aleatorio(0, 100);
+    funcionarios[i].experiencia = aleatorio(20, 100);
+  }
+
+  /*parametros das tarefas*/
+  for (int T = 0; T < TAREFAS; T++)
+  {
+    tarefas[T].tempo_conclusao = aleatorio(600, 800);
+    tarefas[T].dificuldade = aleatorio(30, 80);
+  }
+  /*------------------------------------------------------------------------*/
+  /* Marcar todas reuniões */
+
+  /*Para cada mês de 1 até 12:
+    - Marcar 100 reuniões:*/
+
+  int mes_atual;
+  for (mes_atual = 1; mes_atual <= MES; mes_atual++)
+  {
+    printf("M %d \n", mes_atual); /*imprime a agenda do mes atual*/
+
+    for (int i = 0; i < TAREFAS; i++)
     {
-      funcionarios[i].lideranca = aleatorio(0, 100);
-      funcionarios[i].experiencia = aleatorio(20, 100);
-    }
 
-    /*parametros das tarefas*/
-    for (int T = 0; T < TAREFAS; T++)
-    {
-      tarefas[T].tempo_conclusao = aleatorio(600, 800);
-      tarefas[T].dificuldade = aleatorio(30, 80);
-    }
-    /*------------------------------------------------------------------------*/
-    /* Marcar todas reuniões */
+      /*  - Escolher aleatoriamente um líder entre os funcionários cuja
+            liderança esteja entre 30 e 70.*/
+      int lider;
 
-    /*Para cada mês de 1 até 12:
-      - Marcar 100 reuniões:*/
-
-    int mes_atual;
-    for (mes_atual = 1; mes_atual <= MES; mes_atual++)
-    {
-      for (int i = 0; i < TAREFAS; i++)
+      do
       {
+        lider = aleatorio(0, 29);                                                         /*aleatorio*/
+      } while (funcionarios[lider].lideranca < 30 || funcionarios[lider].lideranca > 70); /*lideranca*/
 
-        /*  - Escolher aleatoriamente um líder entre os funcionários cuja
-              liderança esteja entre 30 e 70.*/
-        int lider;
+      /*- Criar uma nova reunião com os seguintes parâmetros:
+                  - Hora de início (hc.ini_h): um valor aleatório entre 8 e 12.
+                  - Minuto de início (hc.ini_m): um valor aleatório múltiplo
+                    de 15 entre 0 e 45.
+                  - Hora de término (hc.fim_h): hora de início mais um valor
+                    aleatório entre 1h e 4h.
+                  - Minuto de término (hc.fim_m): mesmo minuto de início.
+                  - Dia: um valor aleatório entre 1 e 31.
+                  - ID: um número aleatório entre 0 e TAREFAS-1, que representa
+                    uma tarefa a ser discutida na reunião.*/
 
+      reunioes[i].hc_ini_h = aleatorio(8, 12);
+      reunioes[i].hc_ini_m = aleatorio(0, 3) * 15;
+      reunioes[i].hc_fim_h = reunioes[i].hc_ini_h + aleatorio(1, 4);
+      reunioes[i].hc_fim_m = reunioes[i].hc_ini_m;
+      reunioes[i].dia = aleatorio(1, 31);
+      reunioes[i].id = aleatorio(0, TAREFAS - 1);
+
+      /* - Descrição: uma string descrevendo a reunião.*/
+      sprintf(reunioes[i].descricao, "REUNIR L %.2d %.2d/%.2d %.2d:%.2d %.2d:%.2d T %.2d", lider, reunioes[i].dia, mes_atual,
+              reunioes[i].hc_ini_h, reunioes[i].hc_ini_m, reunioes[i].hc_fim_h, reunioes[i].hc_fim_m, reunioes[i].id);
+      printf("%s\n", reunioes[i].descricao);
+
+      /* - Se o líder tem disponibilidade em sua agenda nos horários escolhidos:
+          - Sortear ALEAT(2,6) membros (funcionários) */
+      int num_membros = aleatorio(2, 6);
+      int membros[num_membros];
+
+      /*sorteio dos membros*/
+      for (int k = 0; k < num_membros; k++)
+      {
+        int membro;
         do
         {
-          lider = aleatorio(0, 29);                                                         /*aleatorio*/
-        } while (funcionarios[lider].lideranca < 30 || funcionarios[lider].lideranca > 70); /*lideranca*/
+          membro = aleatorio(0, 29);
+        } while (membro == lider);
 
-        /*- Criar uma nova reunião com os seguintes parâmetros:
-                    - Hora de início (hc.ini_h): um valor aleatório entre 8 e 12.
-                    - Minuto de início (hc.ini_m): um valor aleatório múltiplo
-                      de 15 entre 0 e 45.
-                    - Hora de término (hc.fim_h): hora de início mais um valor
-                      aleatório entre 1h e 4h.
-                    - Minuto de término (hc.fim_m): mesmo minuto de início.
-                    - Dia: um valor aleatório entre 1 e 31.
-                    - ID: um número aleatório entre 0 e TAREFAS-1, que representa
-                      uma tarefa a ser discutida na reunião.*/
+        membros[k] = membro;
+      }
+      /*verifica a lideranca e disponibilidade*/
+      int marcada = 0;
+      for (int k = 0; k < num_membros; k++)
+      {
+        int membro = membros[k];
 
-        reunioes[i].hc_ini_h = aleatorio(8, 12);
-        reunioes[i].hc_ini_m = aleatorio(0, 3) * 15;
-        reunioes[i].hc_fim_h = reunioes[i].hc_ini_h + aleatorio(1, 4);
-        reunioes[i].hc_fim_m = reunioes[i].hc_ini_m;
-        reunioes[i].dia = aleatorio(1, 31);
-        reunioes[i].id = aleatorio(0, TAREFAS - 1);
-
-        /* - Descrição: uma string descrevendo a reunião.*/
-        sprintf(reunioes[i].descricao, "REUNIR L %.2d %.2d/%.2d %.2d:%.2d %.2d:%.2d T %.2d", lider, reunioes[i].dia, mes_atual,
-                reunioes[i].hc_ini_h, reunioes[i].hc_ini_m, reunioes[i].hc_fim_h, reunioes[i].hc_fim_m, reunioes[i].id);
-
-        /* - Se o líder tem disponibilidade em sua agenda nos horários escolhidos:
-            - Sortear ALEAT(2,6) membros (funcionários) */
-        int num_membros = aleatorio(2, 6);
-        int membros[num_membros];
-
-        /*sorteio dos membros*/
-        for (int j = 0; j < num_membros; j++)
+        if (verificaLideranca(funcionarios[lider], funcionarios[membro]))
         {
-          int membro;
-          do
+          if (verificaDisponibilidade(reunioes, membro, reunioes[i].hc_ini_h, reunioes[i].hc_ini_m,
+                                      reunioes[i].hc_fim_h, reunioes[i].hc_fim_m, reunioes[i].dia))
           {
-            membro = aleatorio(0, 29);
-          } while (membro == lider);
+            marcada = 1; /* pode marcar a reuniao */
 
-          membros[j] = membro;
+            /* atualiza a disponibilidade do membro como não disponível */
+            reunioes[i].disponibilidade[membro] = 0;
+          }
         }
-        /*verifica a lideranca e disponibilidade*/
-        int marcada = 0;
-        for (int j = 0; j < num_membros; j++)
+
+        if (!marcada)
         {
-          int membro = membros[j];
+          printf("%s\tMEMBROS ", reunioes[i].descricao);
 
-          if (verificaLideranca(funcionarios[lider], funcionarios[membro]))
+          int nenhum_disponivel = 1;
+
+          for (int j = 0; j < num_membros; j++)
           {
-            if (verificaDisponibilidade(reunioes, membro, reunioes[i].hc_ini_h, reunioes[i].hc_ini_m,
-                                        reunioes[i].hc_fim_h, reunioes[i].hc_fim_m, reunioes[i].dia))
-            {
-              marcada = 1; /* pode marcar a reuniao */
+            int membro = membros[j];
 
-              /* atualiza a disponibilidade do membro como não disponível */
-              reunioes[i].disponibilidade[membro] = 0;
+            if (reunioes[i].disponibilidade[membro] == 1)
+            {
+              nenhum_disponivel = 0;
+              printf("%.2d:OK ", membro);
+            }
+            else
+            {
+              printf("%.2d:IN ", membro);
             }
           }
-          printf("Reunião %d:\n", i + 1);
-          printf("  Descrição: %s\n", reunioes[i].descricao);
-          printf("  Marcada: %s\n", marcada ? "Sim" : "Não");
 
-          if (!marcada)
+          if (nenhum_disponivel)
           {
-            printf("\tMEMBROS ");
-            int nenhum_disponivel = 1;
-
-            for (int j = 0; j < num_membros; j++)
-            {
-              int membro = membros[j];
-
-              if (reunioes[i].disponibilidade[membro] == 1)
-              {
-                nenhum_disponivel = 0;
-                printf("%.2d:OK ", membro);
-              }
-              else
-              {
-                printf("%.2d:IN ", membro);
-              }
-            }
-
-            if (nenhum_disponivel)
-            {
-              printf("VAZIA");
-            }
-            printf("\n");
+            printf("VAZIA");
           }
-          else
-          {
-            printf("\tLIDER INDISPONIVEL \n");
-          }
+          printf("\n");
+        }
+        else
+        {
+          printf("%s\tLIDER INDISPONIVEL \n", reunioes[i].descricao);
         }
       }
     }
+  }
 
-    /*acabou a inicialização das agendas e tarefas.*/
+  /*acabou a inicialização das agendas e tarefas.*/
 
-    /*------------------------------------------------------------------------*/
-    /* Realizar todas as reuniões marcadas*/
+  /*------------------------------------------------------------------------*/
+  /* Realizar todas as reuniões marcadas*/
 
-    /*- Voltar para o mês 1 da agenda para "TRABALHAR":*/
-    mes_atual = 1;
+  /*- Voltar para o mês 1 da agenda para "TRABALHAR":*/
+  /*
+  - Para cada dia entre 1 e 31 e para cada funcionário X
+  - Obter lista de compromissos e para cada compromisso
+  */
+  int min_trab = 60; /*duração em minutos*/
 
-    /*
-    - Para cada dia entre 1 e 31 e para cada funcionário X
-    - Obter lista de compromissos e para cada compromisso
-    */
-    int min_trab = 60; /*duração em minutos*/
-
-    /*percorrer o mês*/
+  /*percorrer o mês*/
+  for (int mes_atual = 1; mes_atual <= MES; mes_atual++)
+  {
     for (int dia = 1; dia <= 31; dia++)
     {
-      /*percorre os funcionários*/
-      /*para cada funcionário X*/
-      for (int X = 0; X < 30; X++)
+      /*percorrer os funcionarios*/
+      for (int X = 0; X < FUNCIONARIOS; X++)
       {
         /* lista de compromissos do funcionário */
         for (int T = 0; T < TAREFAS; T++)
@@ -251,7 +251,6 @@ int main()
             {
               tarefas[T].tempo_conclusao = 0;
             }
-
             /* Incrementar a experiência do funcionário em uma unidade (limitar em 100) */
             funcionarios[X].experiencia++;
             if (funcionarios[X].experiencia > 100)
@@ -262,6 +261,6 @@ int main()
         }
       }
     }
-
+  }
   return 0;
 }
