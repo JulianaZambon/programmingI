@@ -6,7 +6,7 @@ CC = gcc
 # arquivos-objeto
 objects = agenda.o libagenda.o 
 
-all: testa_agenda
+all: agenda
 
 agenda: $(objects)
 	$(CC) -o agenda $(objects) $(LDFLAGS)
@@ -14,7 +14,7 @@ agenda: $(objects)
 libagenda.o: libagenda.c
 	$(CC) -c $(CFLAGS) libagenda.c
 
-agenda.o: testa_agenda.c
+agenda.o: agenda.c
 	$(CC) -c $(CFLAGS) agenda.c
 
 clean:
