@@ -269,21 +269,3 @@ char *descricao_compr(compromisso_t *compr)
 {
    return compr->descricao;
 }
-
-/* Essa funcao nao eh extritamente necessaria, o objetivo e' que o programa
-principal apresente os dados. Porem pode ser util para voces durante o desenvolvimento */
-void imprime_agenda_mes(agenda_t *agenda)
-{
-   if (agenda == NULL)
-      return;
-
-   compromisso_t *compr = agenda->mes_atual;
-
-   printf("Agenda do mês %d:\n", agenda->mes_atual);
-
-   while (compr != NULL)
-   {
-      printf("Dia %d: %s\n", compr->inicio, compr->descricao);
-      compr = compr->prox;
-   }
-}

@@ -1,21 +1,14 @@
-CFLAGS = -Wall -std=c90 -g  # flags de compilacao
-LDFLAGS = -lm
-
 CC = gcc
+CFLAGS = -Wall -Wextra -std=c99
 
-# arquivos-objeto
-objects = agenda.o libagenda.o 
+agenda: agenda.o libagenda.o
+	$(CC) $(CFLAGS) -o agenda agenda.o libagenda.o
 
-all: agenda
+agenda.o: agenda.c libagenda.h
+	$(CC) $(CFLAGS) -c agenda.c
 
-agenda: $(objects)
-	$(CC) -o agenda $(objects) $(LDFLAGS)
-
-libagenda.o: libagenda.c
-	$(CC) -c $(CFLAGS) libagenda.c
-
-agenda.o: agenda.c
-	$(CC) -c $(CFLAGS) agenda.c
+libagenda.o: libagenda.c libagenda.h
+	$(CC) $(CFLAGS) -c libagenda.c
 
 clean:
-	rm -f $(objects) agenda
+	rm -f agenda agenda.o libagenda.o
