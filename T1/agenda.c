@@ -77,7 +77,7 @@ void imprimirReunioesRealizadas(reuniao reunioes_realizadas[], int qntd_reunioes
   for (int i = 0; i < qntd_reunioes_realizadas; i++)
   {
     reuniao reuniao = reunioes_realizadas[i];
-    printf("%.2d/%.2d F %.2d: %s\n",  reuniao.dia, reuniao.hc_ini_h, reuniao.id, reuniao.descricao);
+    printf("%.2d/%.2d F %.2d: %s\n", reuniao.dia, reuniao.hc_ini_h, reuniao.id, reuniao.descricao);
 
     int tempo_conclusao = reuniao.hc_fim_h - reuniao.hc_ini_h;
     if (reuniao.hc_fim_m > reuniao.hc_ini_m)
@@ -85,10 +85,13 @@ void imprimirReunioesRealizadas(reuniao reunioes_realizadas[], int qntd_reunioes
       tempo_conclusao++;
     }
 
-   if (tempo_conclusao <= 0) {
+    if (tempo_conclusao <= 0)
+    {
       printf("CONCLUÍDA\n");
-    } else {
-      printf("\tT %.2d D %.2d TCR %.2d\n", reuniao.id, reuniao.id, tempo_conclusao);
+    }
+    else
+    {
+      printf("\tT %.2d D %.2d TCR %.2d\n", tarefa, tarefa.tarefa_dificuldade, tarefa.tarefa_tempo_conclusao);
     }
   }
 }
@@ -194,6 +197,7 @@ int main()
 
         membros[k] = membro;
       }
+
       /*verifica a lideranca e disponibilidade*/
       int marcada = 0;
       for (int k = 0; k < num_membros; k++)
@@ -207,42 +211,61 @@ int main()
           {
             marcada = 1; /* pode marcar a reuniao */
 
+            printf("%s\tMEMBROS ", reunioes[i].descricao);
+
+            int nenhum_disponivel = 1;
+
+            for (int j = 0; j < num_membros; j++)
+            {
+              int membro = membros[j];
+
+              if (reunioes[i].disponibilidade[membro] == 1)
+              {
+                nenhum_disponivel = 0;
+                printf("%.2d:OK ", membro);
+              }
+              else
+              {
+                printf("%.2d:IN ", membro);
+              }
+            }
+
+            if (nenhum_disponivel)
+            {
+              printf("VAZIA");
+            }
+            printf("\n");
+
             /* atualiza a disponibilidade do membro como não disponível */
             reunioes[i].disponibilidade[membro] = 0;
           }
-        }
-
-        if (!marcada)
-        {
-          printf("%s\tMEMBROS ", reunioes[i].descricao);
-
-          int nenhum_disponivel = 1;
-
-          for (int j = 0; j < num_membros; j++)
+          else
           {
-            int membro = membros[j];
-
-            if (reunioes[i].disponibilidade[membro] == 1)
-            {
-              nenhum_disponivel = 0;
-              printf("%.2d:OK ", membro);
-            }
-            else
-            {
-              printf("%.2d:IN ", membro);
-            }
+            printf("%s\tLIDER INDISPONIVEL \n", reunioes[i].descricao);
           }
+        }
+      }
 
-          if (nenhum_disponivel)
-          {
-            printf("VAZIA");
-          }
-          printf("\n");
-        }
-        else
-        {
-          printf("%s\tLIDER INDISPONIVEL \n", reunioes[i].descricao);
-        }
+      /* se a reuniao foi marcada, adicionar às reunioes realizadas */
+      if (marcada)
+      {
+        reunioes_realizadas[qntd_reunioes_realizadas] = reunioes[i];
+        qntd_reunioes_realizadas++;
+      }
+    }
+    /*verifica tarefas concluídas*/
+    for (int i = 0; i < qntd_reunioes_realizadas; i++)
+    {
+      reuniao reuniao = reunioes_realizadas[i];
+      int tempo_conclusao = reuniao.hc_fim_h - reuniao.hc_ini_h;
+      if (reuniao.hc_fim_m > reuniao.hc_ini_m)
+      {
+        tempo_conclusao++;
+      }
+
+      if (tempo_conclusao <= tarefas[reuniao.id].tempo_conclusao)
+      {
+        qntd_tarefas_concluidas++;
       }
     }
   }
@@ -290,7 +313,6 @@ int main()
       }
     }
   }
-
   imprimirReunioesRealizadas(reunioes_realizadas, qntd_reunioes_realizadas);
   imprimirResumoFinal(qntd_tarefas_concluidas, qntd_reunioes_realizadas);
 
