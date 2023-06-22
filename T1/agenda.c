@@ -36,6 +36,8 @@ typedef struct
   int id;                            /*id tarefa*/
   char descricao[100];               /*descricao*/
   int disponibilidade[FUNCIONARIOS]; /* disponibilidade dos membros */
+
+  /*para poder usar a struct tarefa na function imprimirReunioesRealizadas*/
   tarefa tarefa_associada; /* membro da struct reuniao que é do tipo tarefa*/
 } reuniao;
 
@@ -89,23 +91,18 @@ senão, imprimir:
 */
 void imprimirReunioesRealizadas(reuniao reunioes_realizadas[], int qntd_reunioes_realizadas)
 {
-  for (int i = 0; i < qntd_reunioes_realizadas; i++)
-  {
+  for (int i = 0; i < qntd_reunioes_realizadas; i++) {
     reuniao reuniao = reunioes_realizadas[i];
     printf("%.2d/%.2d F %.2d: %s\n", reuniao.dia, reuniao.hc_ini_h, reuniao.id, reuniao.descricao);
 
     int tempo_conclusao = reuniao.hc_fim_h - reuniao.hc_ini_h;
-    if (reuniao.hc_fim_m > reuniao.hc_ini_m)
-    {
+    if (reuniao.hc_fim_m > reuniao.hc_ini_m) {
       tempo_conclusao++;
     }
 
-    if (tempo_conclusao <= 0)
-    {
+    if (tempo_conclusao <= 0) {
       printf("CONCLUÍDA\n");
-    }
-    else
-    {
+    } else {
      printf("\tT %.2d D %.2d TCR %.2d\n", reuniao.tarefa_associada.dificuldade, 
      reuniao.tarefa_associada.tempo_conclusao);
     }
