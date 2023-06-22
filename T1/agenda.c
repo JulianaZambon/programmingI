@@ -90,7 +90,7 @@ void imprimirReunioesRealizadas(reuniao reunioes_realizadas[], int qtdes_reunioe
 {
   for (int i = 0; i < qtdes_reunioes_realizadas; i++) {
     reuniao reuniao = reunioes_realizadas[i];
-    printf("%.2d/%.2d F %.2d: %s\n", reuniao.dia, reuniao.hc_ini_h, reuniao.id, reuniao.descricao);
+    printf("%.2d/%.2d F %.2d: %s\n", reuniao.dia, mes_atual_agenda, funcionario, reuniao.descricao);
 
     int tempo_conclusao = reuniao.hc_fim_h - reuniao.hc_ini_h;
     if (reuniao.hc_fim_m > reuniao.hc_ini_m) {
@@ -236,34 +236,33 @@ int main()
       int marcada = 0;
       for (int k = 0; k < num_membros; k++) {
         int membro = membros[k];
+        int nenhum_disponivel = 0;
 
         if (verificaLideranca(funcionarios[lider], funcionarios[membro])) {
           if (verificaDisponibilidade(reunioes, membro, reunioes[i].hc_ini_h, reunioes[i].hc_ini_m,
                                       reunioes[i].hc_fim_h, reunioes[i].hc_fim_m, reunioes[i].dia)) {
             marcada = 1; /* pode marcar a reuniao */
             printf("%s\tMEMBROS ", reunioes[i].descricao);
-            int nenhum_disponivel = 1;
 
             for (int j = 0; j < num_membros; j++){
               int membro = membros[j];
 
               if (reunioes[i].disponibilidade[membro] == 1){
-                nenhum_disponivel = 0;
-                printf("%.2d:OK ", membro);
+                printf(" %.2d:OK ", membro);
               } else {
-                printf("%.2d:IN ", membro);
+                printf(" %.2d:IN ", membro);
+                nenhum_disponivel = 1; /*se houver algum membro indisponível, altera para 1*/
               }
             }
 
             if (nenhum_disponivel) {
               printf("VAZIA");
             }
-            printf("\n");
 
             /* atualiza a disponibilidade do membro como não disponível */
             reunioes[i].disponibilidade[membro] = 0;
           } else {
-            printf("%s\tLIDER INDISPONIVEL \n", reunioes[i].descricao);
+            printf("\tLIDER INDISPONIVEL \n");
           }
         }
       }
@@ -271,9 +270,10 @@ int main()
       /* se a reuniao foi marcada, adicionar às reunioes realizadas */
       if (marcada) {
         reunioes_realizadas[qtdes_reunioes_realizadas] = reunioes[i];
-        qtde_reunioes_realizadas++;
+        qtdes_reunioes_realizadas++;
       }
     }
+
     /*verifica tarefas concluídas*/
     for (int i = 0; i < qtdes_reunioes_realizadas; i++) {
       reuniao reuniao = reunioes_realizadas[i];
@@ -289,7 +289,6 @@ int main()
   }
 
   /*acabou a inicialização das agendas e tarefas.*/
-
   /*------------------------------------------------------------------------*/
   /* Realizar todas as reuniões marcadas*/
 
