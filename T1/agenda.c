@@ -86,9 +86,9 @@ senão, imprimir:
 \tT %.2d D %.2d TCR %.2d\n
     os valores são: tarefa, tarefa_dificuldade, tarefa_tempo_conclusao
 */
-void imprimirReunioesRealizadas(reuniao reunioes_realizadas[], int qntd_reunioes_realizadas)
+void imprimirReunioesRealizadas(reuniao reunioes_realizadas[], int qtdes_reunioes_realizadas)
 {
-  for (int i = 0; i < qntd_reunioes_realizadas; i++) {
+  for (int i = 0; i < qtdes_reunioes_realizadas; i++) {
     reuniao reuniao = reunioes_realizadas[i];
     printf("%.2d/%.2d F %.2d: %s\n", reuniao.dia, reuniao.hc_ini_h, reuniao.id, reuniao.descricao);
 
@@ -112,10 +112,10 @@ infos finais da saida do programa
 REUNIOES REALIZADAS qtdes_reunioes_realizadas
 TAREFAS CONCLUIDAS qtde_tarefas_tempo_restante_zero
 */
-void imprimirResumoFinal(int qntd_tarefas_concluidas, int qntd_reunioes_realizadas)
+void imprimirResumoFinal(int qtde_tarefas_concluidas, int qtdes_reunioes_realizadas)
 {
-  printf("REUNIOES REALIZADAS %d\n", qntd_reunioes_realizadas);
-  printf("TAREFAS CONCLUIDAS %d\n", qntd_tarefas_concluidas);
+  printf("REUNIOES REALIZADAS %d\n", qtdes_reunioes_realizadas);
+  printf("TAREFAS CONCLUIDAS %d\n", qtde_tarefas_concluidas);
 }
 
 /*principal*/
@@ -136,8 +136,8 @@ int main()
   reuniao reunioes[TAREFAS];
 
   reuniao reunioes_realizadas[TAREFAS];
-  int qntd_reunioes_realizadas = 0;
-  int qntd_tarefas_concluidas = 0;
+  int qtdes_reunioes_realizadas = 0;
+  int qtde_tarefas_concluidas = 0;
 
   /*parametros dos funcionarios*/
   for (int i = 0; i < 30; i++) {
@@ -150,6 +150,7 @@ int main()
     tarefas[T].tempo_conclusao = aleatorio(600, 800);
     tarefas[T].dificuldade = aleatorio(30, 80);
   }
+  
   /*------------------------------------------------------------------------*/
   /* Marcar todas reuniões */
 
@@ -269,12 +270,12 @@ int main()
 
       /* se a reuniao foi marcada, adicionar às reunioes realizadas */
       if (marcada) {
-        reunioes_realizadas[qntd_reunioes_realizadas] = reunioes[i];
-        qntd_reunioes_realizadas++;
+        reunioes_realizadas[qtdes_reunioes_realizadas] = reunioes[i];
+        qtde_reunioes_realizadas++;
       }
     }
     /*verifica tarefas concluídas*/
-    for (int i = 0; i < qntd_reunioes_realizadas; i++) {
+    for (int i = 0; i < qtdes_reunioes_realizadas; i++) {
       reuniao reuniao = reunioes_realizadas[i];
       int tempo_conclusao = reuniao.hc_fim_h - reuniao.hc_ini_h;
       if (reuniao.hc_fim_m > reuniao.hc_ini_m) {
@@ -282,7 +283,7 @@ int main()
       }
 
       if (tempo_conclusao <= tarefas[reuniao.id].tempo_conclusao) {
-        qntd_tarefas_concluidas++;
+        qtde_tarefas_concluidas++;
       }
     }
   }
@@ -323,8 +324,8 @@ int main()
       }
     }
   }
-  imprimirReunioesRealizadas(reunioes_realizadas, qntd_reunioes_realizadas);
-  imprimirResumoFinal(qntd_tarefas_concluidas, qntd_reunioes_realizadas);
+  imprimirReunioesRealizadas(reunioes_realizadas, qtdes_reunioes_realizadas);
+  imprimirResumoFinal(qtde_tarefas_concluidas, qtdes_reunioes_realizadas);
 
   return 0;
 }
