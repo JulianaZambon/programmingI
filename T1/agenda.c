@@ -50,15 +50,12 @@ int aleatorio(int min, int max)
 /*Se o líder tem disponibilidade em sua agenda nos horários*/
 int verificaDisponibilidade(reuniao reunioes[], int indice_membro, int hora_ini, int minuto_ini, int hora_fim, int minuto_fim, int dia)
 {
-  for (int i = 0; i < TAREFAS; i++)
-  {
+  for (int i = 0; i < TAREFAS; i++) {
     reuniao reuniao = reunioes[i];
-    if (i != indice_membro && reuniao.dia == dia)
-    {
+    if (i != indice_membro && reuniao.dia == dia) {
       if (!((hora_fim < reuniao.hc_ini_h) || (hora_ini > reuniao.hc_fim_h) ||
             (hora_fim == reuniao.hc_ini_h && minuto_fim <= reuniao.hc_ini_m) ||
-            (hora_ini == reuniao.hc_fim_h && minuto_ini >= reuniao.hc_fim_m)))
-      {
+            (hora_ini == reuniao.hc_fim_h && minuto_ini >= reuniao.hc_fim_m))) {
         return 0; /*membro nao disponivel*/
       }
     }
