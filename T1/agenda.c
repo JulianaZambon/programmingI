@@ -36,6 +36,7 @@ typedef struct
   int id;                            /*id tarefa*/
   char descricao[100];               /*descricao*/
   int disponibilidade[FUNCIONARIOS]; /* disponibilidade dos membros */
+  tarefa tarefa_associada; /* membro da struct reuniao que é do tipo tarefa*/
 } reuniao;
 
 /*function para gerar min e max random */
@@ -105,7 +106,8 @@ void imprimirReunioesRealizadas(reuniao reunioes_realizadas[], int qntd_reunioes
     }
     else
     {
-      printf("\tT %.2d D %.2d TCR %.2d\n", tarefa, tarefa.tarefa_dificuldade, tarefa.tarefa_tempo_conclusao);
+     printf("\tT %.2d D %.2d TCR %.2d\n", reuniao.tarefa_associada.dificuldade, 
+     reuniao.tarefa_associada.tempo_conclusao);
     }
   }
 }
