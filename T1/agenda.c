@@ -112,10 +112,10 @@ infos finais da saida do programa
 REUNIOES REALIZADAS qtdes_reunioes_realizadas
 TAREFAS CONCLUIDAS qtde_tarefas_tempo_restante_zero
 */
-void imprimirResumoFinal(int qtde_tarefas_concluidas, int qtdes_reunioes_realizadas)
+void imprimirResumoFinal(int qtde_tarefas_tempo_restante_zero, int qtdes_reunioes_realizadas)
 {
   printf("REUNIOES REALIZADAS %d\n", qtdes_reunioes_realizadas);
-  printf("TAREFAS CONCLUIDAS %d\n", qtde_tarefas_concluidas);
+  printf("TAREFAS CONCLUIDAS %d\n", qtde_tarefas_tempo_restante_zero);
 }
 
 /*principal*/
@@ -137,7 +137,7 @@ int main()
 
   reuniao reunioes_realizadas[TAREFAS];
   int qtdes_reunioes_realizadas = 0;
-  int qtde_tarefas_concluidas = 0;
+  int qtde_tarefas_tempo_restante_zero = 0;
 
   /*parametros dos funcionarios*/
   for (int i = 0; i < 30; i++) {
@@ -283,7 +283,7 @@ int main()
       }
 
       if (tempo_conclusao <= tarefas[reuniao.id].tempo_conclusao) {
-        qtde_tarefas_concluidas++;
+        qtde_tarefas_tempo_restante_zero++;
       }
     }
   }
@@ -325,7 +325,7 @@ int main()
     }
   }
   imprimirReunioesRealizadas(reunioes_realizadas, qtdes_reunioes_realizadas);
-  imprimirResumoFinal(qtde_tarefas_concluidas, qtdes_reunioes_realizadas);
+  imprimirResumoFinal(qtde_tarefas_tempo_restante_zero, qtdes_reunioes_realizadas);
 
   return 0;
 }
