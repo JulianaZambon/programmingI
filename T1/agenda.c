@@ -100,7 +100,7 @@ void imprimirReunioesRealizadas(reuniao reunioes_realizadas[], int qntd_reunioes
     if (tempo_conclusao <= 0) {
       printf("CONCLUÍDA\n");
     } else {
-     printf("\tT %.2d D %.2d TCR %.2d\n", reuniao.tarefa_associada.dificuldade, 
+     printf("\tT %.2d D %.2d TCR %.2d\n", reuniao.tarefa_associada, reuniao.tarefa_associada.dificuldade, 
      reuniao.tarefa_associada.tempo_conclusao);
     }
   }
