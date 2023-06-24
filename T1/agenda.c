@@ -323,8 +323,7 @@ int main()
       }
     }
   }
-  /*imprimirReunioesRealizadas(reunioes_realizadas, qtdes_reunioes_realizadas);*/
-  imprimirResumoFinal(qtde_tarefas_tempo_restante_zero, qtdes_reunioes_realizadas);
 
+  imprimirResumoFinal(qtde_tarefas_tempo_restante_zero, qtdes_reunioes_realizadas);
   return 0;
 }
