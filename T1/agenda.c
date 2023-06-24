@@ -74,42 +74,6 @@ int verificaLideranca(funcionario lider, funcionario membro)
 }
 
 /*
-saída ao realizar as reuniões
------------------------------
-
-"%.2d/%.2d F %.2d: %s \n"
-    os valores são: dia, mes_atual, funcionario, descricao_compromisso);
-
-Se o tempo de conclusão da tarefa <= 0 imprimir:
-    CONCLUÍDA
-
-senão, imprimir:
-\tT %.2d D %.2d TCR %.2d\n
-    os valores são: tarefa, tarefa_dificuldade, tarefa_tempo_conclusao
-*/
-/*
-void imprimirReunioesRealizadas(reuniao reunioes_realizadas[], int qtdes_reunioes_realizadas)
-{
-  for (int i = 0; i < qtdes_reunioes_realizadas; i++) {
-    reuniao reuniao_atual = reunioes_realizadas[i];
-    printf("%.2d/%.2d F %.2d: %s\n", reuniao_atual.dia, mes_atual_agenda, funcionario, reuniao_atual.descricao);
-
-    int tempo_conclusao = reuniao.hc_fim_h - reuniao.hc_ini_h;
-    if (reuniao.hc_fim_m > reuniao.hc_ini_m) {
-      tempo_conclusao++;
-    }
-
-    if (tempo_conclusao <= 0) {
-      printf("CONCLUÍDA\n");
-    } else {
-     printf("\tT %.2d D %.2d TCR %.2d\n", reuniao.tarefa_associada, reuniao.tarefa_associada.dificuldade, 
-     reuniao.tarefa_associada.tempo_conclusao);
-    }
-  }
-}
-*/
-
-/*
 infos finais da saida do programa
 -----
 REUNIOES REALIZADAS qtdes_reunioes_realizadas
@@ -291,6 +255,36 @@ int main()
       if (tempo_conclusao <= tarefas[reuniao.id].tempo_conclusao) {
         qtde_tarefas_tempo_restante_zero++;
       }
+    }
+
+      /*
+      saída ao realizar as reuniões
+      -----------------------------
+
+      "%.2d/%.2d F %.2d: %s \n"
+          os valores são: dia, mes_atual, funcionario, descricao_compromisso);
+
+      Se o tempo de conclusão da tarefa <= 0 imprimir:
+          CONCLUÍDA
+
+      senão, imprimir:
+      \tT %.2d D %.2d TCR %.2d\n
+          os valores são: tarefa, tarefa_dificuldade, tarefa_tempo_conclusao
+      */
+
+    for (int i = 0; i < qtdes_reunioes_realizadas; i++) {
+      reuniao reuniao = reunioes_realizadas[i];
+      tarefa tarefa = tarefas[reuniao.id];
+    
+      printf("%.2d/%.2d F %.2d: %s\n", reuniao.dia, mes_atual, funcionario, reuniao.descricao);
+
+      if (tarefa.tempo_conclusao <= 0) {
+        printf("CONCLUÍDA\n");
+      } else {
+        printf("\tT %.2d D %.2d TCR %.2d\n", tarefa, tarefa.dificuldade, tarefa.tempo_conclusao);
+      }
+
+      printf("\n");
     }
   }
 
