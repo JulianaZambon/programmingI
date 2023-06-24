@@ -96,9 +96,9 @@ int main()
   srand(time(NULL));
 
   /*array de 30 funcionarios*/
-  funcionario funcionarios[30];
+  funcionario funcionarios[FUNCIONARIOS];
   /*array de 100 tarefas*/
-  tarefa tarefas[100];
+  tarefa tarefas[TAREFAS];
   /*array de reunioes*/
   reuniao reunioes[TAREFAS];
 
@@ -276,12 +276,12 @@ int main()
       reuniao reuniao = reunioes_realizadas[i];
       tarefa tarefa = tarefas[reuniao.id];
     
-      printf("%.2d/%.2d F %.2d: %s\n", reuniao.dia, mes_atual, funcionario, reuniao.descricao);
+      printf("%.2d/%.2d F %.2d: %s\n", reuniao.dia, mes_atual, funcionarios[i], reuniao.descricao);
 
       if (tarefa.tempo_conclusao <= 0) {
         printf("CONCLUÍDA\n");
       } else {
-        printf("\tT %.2d D %.2d TCR %.2d\n", tarefa, tarefa.dificuldade, tarefa.tempo_conclusao);
+        printf("\tT %.2d D %.2d TCR %.2d\n", tarefas[i] , tarefa.dificuldade, tarefa.tempo_conclusao);
       }
 
       printf("\n");
