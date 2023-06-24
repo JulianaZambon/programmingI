@@ -36,9 +36,6 @@ typedef struct
   int id;                            /*id tarefa*/
   char descricao[100];               /*descricao*/
   int disponibilidade[FUNCIONARIOS]; /* disponibilidade dos membros */
-
-  /*para poder usar a struct tarefa na function imprimirReunioesRealizadas*/
-  tarefa tarefa_associada; /* membro da struct reuniao que é do tipo tarefa*/
 } reuniao;
 
 /*function para gerar min e max random */
