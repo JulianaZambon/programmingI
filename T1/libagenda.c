@@ -45,6 +45,7 @@ void destroi_agenda(agenda_t *agenda)
       free(atual);
       atual = proximo;
    }
+   free(agenda->ptr_mes_atual);
    /* libera a memoria alocada para agenda */
    free(agenda);
 }
@@ -86,6 +87,7 @@ int marca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
       anterior->prox = compr;
    }
 
+   atual = compr;
    compr->prox = atual; /* para ajustar os ponteiros */
    return 1;
 }
@@ -112,7 +114,9 @@ int desmarca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
          }
 
          free(atual->descricao);
+         compromisso_t *proximo = atual->prox;
          free(atual);
+         atual = proximo;
          return 1;
       }
 
@@ -129,7 +133,7 @@ void imprime_agenda_mes(agenda_t *agenda)
    if (agenda == NULL)
       return;
 
-   printf("Agenda do mês %d:\n", agenda->mes_atual);
+   printf("Agenda do mês %d:\n", *agenda->ptr_mes_atual);
 
    compromisso_t *compr = agenda->mes_atual;
 
@@ -145,7 +149,7 @@ int mes_atual_agenda(agenda_t *agenda)
    if (agenda == NULL)
       return 0;
 
-   return agenda->mes_atual;
+   return *agenda->ptr_mes_atual;
 }
 
 /* Ajusta o mes_atual para 1; caso o mes esteja alocado, ptr_mes_atual
@@ -155,9 +159,9 @@ void prim_mes_agenda(agenda_t *agenda)
    if (agenda == NULL)
       return;
    /* ajuste */
-   agenda->mes_atual = 1;
+   *agenda->ptr_mes_atual = 1;
    /* verifica se esta alocado */
-   if (agenda->mes_atual != NULL)
+   if (agenda->ptr_mes_atual != NULL)
       agenda->ptr_mes_atual = agenda->mes_atual;
    else
       agenda->ptr_mes_atual = NULL;
@@ -172,17 +176,17 @@ int prox_mes_agenda(agenda_t *agenda)
    if (agenda == NULL)
       return 0;
 
-   agenda->mes_atual++;          /* incrementa */
+   (*agenda->ptr_mes_atual)++;          /* incrementa */
    agenda->ptr_mes_atual = NULL; /* atualiza o ponteiro */
 
    /* verifica se o mes existe */
-   if (agenda->mes_atual > 0 && agenda->mes_atual <= 12) {
-      agenda->ptr_mes_atual = malloc(sizeof(mes_t));
+   if (*agenda->ptr_mes_atual > 0 && *agenda->ptr_mes_atual <= 12) {
+      agenda->ptr_mes_atual = malloc(sizeof(int));
       if (agenda->ptr_mes_atual == NULL)
          return 0;
    }
    /* sucesso */
-   return agenda->mes_atual;
+   return *agenda->ptr_mes_atual;
 }
 
 /* Analogo ao prox_mes_agenda porem decrementa mes_atual. */
@@ -191,17 +195,17 @@ int ant_mes_agenda(agenda_t *agenda)
    if (agenda == NULL)
       return 0;
 
-   agenda->mes_atual--;          /* decrementa */
+   (*agenda->ptr_mes_atual)--;          /* decrementa */
    agenda->ptr_mes_atual = NULL; /* atualiza o ponteiro */
 
    /* verifica se o mes existe */
-   if (agenda->mes_atual > 0 && agenda->mes_atual <= 12) {
-      agenda->ptr_mes_atual = malloc(sizeof(mes_t));
+   if (*agenda->ptr_mes_atual > 0 && *agenda->ptr_mes_atual <= 12) {
+      agenda->ptr_mes_atual = malloc(sizeof(int));
       if (agenda->ptr_mes_atual == NULL)
          return 0;
    }
    /* sucesso */
-   return agenda->mes_atual;
+   return *agenda->ptr_mes_atual;
 }
 
 /* Retorna um ponteiro para a lista ligada de compromissos de um dia do mes
@@ -239,7 +243,7 @@ compromisso_t *prox_compr(compromisso_t *compr)
    obtidos com a funcao prox_compr. */
 horario_compromisso_t hc_compr(compromisso_t *compr)
 {
-   compr->inicio;   
+   return compr->hc;   
 }
 
 int id_compr(compromisso_t *compr)
