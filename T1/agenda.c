@@ -45,20 +45,20 @@ int aleatorio(int min, int max)
 }
 
 /*Se o líder tem disponibilidade em sua agenda nos horários*/
-int verificaDisponibilidade(reuniao reunioes[], int indice_membro, int hora_ini, int minuto_ini, int hora_fim, int minuto_fim, int dia)
-{
+int verificaDisponibilidade(reuniao reunioes[], int funcionario, int hc_ini_h, int hc_ini_m, int hc_fim_h, int hc_fim_m, int dia) {
   for (int i = 0; i < TAREFAS; i++) {
-    reuniao reuniao_atual = reunioes[i];
-    if (i != indice_membro && reuniao_atual.dia == dia) {
-      if (!((hora_fim < reuniao_atual.hc_ini_h) || (hora_ini > reuniao_atual.hc_fim_h) ||
-            (hora_fim == reuniao_atual.hc_ini_h && minuto_fim <= reuniao_atual.hc_ini_m) ||
-            (hora_ini == reuniao_atual.hc_fim_h && minuto_ini >= reuniao_atual.hc_fim_m))) {
-        return 0; /*membro nao disponivel*/
+    if (reunioes[i].dia == dia &&
+        ((reunioes[i].hc_ini_h < hc_fim_h && reunioes[i].hc_fim_h > hc_ini_h) ||
+         (reunioes[i].hc_ini_h == hc_fim_h && reunioes[i].hc_ini_m < hc_fim_m) ||
+         (reunioes[i].hc_fim_h == hc_ini_h && reunioes[i].hc_fim_m > hc_ini_m))) {
+      if (reunioes[i].disponibilidade[funcionario] == 0) {
+        return 0; /* Funcionário indisponível */
       }
     }
   }
-  return 1; /*membro disponivel*/
+  return 1; /* Funcionário disponível */
 }
+
 
 /*Para cada membro verificar:
  se liderança líder > liderança membro +ALEAT(-20,10) */
