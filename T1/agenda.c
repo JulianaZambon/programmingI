@@ -60,7 +60,6 @@ int verificaDisponibilidade(reuniao reunioes[], int indice_membro, int hora_ini,
   return 1; /*membro disponivel*/
 }
 
-
 /*Para cada membro verificar:
  se liderança líder > liderança membro +ALEAT(-20,10) */
 int verificaLideranca(funcionario lider, funcionario membro)
@@ -92,13 +91,15 @@ int main()
   /*inicializa o gerador random*/
   srand(time(NULL));
 
+
+  /*inicializacao das variáveis*/
+
   /*array de 30 funcionarios*/
   funcionario funcionarios[FUNCIONARIOS];
   /*array de 100 tarefas*/
   tarefa tarefas[TAREFAS];
   /*array de reunioes*/
   reuniao reunioes[TAREFAS];
-
   reuniao reunioes_realizadas[TAREFAS];
   int qtdes_reunioes_realizadas = 0;
   int qtde_tarefas_tempo_restante_zero = 0;
@@ -117,10 +118,8 @@ int main()
   
   /*------------------------------------------------------------------------*/
   /* Marcar todas reuniões */
-
   /*Para cada mês de 1 até 12:
     - Marcar 100 reuniões:*/
-
   int mes_atual;
   for (mes_atual = 1; mes_atual <= MES; mes_atual++) {
     printf("M %d \n", mes_atual); /*imprime a agenda do mes atual*/
@@ -151,7 +150,7 @@ int main()
       reunioes[i].dia = aleatorio(1, 31);
       reunioes[i].id = aleatorio(0, TAREFAS - 1);
 
-      /* - Descrição: uma string descrevendo a reunião.*/
+      /* descrição da reunião.*/
       sprintf(reunioes[i].descricao, "REUNIR L %.2d %.2d/%.2d %.2d:%.2d %.2d:%.2d T %.2d", lider, reunioes[i].dia, mes_atual,
               reunioes[i].hc_ini_h, reunioes[i].hc_ini_m, reunioes[i].hc_fim_h, reunioes[i].hc_fim_m, reunioes[i].id);
       printf("%s", reunioes[i].descricao);
@@ -212,7 +211,6 @@ int main()
         if (verificaLideranca(funcionarios[lider], funcionarios[membro])) {
           if (verificaDisponibilidade(reunioes, membro, reunioes[i].hc_ini_h, reunioes[i].hc_ini_m,
                                       reunioes[i].hc_fim_h, reunioes[i].hc_fim_m, reunioes[i].dia)) {
-            marcada = 1; /* A reunião pode ser marcada */
             membros_disponiveis = 1; /* Pelo menos um membro está disponível */
 
             if (reunioes[i].disponibilidade[membro] == 1) {
@@ -226,6 +224,10 @@ int main()
           }
         }
       }
+
+      if (membros_disponiveis) {
+        marcada = 1; /* A reunião pode ser marcada */
+      } 
 
       if (!membros_disponiveis) {
         printf(" VAZIA");
@@ -268,7 +270,7 @@ int main()
       \tT %.2d D %.2d TCR %.2d\n
           os valores são: tarefa, tarefa_dificuldade, tarefa_tempo_conclusao
       */
-
+/*
     for (int i = 0; i < qtdes_reunioes_realizadas; i++) {
       reuniao reuniao = reunioes_realizadas[i];
       tarefa tarefa = tarefas[reuniao.id];
@@ -283,6 +285,7 @@ int main()
 
       printf("\n");
     }
+    */
   }
 
   /*acabou a inicialização das agendas e tarefas.*/
