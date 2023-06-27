@@ -248,7 +248,7 @@ compromisso_t *prox_compr(compromisso_t *compr)
    obtidos com a funcao prox_compr. */
 horario_compromisso_t hc_compr(compromisso_t *compr)
 {
-   compr->inicio;   
+   return compr->inicio;
 }
 
 int id_compr(compromisso_t *compr)
