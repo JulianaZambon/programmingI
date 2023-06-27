@@ -45,7 +45,7 @@ int aleatorio(int min, int max)
 }
 
 /*Se o líder tem disponibilidade em sua agenda nos horários*/
-int verificaDisponibilidade(reuniao reunioes[], int funcionario, int hc_ini_h, int hc_ini_m, int hc_fim_h, int hc_fim_m, int dia) {
+int verificaDisponibilidade(Reuniao reunioes[], int funcionario, int hc_ini_h, int hc_ini_m, int hc_fim_h, int hc_fim_m, int dia) {
   for (int i = 0; i < TAREFAS; i++) {
     if (reunioes[i].dia == dia &&
         ((reunioes[i].hc_ini_h < hc_fim_h && reunioes[i].hc_fim_h > hc_ini_h) ||
@@ -61,7 +61,7 @@ int verificaDisponibilidade(reuniao reunioes[], int funcionario, int hc_ini_h, i
 
 /*Para cada membro verificar:
  se liderança líder > liderança membro +ALEAT(-20,10) */
-int verificaLideranca(funcionario lider, funcionario membro)
+int verificaLideranca(Funcionario lider, Funcionario membro)
 {
   int limite_superior = lider.lideranca;
   int limite_inferior = lider.lideranca - 20;
@@ -233,7 +233,7 @@ int main()
 
     /*verifica tarefas concluídas*/
     for (int i = 0; i < qtdes_reunioes_realizadas; i++) {
-      reuniao reuniao = reunioes_realizadas[i];
+      Reuniao reuniao = reunioes_realizadas[i];
       int tempo_conclusao = reuniao.hc_fim_h - reuniao.hc_ini_h;
       if (reuniao.hc_fim_m > reuniao.hc_ini_m) {
         tempo_conclusao++;

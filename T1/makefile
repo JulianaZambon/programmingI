@@ -1,4 +1,4 @@
-CFLAGS = -Wall -std=c90 -g
+CFLAGS = -Wall -std=c99 -g
 LDFLAGS =
 CC = gcc
 
