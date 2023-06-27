@@ -120,7 +120,7 @@ int desmarca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
             anterior->prox = atual->prox;
          }
 
-         free(atual->descricao);
+         destroi_descricao_compromisso(atual);
          free(atual);
          return 1;
       }
