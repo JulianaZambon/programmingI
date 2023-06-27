@@ -28,6 +28,15 @@ compromisso_t *cria_compromisso(horario_compromisso_t hc, int id, char *descrica
    return novo_compromisso;
 }
 
+/* destroi a descricao de um compromisso */
+void destroi_descricao_compromisso(compromisso_t* compr)
+{
+   if (compr != NULL && compr->descricao != NULL) {
+         free(compr->descricao);
+         compr->descricao = NULL;
+      }
+}
+
 /* Libera toda memoria associada a agenda. */
 void destroi_agenda(agenda_t *agenda)
 {
