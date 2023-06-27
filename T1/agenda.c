@@ -15,7 +15,7 @@ typedef struct
 {
   int lideranca;
   int experiencia;
-} funcionario;
+} Funcionario;
 
 /*struct para as tarefas*/
 /*100 tarefas*/
@@ -23,7 +23,7 @@ typedef struct
 {
   int tempo_conclusao;
   int dificuldade;
-} tarefa;
+} Tarefa;
 
 /*struct para as reunioes*/
 typedef struct
@@ -36,7 +36,7 @@ typedef struct
   int id;                            /*id tarefa*/
   char descricao[100];               /*descricao*/
   int disponibilidade[FUNCIONARIOS]; /* disponibilidade dos membros */
-} reuniao;
+} Reuniao;
 
 /*function para gerar min e max random */
 int aleatorio(int min, int max)
@@ -58,7 +58,6 @@ int verificaDisponibilidade(reuniao reunioes[], int funcionario, int hc_ini_h, i
   }
   return 1; /* Funcionário disponível */
 }
-
 
 /*Para cada membro verificar:
  se liderança líder > liderança membro +ALEAT(-20,10) */
@@ -84,33 +83,22 @@ void imprimirResumoFinal(int qtde_tarefas_tempo_restante_zero, int qtdes_reunioe
 /*principal*/
 int main()
 {
-
-  /*------------------------------------------------------------------------*/
-  /* Inicialização */
-
   /*inicializa o gerador random*/
   srand(time(NULL));
 
+  Funcionario* funcionarios = malloc(FUNCIONARIOS * sizeof(Funcionario));
+  Tarefa* tarefas = malloc(TAREFAS * sizeof(Tarefa));
+  Reuniao* reunioes = malloc(TAREFAS * sizeof(Reuniao));
+  Reuniao* reunioes_realizadas = malloc(TAREFAS * sizeof(Reuniao));
 
-  /*inicializacao das variáveis*/
-
-  /*array de 30 funcionarios*/
-  funcionario funcionarios[FUNCIONARIOS];
-  /*array de 100 tarefas*/
-  tarefa tarefas[TAREFAS];
-  /*array de reunioes*/
-  reuniao reunioes[TAREFAS];
-  reuniao reunioes_realizadas[TAREFAS];
   int qtdes_reunioes_realizadas = 0;
   int qtde_tarefas_tempo_restante_zero = 0;
 
-  /*parametros dos funcionarios*/
-  for (int i = 0; i < 30; i++) {
+  for (int i = 0; i < FUNCIONARIOS; i++) {
     funcionarios[i].lideranca = aleatorio(0, 100);
     funcionarios[i].experiencia = aleatorio(20, 100);
   }
 
-  /*parametros das tarefas*/
   for (int T = 0; T < TAREFAS; T++) {
     tarefas[T].tempo_conclusao = aleatorio(600, 800);
     tarefas[T].dificuldade = aleatorio(30, 80);
@@ -122,15 +110,7 @@ int main()
     - Marcar 100 reuniões:*/
   int mes_atual;
   for (mes_atual = 1; mes_atual <= MES; mes_atual++) {
-    printf("M %d \n", mes_atual); /*imprime a agenda do mes atual*/
-
-    for (int i = 0; i < TAREFAS; i++) {
-      /*  - Escolher aleatoriamente um líder entre os funcionários cuja
-            liderança esteja entre 30 e 70.*/
-      int lider;
-      do {
-        lider = aleatorio(0, 29);                                                         /*aleatorio*/
-      } while (funcionarios[lider].lideranca < 30 || funcionarios[lider].lideranca > 70); /*lideranca*/
+    printf("M %d \n", mes_atual);
 
       /*- Criar uma nova reunião com os seguintes parâmetros:
                   - Hora de início (hc.ini_h): um valor aleatório entre 8 e 12.
@@ -143,6 +123,14 @@ int main()
                   - ID: um número aleatório entre 0 e TAREFAS-1, que representa
                     uma tarefa a ser discutida na reunião.*/
 
+    for (int i = 0; i < TAREFAS; i++) {
+      /*  - Escolher aleatoriamente um líder entre os funcionários cuja
+            liderança esteja entre 30 e 70.*/
+      int lider;
+      do {
+        lider = aleatorio(0, 29);                                                         /*aleatorio*/
+      } while (funcionarios[lider].lideranca < 30 || funcionarios[lider].lideranca > 70); /*lideranca*/
+
       reunioes[i].hc_ini_h = aleatorio(8, 12);
       reunioes[i].hc_ini_m = aleatorio(0, 3) * 15;
       reunioes[i].hc_fim_h = reunioes[i].hc_ini_h + aleatorio(1, 4);
@@ -150,7 +138,7 @@ int main()
       reunioes[i].dia = aleatorio(1, 31);
       reunioes[i].id = aleatorio(0, TAREFAS - 1);
 
-      /* descrição da reunião.*/
+  
       sprintf(reunioes[i].descricao, "REUNIR L %.2d %.2d/%.2d %.2d:%.2d %.2d:%.2d T %.2d", lider, reunioes[i].dia, mes_atual,
               reunioes[i].hc_ini_h, reunioes[i].hc_ini_m, reunioes[i].hc_fim_h, reunioes[i].hc_fim_m, reunioes[i].id);
       printf("%s", reunioes[i].descricao);

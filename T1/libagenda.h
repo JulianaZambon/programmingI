@@ -85,6 +85,12 @@ typedef struct horario_compromisso {
    armazenamento para receber a string descricao. */ 
 compromisso_t* cria_compromisso (horario_compromisso_t hc, int id,  char* descricao);
 
+/* destroi a descricao de um compromisso */
+void destroi_descricao_compromisso(compromisso_t* compr);
+
+/* destroi um compromisso */
+void destroi_compromisso(compromisso_t* compr);
+
 /* Libera toda memoria associado a agenda. */
 void destroi_agenda(agenda_t* agenda);
 
@@ -105,9 +111,6 @@ int marca_compromisso_agenda(agenda_t* agenda, int dia, compromisso_t* compr);
     1: em caso de sucesso
     0: caso nao tenha encontrado o compr */
 int desmarca_compromisso_agenda(agenda_t* agenda, int dia, compromisso_t* compr);
-
-/* Imprime a agenda do mes atual (mes atual) */
-void imprime_agenda_mes(agenda_t* agenda);
 
 /* Retorna o mes atual da agenda. */
 int mes_atual_agenda(agenda_t *agenda);
@@ -130,7 +133,8 @@ int ant_mes_agenda(agenda_t* agenda);
    usando-se a funcao prox_compr. */ 
 compromisso_t* compr_agenda(agenda_t* agenda, int dia);
 
-/* Retorna o proximo compromisso da lista de compromissos compr.*/
+/* Retorna o primeiro compromisso da lista de compromissos compr e avanca
+ * para o prox. Retorna NULL se a lista esta vazia, ou seja, sem compromissos.*/
 compromisso_t* prox_compr(compromisso_t* compr);
 
 /* As funcoes abaixo sao usadas para acessar os membros da struct compromisso
