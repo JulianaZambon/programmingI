@@ -26,14 +26,14 @@ typedef struct
 /* struct para as reunioes */
 typedef struct
 {
-  int hc_ini_h;                      /*hora inicio*/
-  int hc_ini_m;                      /*minuto inicio*/
-  int hc_fim_h;                      /*hora fim*/
-  int hc_fim_m;                      /*minuto fim*/
-  int dia;                           /*dia*/
-  int id;                            /*id tarefa*/
-  char descricao[100];               /*descricao*/
-  int disponibilidade[FUNCIONARIOS]; /*disponibilidade dos membros*/
+  int hc_ini_h;                      /* hora inicio */
+  int hc_ini_m;                      /* minuto inicio */
+  int hc_fim_h;                      /* hora fim */
+  int hc_fim_m;                      /* minuto fim */
+  int dia;                           /* dia */
+  int id;                            /* id tarefa */
+  char descricao[100];               /* descricao */
+  int disponibilidade[FUNCIONARIOS]; /* disponibilidade dos membros */
 } Reuniao;
 
 /* function para gerar min e max random */
@@ -42,7 +42,7 @@ int aleatorio(int min, int max)
   return min + rand() % (max - min + 1);
 }
 
-/*Se o líder tem disponibilidade em sua agenda nos horários*/
+/* Se o líder tem disponibilidade em sua agenda nos horários */
 int verificaDisponibilidade(Reuniao reunioes[], int lider, int hc_ini_h, int hc_ini_m, int hc_fim_h, int hc_fim_m, int dia) {
   for (int i = 0; i < TAREFAS; i++) {
     if (reunioes[i].dia == dia &&
@@ -62,7 +62,7 @@ int verificaDisponibilidade(Reuniao reunioes[], int lider, int hc_ini_h, int hc_
 }
 
 
-/*Para cada membro verificar:
+/* Para cada membro verificar:
  se liderança líder > liderança membro +ALEAT(-20,10) */
 int verificaLideranca(Funcionario lider, Funcionario membro)
 {
