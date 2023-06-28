@@ -1,31 +1,29 @@
-/*inclui as libs e funcoes que serao usadas*/
+/* inclui as libs e funcoes que serao usadas */
 #include <stdio.h>
-#include <string.h> /*para usar sprintf*/
+#include <string.h> /* para usar sprintf */
 #include <stdlib.h>
 #include <time.h>
 #include "libagenda.h"
 
-#define TAREFAS 100 /*qntd tarefas*/
-#define MES 12      /*qntd de meses*/
-#define FUNCIONARIOS 30 /*qntd de funcionarios*/
+#define TAREFAS 100 /* qntd tarefas */
+#define MES 12      /* qntd de meses */
+#define FUNCIONARIOS 30 /* qntd de funcionarios */
 
-/*struct para o funcionario*/
-/*30 funcionarios*/
+/* struct para o funcionario */
 typedef struct
 {
   int lideranca;
   int experiencia;
 } Funcionario;
 
-/*struct para as tarefas*/
-/*100 tarefas*/
+/* struct para as tarefas */
 typedef struct
 {
   int tempo_conclusao;
   int dificuldade;
 } Tarefa;
 
-/*struct para as reunioes*/
+/* struct para as reunioes */
 typedef struct
 {
   int hc_ini_h;                      /*hora inicio*/
@@ -35,29 +33,34 @@ typedef struct
   int dia;                           /*dia*/
   int id;                            /*id tarefa*/
   char descricao[100];               /*descricao*/
-  int disponibilidade[FUNCIONARIOS]; /* disponibilidade dos membros */
+  int disponibilidade[FUNCIONARIOS]; /*disponibilidade dos membros*/
 } Reuniao;
 
-/*function para gerar min e max random */
+/* function para gerar min e max random */
 int aleatorio(int min, int max)
 {
   return min + rand() % (max - min + 1);
 }
 
 /*Se o líder tem disponibilidade em sua agenda nos horários*/
-int verificaDisponibilidade(Reuniao reunioes[], int funcionario, int hc_ini_h, int hc_ini_m, int hc_fim_h, int hc_fim_m, int dia) {
+int verificaDisponibilidade(Reuniao reunioes[], int lider, int hc_ini_h, int hc_ini_m, int hc_fim_h, int hc_fim_m, int dia) {
   for (int i = 0; i < TAREFAS; i++) {
     if (reunioes[i].dia == dia &&
         ((reunioes[i].hc_ini_h < hc_fim_h && reunioes[i].hc_fim_h > hc_ini_h) ||
          (reunioes[i].hc_ini_h == hc_fim_h && reunioes[i].hc_ini_m < hc_fim_m) ||
          (reunioes[i].hc_fim_h == hc_ini_h && reunioes[i].hc_fim_m > hc_ini_m))) {
-      if (reunioes[i].disponibilidade[funcionario] == 0) {
-        return 0; /* Funcionário indisponível */
+      if (lider != i) { /* Exclui o líder da verificação */
+        for (int j = 0; j < FUNCIONARIOS; j++) {
+          if (reunioes[i].disponibilidade[j] == 0) {
+            return 0; /* Funcionário indisponível */
+          }
+        }
       }
     }
   }
   return 1; /* Funcionário disponível */
 }
+
 
 /*Para cada membro verificar:
  se liderança líder > liderança membro +ALEAT(-20,10) */
@@ -68,27 +71,21 @@ int verificaLideranca(Funcionario lider, Funcionario membro)
   return (membro.lideranca >= limite_inferior && membro.lideranca <= limite_superior);
 }
 
-/*
-infos finais da saida do programa
------
-REUNIOES REALIZADAS qtdes_reunioes_realizadas
-TAREFAS CONCLUIDAS qtde_tarefas_tempo_restante_zero
-*/
+/* infos finais da saida do programa */
 void imprimirResumoFinal(int qtde_tarefas_tempo_restante_zero, int qtdes_reunioes_realizadas)
 {
   printf("REUNIOES REALIZADAS %d\n", qtdes_reunioes_realizadas);
   printf("TAREFAS CONCLUIDAS %d\n", qtde_tarefas_tempo_restante_zero);
 }
 
-/*principal*/
+
 int main()
 {
-  /*inicializa o gerador random*/
   srand(time(NULL));
 
   Funcionario* funcionarios = malloc(FUNCIONARIOS * sizeof(Funcionario));
   Tarefa* tarefas = malloc(TAREFAS * sizeof(Tarefa));
-  Reuniao* reunioes = malloc(TAREFAS * sizeof(Reuniao));
+  Reuniao* reunioes = malloc(MES * TAREFAS * sizeof(Reuniao));
   Reuniao* reunioes_realizadas = malloc(TAREFAS * sizeof(Reuniao));
 
   int qtdes_reunioes_realizadas = 0;
@@ -138,7 +135,7 @@ int main()
       reunioes[i].dia = aleatorio(1, 31);
       reunioes[i].id = aleatorio(0, TAREFAS - 1);
 
-  
+      /*descrição da reunião*/
       sprintf(reunioes[i].descricao, "REUNIR L %.2d %.2d/%.2d %.2d:%.2d %.2d:%.2d T %.2d", lider, reunioes[i].dia, mes_atual,
               reunioes[i].hc_ini_h, reunioes[i].hc_ini_m, reunioes[i].hc_fim_h, reunioes[i].hc_fim_m, reunioes[i].id);
       printf("%s", reunioes[i].descricao);
@@ -158,71 +155,56 @@ int main()
         membros[k] = membro;
       }
 
-      /*
-      saída na marcação das reuniões
-        ------------------------------
-
-        M mes_atual (onde m é o MES)
-        REUNIR L %.2d %.2d/%.2d %.2d:%.2d %.2d:%.2d T %.2d
-        - os valores são o LIDER, DIA, mes_atual, ini_h, ini_m, fim_h, fim_m, tarefa
-        - Essa string acima também será usada como descrição do compromisso
-
-        Seguida da string de DESCRICAO acima, imprimir:
-
-        Se o LIDER estava ocupada:
-            "\tLIDER INDISPONIVEL \n"
-
-        Caso contrário imprimir:
-            "\tMEMBROS
-
-            e para cada membro
-                " %.2d:" seguido de "OK" ou "IN"
-            se nenhum membro estiver disponíveis imprimir
-                "VAZIA"
-      */
+    /*saída na marcação das reuniões*/
 
     /* Verificar a disponibilidade do líder */
     int marcada = 0;
     int lider_disponivel = verificaDisponibilidade(reunioes, lider, reunioes[i].hc_ini_h, reunioes[i].hc_ini_m,
                                                   reunioes[i].hc_fim_h, reunioes[i].hc_fim_m, reunioes[i].dia);
+
+    if (lider_disponivel) {
+        reunioes[i].disponibilidade[lider] = 1; /* Atualiza a disponibilidade do líder como disponível */
+    }
+
     if (!lider_disponivel) {
         marcada = 0; /* Líder indisponível, a reunião não pode ser marcada */
         printf("\tLÍDER INDISPONÍVEL\n");
     } else {
-      /* Verificar a disponibilidade dos membros */
-      int membros_disponiveis = 0; /* Variável para controlar se há membros disponíveis */
-      printf("%s\tMEMBROS", reunioes[i].descricao);
+        /* Verificar a disponibilidade dos membros */
+        int membros_disponiveis = 0; /* Variável para controlar se há membros disponíveis */
+        printf("%s\tMEMBROS", reunioes[i].descricao);
 
-      for (int j = 0; j < num_membros; j++) {
-        int membro = membros[j];
+        for (int j = 0; j < num_membros; j++) {
+            int membro = membros[j];
 
-        if (verificaLideranca(funcionarios[lider], funcionarios[membro])) {
-          if (verificaDisponibilidade(reunioes, membro, reunioes[i].hc_ini_h, reunioes[i].hc_ini_m,
-                                      reunioes[i].hc_fim_h, reunioes[i].hc_fim_m, reunioes[i].dia)) {
-            membros_disponiveis = 1; /* Pelo menos um membro está disponível */
+            if (verificaLideranca(funcionarios[lider], funcionarios[membro])) {
+                if (verificaDisponibilidade(reunioes, membro, reunioes[i].hc_ini_h, reunioes[i].hc_ini_m,
+                                            reunioes[i].hc_fim_h, reunioes[i].hc_fim_m, reunioes[i].dia)) {
+                    membros_disponiveis = 1; /* Pelo menos um membro está disponível */
 
-            if (reunioes[i].disponibilidade[membro] == 1) {
-              printf(" %.2d:OK", membro);
-            } else {
-              printf(" %.2d:IN", membro);
+                    if (reunioes[i].disponibilidade[membro] == 1) {
+                        printf(" %.2d:OK", membros[j]);
+                    } else {
+                        printf(" %.2d:IN", membros[j]);
+                    }
+
+                    /* Atualizar a disponibilidade do membro como não disponível */
+                    reunioes[i].disponibilidade[membro] = 0;
+                }
             }
-
-            /* Atualizar a disponibilidade do membro como não disponível */
-            reunioes[i].disponibilidade[membro] = 0;
-          }
         }
-      }
 
-      if (membros_disponiveis) {
-        marcada = 1; /* A reunião pode ser marcada */
-      } 
+        if (membros_disponiveis) {
+            marcada = 1; /* A reunião pode ser marcada */
+        } 
 
-      if (!membros_disponiveis) {
-        printf(" VAZIA");
-      }
+        if (!membros_disponiveis) {
+            printf(" VAZIA");
+        }
 
-      printf("\n");
+        printf("\n");
     }
+
 
       /* se a reuniao foi marcada, adicionar às reunioes realizadas */
       if (marcada) {
@@ -232,18 +214,18 @@ int main()
     }
 
     /*verifica tarefas concluídas*/
-    for (int i = 0; i < qtdes_reunioes_realizadas; i++) {
-      Reuniao reuniao = reunioes_realizadas[i];
-      int tempo_conclusao = reuniao.hc_fim_h - reuniao.hc_ini_h;
-      if (reuniao.hc_fim_m > reuniao.hc_ini_m) {
-        tempo_conclusao++;
-      }
+      for (int i = 0; i < TAREFAS; i++) {
+        Reuniao reuniao = reunioes_realizadas[i];
+        int tempo_conclusao = reuniao.hc_fim_h - reuniao.hc_ini_h;
+        if (reuniao.hc_fim_m > reuniao.hc_ini_m) {
+          tempo_conclusao++;
+        }
 
       if (tempo_conclusao <= tarefas[reuniao.id].tempo_conclusao) {
         qtde_tarefas_tempo_restante_zero++;
       }
     }
-
+  }
       /*
       saída ao realizar as reuniões
       -----------------------------
@@ -258,23 +240,7 @@ int main()
       \tT %.2d D %.2d TCR %.2d\n
           os valores são: tarefa, tarefa_dificuldade, tarefa_tempo_conclusao
       */
-/*
-    for (int i = 0; i < qtdes_reunioes_realizadas; i++) {
-      reuniao reuniao = reunioes_realizadas[i];
-      tarefa tarefa = tarefas[reuniao.id];
-    
-      printf("%.2d/%.2d F %.2d: %s\n", reuniao.dia, mes_atual, funcionarios[i], reuniao.descricao);
-
-      if (tarefa.tempo_conclusao <= 0) {
-        printf("CONCLUÍDA\n");
-      } else {
-        printf("\tT %.2d D %.2d TCR %.2d\n", tarefas[i] , tarefa.dificuldade, tarefa.tempo_conclusao);
-      }
-
-      printf("\n");
-    }
-    */
-  }
+  
 
   /*acabou a inicialização das agendas e tarefas.*/
   /*------------------------------------------------------------------------*/
@@ -313,5 +279,11 @@ int main()
   }
 
   imprimirResumoFinal(qtde_tarefas_tempo_restante_zero, qtdes_reunioes_realizadas);
+
+  free(funcionarios);
+  free(tarefas);
+  free(reunioes);
+  free(reunioes_realizadas);
+
   return 0;
 }
