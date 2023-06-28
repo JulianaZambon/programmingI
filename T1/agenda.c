@@ -119,7 +119,7 @@ int main()
                   - Dia: um valor aleatório entre 1 e 31.
                   - ID: um número aleatório entre 0 e TAREFAS-1, que representa
                     uma tarefa a ser discutida na reunião.*/
-    /**/
+
         for (int i = 0; i < TAREFAS; i++) {
         /* Escolher aleatoriamente um líder entre os funcionários cuja liderança esteja entre 30 e 70. */
         int lider;
@@ -159,21 +159,21 @@ int main()
             int membros[num_membros];
 
             /* Sorteio dos membros */
-            for (int k = 0; k < num_membros; k++) {
+            for (int j = 0; j < num_membros; j++) {
                 int membro;
                 do {
                     membro = aleatorio(0, 29);
                 } while (membro == lider);
 
-                membros[k] = membro;
+                membros[j] = membro;
             }
 
             /* Verificar a disponibilidade dos membros */
             int membros_disponiveis = 0; /* Variável para controlar se há membros disponíveis */
             printf("%s\tMEMBROS", reunioes[i].descricao);
 
-            for (int k = 0; k < num_membros; k++) {
-                int membro = membros[k];
+            for (int j = 0; j < num_membros; j++) {
+                int membro = membros[j];
 
                 if (verificaLideranca(funcionarios[lider], funcionarios[membro])) {
                     if (verificaDisponibilidade(reunioes, membro, reunioes[i].hc_ini_h, reunioes[i].hc_ini_m,
@@ -182,13 +182,13 @@ int main()
                         membros_disponiveis = 1; /* Pelo menos um membro está disponível */
 
                         if (reunioes[i].disponibilidade[membro] == 1) {
-                            printf(" %.2d:OK", membros[k]);
+                            printf(" %.2d:OK", membros[j]);
                         } else {
-                            printf(" %.2d:IN", membros[k]);
+                            printf(" %.2d:IN", membros[j]);
                         }
 
-                        /* Atualizar a disponibilidade do membro como não disponível */
-                        reunioes[i].disponibilidade[membro] = 0;
+                        /* Atualizar a disponibilidade do membro como disponível */
+                        reunioes[i].disponibilidade[membro] = 1;
                     }
                 }
             }
@@ -240,8 +240,8 @@ int main()
       \tT %.2d D %.2d TCR %.2d\n
           os valores são: tarefa, tarefa_dificuldade, tarefa_tempo_conclusao
       */
-  
 
+      
   /*------------------------------------------------------------------------*/
   /* Realizar todas as reuniões marcadas*/
 
