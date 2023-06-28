@@ -40,24 +40,19 @@ void destroi_descricao_compromisso(compromisso_t* compr)
 }
 
 /* Libera toda memoria associada a agenda. */
-void destroi_agenda(agenda_t *agenda)
-{
-   if (agenda == NULL)
-      return;
+void destroi_agenda(agenda_t *agenda) {
+    mes_t *atual_mes = agenda->ptr_mes_atual;
+    mes_t *prox_mes;
 
-   /* percorrer todos os compromissos */
-   compromisso_t *atual = agenda->ptr_mes_atual;
-   while (atual != NULL) {
-      compromisso_t *proximo = atual->prox;
+    while (atual_mes != NULL) {
+        prox_mes = atual_mes->prox;
+        free(atual_mes->dias);
+        free(atual_mes);
+        atual_mes = prox_mes;
+    }
 
-      // libera a memoria alocada para descricao
-      destroi_descricao_compromisso(atual);
-      // libera a memoria alocada para o compromisso
-      free(atual);
-      atual = proximo;
-   }
-   /* libera a memoria alocada para agenda */
-   free(agenda);
+    agenda->ptr_mes_atual = NULL;
+    agenda->mes_atual = 0;
 }
 
 /* Marca um compromisso na agenda:
