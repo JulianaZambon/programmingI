@@ -160,7 +160,7 @@ int main()
     printf("M %d\n", mes_atual);
     
     /* Marcar 100 reuniões */
-    for (int i = 0; i < TAREFAS; i++) {
+    for (int T = 0; T < TAREFAS; T++) {
       int lider;
 /*------------------------------------------------------------------------*/   
       reunioes[i].hc_ini_h = ALEAT(8, 12);
@@ -219,7 +219,7 @@ int main()
       if (!disponivel_lider && !reunioes[i].marcada)
         reunioes[i].marcada = 0; /* Desmarcar a reunião */
       }
-
+    
 /*------------------------------------------------------------------------*/
   /* Imprimir a saída após realizar a reunião */
         for (int T = 0; T < TAREFAS; T++) {
@@ -242,7 +242,7 @@ int main()
           reunioes_realizadas[qtdes_reunioes_realizadas] = reunioes[i];
           qtdes_reunioes_realizadas++;
         }
-      }
+  }
      
 /*------------------------------------------------------------------------*/
 /* Realizar todas as reuniões marcadas*/
