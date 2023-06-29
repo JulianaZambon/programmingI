@@ -11,20 +11,6 @@
 
 /*------------------------------------------------------------------------*/
 
-/* struct para o funcionario */
-typedef struct
-{
-  int lideranca;
-  int experiencia;
-} Funcionario;
-
-/* struct para as tarefas */
-typedef struct
-{
-  int tempo_conclusao;
-  int dificuldade;
-} Tarefa;
-
 /* struct para as reunioes */
 typedef struct
 {
@@ -38,6 +24,23 @@ typedef struct
   int disponibilidade[FUNCIONARIOS]; /* disponibilidade dos membros */
   int marcada;                       /* marcar/referir-se ao status da reunião */
 } Reuniao;
+
+/* struct para o funcionario */
+typedef struct
+{
+  int id;
+  int lideranca;
+  int experiencia;
+  Reuniao agenda;
+} Funcionario;
+
+/* struct para as tarefas */
+typedef struct
+{
+  int id;
+  int tempo_conclusao;
+  int dificuldade;
+} Tarefa;
 
 
 /*------------------------------------------------------------------------*/
@@ -222,22 +225,6 @@ int main()
       }
     
 /*------------------------------------------------------------------------*/
-  /* Imprimir a saída após realizar a reunião */
-        for (int T = 0; T < TAREFAS; T++) {
-          printf("%.2d/%.2d F %.2d: %s\n", reunioes[i].dia, mes_atual, funcionarios, reunioes[i].descricao);
-          
-          /* Se o tempo de conclusão da tarefa <= 0, imprimir "CONCLUÍDA" */
-          if (tarefas[T].tempo_conclusao <= 0) {
-            printf("CONCLUÍDA\n");
-          } else {
-            /* Senão, imprimir informações da tarefa */
-            printf("\tT %.2d D %.2d TCR %.2d\n", T, tarefas[T].dificuldade, tarefas[T].tempo_conclusao);
-          }
-          /* Verificar se o tempo restante para concluir a tarefa é igual a zero */
-            if (tarefas[T].tempo_conclusao == 0) {
-              qtde_tarefas_tempo_restante_zero++;
-            }
-          }
         /* Verificar se a reunião foi realizada */
         if (reunioes[i].marcada) {
           reunioes_realizadas[qtdes_reunioes_realizadas] = reunioes[i];
@@ -256,6 +243,7 @@ int main()
           for (int X = 0; X < FUNCIONARIOS; X++) {
               /* Para cada compromisso */
               for (int T = 0; T < TAREFAS; T++) {
+                  printf("%.2d/%.2d F %.2d: %s\n", reunioes[i].dia, mes_atual, funcionarios, reunioes[i].descricao);
                   /* Verificar se a tarefa ainda não foi concluída */
                   if (tarefas[T].tempo_conclusao > 0) {
                       /* Reduzir o tempo restante para concluir a tarefa de acordo com a fórmula */
@@ -263,9 +251,12 @@ int main()
                       tarefas[T].tempo_conclusao -= reducao_tempo;
 
                       /* Verificar se o tempo restante para concluir a tarefa é menor ou igual a zero */
-                      if (tarefas[T].tempo_conclusao <= 0)
+                      if (tarefas[T].tempo_conclusao <= 0) {
                           tarefas[T].tempo_conclusao = 0;
-                      
+                          printf("CONCLUÍDA\n");
+                      } else {
+                        printf("\tT %.2d D %.2d TCR %.2d\n", T, tarefas[T].dificuldade, tarefas[T].tempo_conclusao);
+                      }
                       /* Incrementar a experiência do funcionário em uma unidade (limitar em 100) */
                       funcionarios[X].experiencia++;
                       if (funcionarios[X].experiencia > 100) {
