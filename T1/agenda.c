@@ -154,6 +154,7 @@ int main()
 
 /* Para cada mês de 1 até 12 */
   int mes_atual;
+  int i;
   for (mes_atual = 1; mes_atual <= MES; mes_atual++) {
     printf("M %d\n", mes_atual);
     
@@ -173,7 +174,7 @@ int main()
       /* Descrição da reunião */
       sprintf(reunioes[i].descricao, "REUNIR L %.2d %.2d/%.2d %.2d:%.2d %.2d:%.2d T %.2d", lider, reunioes[i].dia, mes_atual,
               reunioes[i].hc_ini_h, reunioes[i].hc_ini_m, reunioes[i].hc_fim_h, reunioes[i].hc_fim_m, reunioes[i].id);
-      printf("%s\n", reunioes[i].descricao);
+      printf("%s", reunioes[i].descricao);
       
       /* Se o líder tem disponibilidade em sua agenda nos horários escolhidos: */
       int disponivel_lider = verificaDisponibilidade(reunioes, lider, reunioes[i].hc_ini_h, reunioes[i].hc_ini_m,
@@ -184,7 +185,7 @@ int main()
         /* Sortear ALEAT(2,6) membros (funcionários) */
         int num_membros = ALEAT(2, 6);
         int membros[num_membros];
-        int algum_membro_disponivel = 0; // Variável para verificar se algum membro está disponível
+        int algum_membro_disponivel = 0; // Contador para verificar se algum membro está disponível
         
         for (int j = 0; j < num_membros; j++) {
           membros[j] = ALEAT(0, FUNCIONARIOS - 1);
@@ -192,23 +193,22 @@ int main()
           /* Para cada membro, verificar se liderança líder > liderança membro +ALEAT(-20,10) */
           if (verificaLideranca(funcionarios[lider], funcionarios)) {
             /* Tentar marcar a reunião na agenda do membro */
+            printf("\tMEMBROS");
             int disponivel_membro = verificaDisponibilidade(reunioes, membros[j], reunioes[i].hc_ini_h, reunioes[i].hc_ini_m,
                                                             reunioes[i].hc_fim_h, reunioes[i].hc_fim_m, reunioes[i].dia, reunioes[i].id);
             if (disponivel_membro) { /* Marcar a reunião na agenda do membro */
               /* MARCAR */
               reunioes[i].marcada = 1; /* Marcar a reunião */
-              printf("%.2d: OK\n", membros[j]);
-              algum_membro_disponivel = 1; // Definir a variável como 1 para indicar que pelo menos um membro está disponível
+              printf(" %.2d: OK\n", membros[j]);
+              algum_membro_disponivel++; /* Pelo menos um membro está disponível */
             } else {
-              printf("%.2d: IN\n", membros[j]);
+              printf(" %.2d: IN\n", membros[j]);
             }
           }
         }
         
-        printf("\tMEMBROS\n");
-        
-        if (!algum_membro_disponivel) {
-          printf("VAZIA\n");
+        if (algum_membro_disponivel == 0) {
+          printf("\tVAZIA\n");
         }
       } else {
         printf("\tLIDER INDISPONIVEL\n");
@@ -222,7 +222,7 @@ int main()
 /*------------------------------------------------------------------------*/
       /* Imprimir a saída após realizar a reunião */
       for (int T = 0; T < TAREFAS; T++) {
-        printf("%.2d/%.2d F %.2d: %s\n", reunioes[i].dia, mes_atual, funcionarios, descricao_compr);
+        printf("%.2d/%.2d F %.2d: %s\n", reunioes[i].dia, mes_atual, funcionarios, reunioes->descricao);
         
         /* Se o tempo de conclusão da tarefa <= 0, imprimir "CONCLUÍDA" */
         if (tarefas[T].tempo_conclusao <= 0) {
@@ -236,8 +236,8 @@ int main()
             qtde_tarefas_tempo_restante_zero++;
           }
         }
-      /* Verificar se a reunião foi realizada */
-      if (reunioes[i].realizada) {
+      /* Verificar se a reunião foi marcada */
+      if (reunioes[i].marcada) {
         reunioes_realizadas[qtdes_reunioes_realizadas] = reunioes[i];
         qtdes_reunioes_realizadas++;
       }
@@ -252,9 +252,6 @@ int main()
       for (int dia = 1; dia <= 31; dia++) {
           /* Para cada funcionário X */
           for (int X = 0; X < FUNCIONARIOS; X++) {
-              /* Obter lista de compromissos para o dia e funcionário */
-              Reuniao compromissos = funcionarios[X].[mes_atual][dia - 1];
-
               /* Para cada compromisso */
               for (int T = 0; T < TAREFAS; T++) {
                   /* Verificar se a tarefa ainda não foi concluída */
