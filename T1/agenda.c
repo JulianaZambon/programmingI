@@ -77,7 +77,7 @@ int escolherLider(Funcionario funcionarios[], int num_funcionarios)
 }
 
 /* Se o líder tem disponibilidade em sua agenda nos horários */
-int verificaDisponibilidade(Reuniao reunioes[], int lider, int hc_ini_h, int hc_ini_m, 
+int verificaDisponibilidade(Reuniao reunioes[], int indice_lider, int hc_ini_h, int hc_ini_m, 
                               int hc_fim_h, int hc_fim_m, int dia, int id_tarefa) 
 {
     /* Verifica a disponibilidade do líder em relação às reuniões existentes */
@@ -85,7 +85,7 @@ int verificaDisponibilidade(Reuniao reunioes[], int lider, int hc_ini_h, int hc_
         Reuniao reuniao = reunioes[i];
          
         /* Verifica se a reunião já está agendada para o líder */
-        if (lider == reuniao.id) {
+        if (indice_lider == reuniao.id) {
             /* Verifica se há conflito de horários */
             if ((hc_ini_h >= reuniao.hc_ini_h && hc_ini_h <= reuniao.hc_fim_h) ||
                 (hc_fim_h >= reuniao.hc_ini_h && hc_fim_h <= reuniao.hc_fim_h)) {
@@ -155,6 +155,7 @@ int main()
 /* Para cada mês de 1 até 12 */
   int mes_atual;
   int i;
+  int indice_lider;
   for (mes_atual = 1; mes_atual <= MES; mes_atual++) {
     printf("M %d\n", mes_atual);
     
@@ -172,12 +173,12 @@ int main()
       reunioes[i].marcada = 0; /* Primeiramente a reunião não está marcada*/
 /*------------------------------------------------------------------------*/      
       /* Descrição da reunião */
-      sprintf(reunioes[i].descricao, "REUNIR L %.2d %.2d/%.2d %.2d:%.2d %.2d:%.2d T %.2d", lider, reunioes[i].dia, mes_atual,
+      sprintf(reunioes[i].descricao, "REUNIR L %.2d %.2d/%.2d %.2d:%.2d %.2d:%.2d T %.2d", indice_lider, reunioes[i].dia, mes_atual,
               reunioes[i].hc_ini_h, reunioes[i].hc_ini_m, reunioes[i].hc_fim_h, reunioes[i].hc_fim_m, reunioes[i].id);
       printf("%s", reunioes[i].descricao);
       
       /* Se o líder tem disponibilidade em sua agenda nos horários escolhidos: */
-      int disponivel_lider = verificaDisponibilidade(reunioes, lider, reunioes[i].hc_ini_h, reunioes[i].hc_ini_m,
+      int disponivel_lider = verificaDisponibilidade(reunioes, indice_lider, reunioes[i].hc_ini_h, reunioes[i].hc_ini_m,
                                                     reunioes[i].hc_fim_h, reunioes[i].hc_fim_m, reunioes[i].dia, reunioes[i].id);
       
       /* Se o líder estiver disponível */
@@ -220,28 +221,28 @@ int main()
       }
 
 /*------------------------------------------------------------------------*/
-      /* Imprimir a saída após realizar a reunião */
-      for (int T = 0; T < TAREFAS; T++) {
-        printf("%.2d/%.2d F %.2d: %s\n", reunioes[i].dia, mes_atual, funcionarios, reunioes->descricao);
-        
-        /* Se o tempo de conclusão da tarefa <= 0, imprimir "CONCLUÍDA" */
-        if (tarefas[T].tempo_conclusao <= 0) {
-          printf("CONCLUÍDA\n");
-        } else {
-          /* Senão, imprimir informações da tarefa */
-          printf("\tT %.2d D %.2d TCR %.2d\n", T, tarefas[T].dificuldade, tarefas[T].tempo_conclusao);
-        }
-        /* Verificar se o tempo restante para concluir a tarefa é igual a zero */
-          if (tarefas[T].tempo_conclusao == 0) {
-            qtde_tarefas_tempo_restante_zero++;
+  /* Imprimir a saída após realizar a reunião */
+        for (int T = 0; T < TAREFAS; T++) {
+          printf("%.2d/%.2d F %.2d: %s\n", reunioes[i].dia, mes_atual, funcionarios, reunioes->descricao);
+          
+          /* Se o tempo de conclusão da tarefa <= 0, imprimir "CONCLUÍDA" */
+          if (tarefas[T].tempo_conclusao <= 0) {
+            printf("CONCLUÍDA\n");
+          } else {
+            /* Senão, imprimir informações da tarefa */
+            printf("\tT %.2d D %.2d TCR %.2d\n", T, tarefas[T].dificuldade, tarefas[T].tempo_conclusao);
           }
+          /* Verificar se o tempo restante para concluir a tarefa é igual a zero */
+            if (tarefas[T].tempo_conclusao == 0) {
+              qtde_tarefas_tempo_restante_zero++;
+            }
+          }
+        /* Verificar se a reunião foi realizada */
+        if (reunioes[i].marcada) {
+          reunioes_realizadas[qtdes_reunioes_realizadas] = reunioes[i];
+          qtdes_reunioes_realizadas++;
         }
-      /* Verificar se a reunião foi marcada */
-      if (reunioes[i].marcada) {
-        reunioes_realizadas[qtdes_reunioes_realizadas] = reunioes[i];
-        qtdes_reunioes_realizadas++;
       }
-    }
      
 /*------------------------------------------------------------------------*/
 /* Realizar todas as reuniões marcadas*/
