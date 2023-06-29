@@ -194,22 +194,23 @@ int main()
           /* Para cada membro, verificar se liderança líder > liderança membro +ALEAT(-20,10) */
           if (verificaLideranca(funcionarios[lider], funcionarios)) {
             /* Tentar marcar a reunião na agenda do membro */
-            printf("\tMEMBROS");
+            printf("\tMEMBROS:");
             int disponivel_membro = verificaDisponibilidade(reunioes, membros[j], reunioes[i].hc_ini_h, reunioes[i].hc_ini_m,
                                                             reunioes[i].hc_fim_h, reunioes[i].hc_fim_m, reunioes[i].dia, reunioes[i].id);
             if (disponivel_membro) { /* Marcar a reunião na agenda do membro */
               /* MARCAR */
               reunioes[i].marcada = 1; /* Marcar a reunião */
-              printf(" %.2d: OK\n", membros[j]);
+              printf(" %.2d: OK", membros[j]);
               algum_membro_disponivel++; /* Pelo menos um membro está disponível */
             } else {
-              printf(" %.2d: IN\n", membros[j]);
+              printf(" %.2d: IN", membros[j]);
             }
+            printf("\n");
           }
         }
         
         if (algum_membro_disponivel == 0) {
-          printf("\tVAZIA\n");
+          printf("\tMEMBROS: VAZIA\n");
         }
       } else {
         printf("\tLIDER INDISPONIVEL\n");
