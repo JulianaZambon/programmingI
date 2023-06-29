@@ -223,7 +223,7 @@ int main()
 /*------------------------------------------------------------------------*/
   /* Imprimir a saída após realizar a reunião */
         for (int T = 0; T < TAREFAS; T++) {
-          printf("%.2d/%.2d F %.2d: %s\n", reunioes[i].dia, mes_atual, funcionarios, reunioes->descricao);
+          printf("%.2d/%.2d F %.2d: %s\n", reunioes[i].dia, mes_atual, funcionarios, reunioes[i].descricao);
           
           /* Se o tempo de conclusão da tarefa <= 0, imprimir "CONCLUÍDA" */
           if (tarefas[T].tempo_conclusao <= 0) {
