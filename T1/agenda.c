@@ -57,7 +57,6 @@ void iniciarTarefas (Tarefa *tarefas)
   }
 }
 /*------------------------------------------------------------------------*/
-
 /* Escolher aleatoriamente um líder entre os funcionários cuja 
           liderança esteja entre 30 e 70. */
 Funcionario *escolherLider(Funcionario *funcionarios)
@@ -71,7 +70,6 @@ Funcionario *escolherLider(Funcionario *funcionarios)
   return lider;
 }
 
-/*------------------------------------------------------------------------*/
 /* Marcar reuniões */
 void marcarReunioes (Funcionario *funcionarios)
 {
@@ -161,7 +159,6 @@ void realizarReuniao ()
     }
   }
 }
-
 /*------------------------------------------------------------------------*/
 int main()
 {
