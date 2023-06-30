@@ -142,10 +142,10 @@ void realizarReuniao ()
   for (int mes_atual = 1; mes_atual <= MES; mes_atual++) {
     for (int dia = 1; dia <= 31; dia++) {
       for (int i = 0; i < FUNCIONARIOS; i++) {
-        compromisso_t *compromisso = primeiro_compromisso_dia(funcionarios[i].agenda, dia);
+        compromisso_t *compromisso = primeiro_compromisso_dia(funcionario[i].agenda, dia);
         while (compromisso != NULL) {
-          if (compromisso->id < TAREFAS && tarefas[compromisso->id].tempo_conclusao > 0) {
-            int min_trab = (compromisso->fim_h - compromisso->inicio) * 60 + (compromisso->fim_m - compromisso->inicio);
+          if (compromisso->id < TAREFAS && tarefa[compromisso->id].tempo_conclusao > 0) {
+            int min_trab = (horario_compromisso->fim_h - horario_compromisso->inicio) * 60 + (horario_compromisso->fim_m - horario_compromisso->inicio);
             tarefas[compromisso->id].tempo_conclusao -= min_trab * (funcionarios[i].experiencia / 100.0) * ((100 - tarefas[compromisso->id].dificuldade) / 100.0);
             if (tarefas[compromisso->id].tempo_conclusao <= 0)
               tarefas[compromisso->id].tempo_conclusao = 0;
