@@ -75,11 +75,10 @@ Funcionario *escolherLider(Funcionario *funcionarios)
 /* Marcar reuniões */
 int marcarReunioes ()
 {
-  Funcionario *lider;
+  Funcionario *lider, *membro;
   compromisso_t *compromisso;
   horario_compromisso_t hc;
-  int dia;
-  int id_tarefa;
+  int dia, id_tarefa, marcar, aleatorio, control;
   char descricao[100];
 
   /* Para cada mês de 1 até 12 */
@@ -96,19 +95,45 @@ int marcarReunioes ()
       id_tarefa = ALEAT(0, TAREFAS - 1);
       sprintf(descricao, "REUNIR L %.2d %.2d/%.2d %.2d:%.2d %.2d:%.2d T %.2d", lider->id, dia, mes_atual,
               hc.ini_h, hc.ini_m, hc.fim_h, hc.fim_m, id_tarefa);
+              printf("%s\n", descricao);
 
       escolherLider(funcionarios);
       compromisso = cria_compromisso(hc, id_tarefa, descricao); /* Criar compromisso */  
 
       /* Se o líder tem disponibilidade em sua agenda nos horários escolhidos */
-      marca_compromisso_agenda(lider->agenda, dia, compromisso);
+      marcar = marca_compromisso_agenda(lider->agenda, dia, compromisso);
 
-      /* Sortear ALEAT(2,6) membros (funcionários) 
+      if (marcar == 1) {
+          /* Sortear ALEAT(2,6) membros (funcionários) 
             - Para cada membro verificar 
               se liderança líder > liderança membro +ALEAT(-20,10)  
                 - Se sim, tentar marcar a reunião na agenda do membro
             - Se nenhum dos membros puder participar, remova a reunião da 
               agenda do líder.*/
+        aleatorio = ALEAT(2,6);
+        control = 0;
+        printf("\tMEMBROS:");
+        for (int i = 0; i < aleatorio; i++) {
+          membro = &funcionarios[ALEAT(0, FUNCIONARIOS - 1)];
+          if (lider->lideranca > membro->lideranca + ALEAT(-20, 10)){
+            marcar = marca_compromisso_agenda(membro->agenda, dia, compromisso);
+            if (marcar == 1)
+              control = 1;
+            printf("%.2d, %s", membro->id, marcar == 1 ? "OK" : "IN");
+          }
+        } 
+        if (control == 0) {
+          desmarca_compromisso_agenda(lider->agenda, dia, compromisso);
+          printf("\tVAZIA \n");
+        }
+      } else {
+        desmarca_compromisso_agenda(lider->agenda, dia, compromisso);
+        printf("\tLIDER INDISPONIVEL \n");
+      }
+    }
+    /* Atualizar a agenda dos funcionários */
+    for (int i = 0; i < FUNCIONARIOS; i++){
+      prox_mes_agenda(funcionarios[i].agenda);
     }
   }
 }
@@ -123,6 +148,9 @@ int main()
 
   iniciarFuncionarios(funcionarios);
   iniciarTarefas(tarefas);
+
+  marcarReunioes();
+
 
   return 0;
 }
