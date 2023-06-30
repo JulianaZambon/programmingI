@@ -13,16 +13,16 @@
 /*------------------------------------------------------------------------*/
 
 /* struct para o funcionario */
-typedef struct
+typedef struct funcionario
 {
   int id;
   int lideranca;
   int experiencia;
-  agenda_t *agenda
+  agenda_t *agenda;
 } Funcionario;
 
 /* struct para as tarefas */
-typedef struct
+typedef struct tarefa
 {
   int id;
   int tempo_conclusao;
@@ -73,7 +73,7 @@ Funcionario *escolherLider(Funcionario *funcionarios)
 
 /*------------------------------------------------------------------------*/
 /* Marcar reuniões */
-int marcarReunioes ()
+void marcarReunioes (Funcionario *funcionarios)
 {
   Funcionario *lider, *membro;
   compromisso_t *compromisso;
@@ -93,11 +93,12 @@ int marcarReunioes ()
       hc.fim_m = hc.ini_m;
       dia = ALEAT(1, 31);
       id_tarefa = ALEAT(0, TAREFAS - 1);
+
+      lider = escolherLider(funcionarios);
       sprintf(descricao, "REUNIR L %.2d %.2d/%.2d %.2d:%.2d %.2d:%.2d T %.2d", lider->id, dia, mes_atual,
               hc.ini_h, hc.ini_m, hc.fim_h, hc.fim_m, id_tarefa);
               printf("%s\n", descricao);
 
-      escolherLider(funcionarios);
       compromisso = cria_compromisso(hc, id_tarefa, descricao); /* Criar compromisso */  
 
       /* Se o líder tem disponibilidade em sua agenda nos horários escolhidos */
@@ -138,19 +139,39 @@ int marcarReunioes ()
   }
 }
 
+void realizarReuniao ()
+{
+  for (int mes_atual = 1; mes_atual <= MES; mes_atual++) {
+    for (int dia = 1; dia <= 31; dia++) {
+      for (int i = 0; i < FUNCIONARIOS; i++) {
+        compromisso_t *compromisso = primeiro_compromisso_dia(funcionarios[i].agenda, dia);
+        while (compromisso != NULL) {
+          if (compromisso->id < TAREFAS && tarefas[compromisso->id].tempo_conclusao > 0) {
+            int min_trab = (compromisso->fim_h - compromisso->inicio) * 60 + (compromisso->fim_m - compromisso->inicio);
+            tarefas[compromisso->id].tempo_conclusao -= min_trab * (funcionarios[i].experiencia / 100.0) * ((100 - tarefas[compromisso->id].dificuldade) / 100.0);
+            if (tarefas[compromisso->id].tempo_conclusao <= 0)
+              tarefas[compromisso->id].tempo_conclusao = 0;
+            funcionarios[i].experiencia++;
+            if (funcionarios[i].experiencia > 100)
+              funcionarios[i].experiencia = 100;
+          }
+          compromisso = proximo_compromisso_dia(funcionarios[i].agenda, dia);
+        }
+      }
+    }
+  }
+}
+
 /*------------------------------------------------------------------------*/
 int main()
 {
   srand(time(NULL));
-
   Funcionario funcionarios[FUNCIONARIOS];
   Tarefa tarefas[TAREFAS];
-
   iniciarFuncionarios(funcionarios);
   iniciarTarefas(tarefas);
-
-  marcarReunioes();
-
+  marcarReunioes(funcionarios);
+  realizarReuniao(funcionarios, tarefas);
 
   return 0;
 }

@@ -3,6 +3,30 @@
 #include <string.h>
 #include "libagenda.h"
 
+/* Cria uma agenda vazia:
+   O mes_atual deve ser inicializado com 1; ptr_mes_atual deve ser definido. */
+agenda_t* cria_agenda()
+{
+   agenda_t *nova_agenda = malloc(sizeof(agenda_t));
+
+   if (nova_agenda == NULL)
+      return NULL; /* caso tenha falha na alocacao de memoria */
+
+   nova_agenda->mes_atual = 1;
+   nova_agenda->ptr_mes_atual = malloc(sizeof(compromisso_t));
+
+   if (nova_agenda->ptr_mes_atual == NULL) {
+      free(nova_agenda);
+      return NULL; /* caso tenha falha na alocacao de memoria */
+   }
+
+   nova_agenda->ptr_mes_atual->dias = NULL;
+   nova_agenda->ptr_mes_atual->prox = nova_agenda->ptr_mes_atual;
+   nova_agenda->ptr_mes_atual->ant = nova_agenda->ptr_mes_atual;
+   nova_agenda->ptr_mes_atual->mes = 1;
+   return nova_agenda;
+}
+
 /* Cria um compromisso:
    Retorna um compromisso com as informacoes de data de hc, um identificador
    id e uma string de descricao. A funcao deve alocar um novo espaco de
