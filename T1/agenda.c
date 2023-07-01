@@ -158,7 +158,7 @@ void realizarReuniao ()
                 tarefas[compromisso->id].tempo_conclusao = 0;
                 printf("CONCLUÍDA");
               } else {
-                printf("\tT %.2d D %.2d TCR %.2d\n", tarefa, tarefa_dificuldade, tarefa_tempo_conclusao);
+                printf("\tT %.2d D %.2d TCR %.2d\n", tarefa->id, tarefa->dificuldade, tarefa->tempo_conclusao);
               };
             }
             funcionarios[i].experiencia++;
