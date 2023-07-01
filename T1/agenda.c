@@ -144,7 +144,9 @@ void realizarReuniao()
 {
   int qtde_reunioes_realizadas, qtde_tarefas_tempo_restante_zero;
   qtde_reunioes_realizadas = 0;
-  qtde_tarefas_tempo_restante_zero = 0;                           
+  qtde_tarefas_tempo_restante_zero = 0;
+  Funcionario *funcionario;
+  Tarefa *tarefa;                           
 
   for (int mes_atual = 1; mes_atual <= MES; mes_atual++) /* para cada mês */{
     for (int dia = 1; dia <= 31; dia++) {/* para cada dia do mês */
@@ -156,23 +158,23 @@ void realizarReuniao()
                            (horario_compromisso->fim_m - horario_compromisso->inicio);
             /* fórmula fornecida */
             tarefa[compromisso->id].tempo_conclusao -= min_trab * (funcionario[i].experiencia / 100.0) *
-                                                        ((100 - tarefas[compromisso->id].dificuldade) / 100.0);
+                                                        ((100 - tarefa[compromisso->id].dificuldade) / 100.0);
 
             printf("%.2d/%.2d F %.2d: %s \n", dia, mes_atual, funcionario[i].id, compromisso->descricao);
 
-            if (tarefas[compromisso->id].tempo_conclusao <= 0) {
-              tarefas[compromisso->id].tempo_conclusao = 0;
+            if (tarefa[compromisso->id].tempo_conclusao <= 0) {
+              tarefa[compromisso->id].tempo_conclusao = 0;
               printf("CONCLUÍDA");
               qtde_tarefas_tempo_restante_zero++; /* incrementa o contador*/
             } else {
               printf("\tT %.2d D %.2d TCR %.2d\n", tarefa->id, tarefa->dificuldade, tarefa->tempo_conclusao);
             };
           }
-          funcionarios[i].experiencia++; /* incrementa a experiência do funcionário */
-          if (funcionarios[i].experiencia > 100) 
-            funcionarios[i].experiencia = 100; /* experiência máxima é 100 */
+          funcionario[i].experiencia++; /* incrementa a experiência do funcionário */
+          if (funcionario[i].experiencia > 100) 
+            funcionario[i].experiencia = 100; /* experiência máxima é 100 */
         }
-        compromisso = proximo_compromisso_dia(funcionarios[i].agenda, dia); /* próximo compromisso */ 
+        compromisso = proximo_compromisso_dia(funcionario[i].agenda, dia); /* próximo compromisso */ 
       }
     }
     qtde_reunioes_realizadas++; /* incrementa o contador */
