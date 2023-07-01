@@ -179,7 +179,7 @@ void realizarReuniao()
   }
 }
 
-int mensagemFinal()
+void mensagemFinal()
 {
   printf("REUNIOES REALIZADAS", qtdes_reunioes_realizadas);
   printf("TAREFAS CONCLUIDAS", qtde_tarefas_tempo_restante_zero);
