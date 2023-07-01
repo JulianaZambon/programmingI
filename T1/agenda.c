@@ -142,6 +142,10 @@ void marcarReunioes(Funcionario *funcionarios)
 /* Realizar todas as reuniões marcadas*/
 void realizarReuniao()
 {
+  int qtde_reunioes_realizadas, qtde_tarefas_tempo_restante_zero;
+  qtde_reunioes_realizadas = 0;
+  qtde_tarefas_tempo_restante_zero = 0;                           
+
   for (int mes_atual = 1; mes_atual <= MES; mes_atual++) /* para cada mês */{
     for (int dia = 1; dia <= 31; dia++) {/* para cada dia do mês */
       for (int i = 0; i < FUNCIONARIOS; i++) /* para cada funcionário */{
@@ -151,10 +155,10 @@ void realizarReuniao()
             int min_trab = (horario_compromisso->fim_h - horario_compromisso->inicio) * 60 +
                            (horario_compromisso->fim_m - horario_compromisso->inicio);
             /* fórmula fornecida */
-            tarefas[compromisso->id].tempo_conclusao -= min_trab * (funcionarios[i].experiencia / 100.0) *
+            tarefa[compromisso->id].tempo_conclusao -= min_trab * (funcionario[i].experiencia / 100.0) *
                                                         ((100 - tarefas[compromisso->id].dificuldade) / 100.0);
 
-            printf("%.2d/%.2d F %.2d: %s \n", dia, mes_atual, funcionarios[i].id, compromisso->descricao);
+            printf("%.2d/%.2d F %.2d: %s \n", dia, mes_atual, funcionario[i].id, compromisso->descricao);
 
             if (tarefas[compromisso->id].tempo_conclusao <= 0) {
               tarefas[compromisso->id].tempo_conclusao = 0;
