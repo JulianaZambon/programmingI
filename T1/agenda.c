@@ -5,9 +5,9 @@
 #include <time.h>
 #include "libagenda.h"
 
-#define TAREFAS 100 /* qntd tarefas */
-#define REUNIOES 100 /* qntd reunioes */
-#define MES 12      /* qntd de meses */
+#define TAREFAS 100     /* qntd tarefas */
+#define REUNIOES 100    /* qntd reunioes */
+#define MES 12          /* qntd de meses */
 #define FUNCIONARIOS 30 /* qntd de funcionarios */
 
 /*------------------------------------------------------------------------*/
@@ -36,11 +36,12 @@ int ALEAT(int MIN, int MAX)
 {
   return MIN + rand() % (MAX - MIN + 1);
 }
+
 /*------------------------------------------------------------------------*/
 /* Inicialização dos vetores */
-void iniciarFuncionarios (Funcionario *funcionarios)
+void iniciarFuncionarios(Funcionario *funcionarios)
 {
-   for (int i = 0; i < FUNCIONARIOS; i++) {
+  for (int i = 0; i < FUNCIONARIOS; i++) {
     funcionarios[i].agenda = cria_agenda(); /* Inicializar a agenda do funcionário */
     funcionarios[i].id = i;
     funcionarios[i].lideranca = ALEAT(0, 100);
@@ -48,7 +49,7 @@ void iniciarFuncionarios (Funcionario *funcionarios)
   }
 }
 
-void iniciarTarefas (Tarefa *tarefas)
+void iniciarTarefas(Tarefa *tarefas)
 {
   for (int T = 0; T < TAREFAS; T++) {
     tarefas[T].id = T;
@@ -56,8 +57,9 @@ void iniciarTarefas (Tarefa *tarefas)
     tarefas[T].dificuldade = ALEAT(30, 80);
   }
 }
+
 /*------------------------------------------------------------------------*/
-/* Escolher aleatoriamente um líder entre os funcionários cuja 
+/* Escolher aleatoriamente um líder entre os funcionários cuja
           liderança esteja entre 30 e 70. */
 Funcionario *escolherLider(Funcionario *funcionarios)
 {
@@ -71,7 +73,7 @@ Funcionario *escolherLider(Funcionario *funcionarios)
 }
 
 /* Marcar todas reuniões */
-void marcarReunioes (Funcionario *funcionarios)
+void marcarReunioes(Funcionario *funcionarios)
 {
   Funcionario *lider, *membro;
   compromisso_t *compromisso;
@@ -84,92 +86,100 @@ void marcarReunioes (Funcionario *funcionarios)
     printf("M %.2d\n", mes_atual);
     /* Marcar 100 reuniões */
     for (int R = 0; R < REUNIOES; R++) {
-    
-      hc.ini_h = ALEAT(8, 12);
-      hc.ini_m = ALEAT(0, 3) * 15;
-      hc.fim_h = hc.ini_h + ALEAT(1, 4);
-      hc.fim_m = hc.ini_m;
-      dia = ALEAT(1, 31);
-      id_tarefa = ALEAT(0, TAREFAS - 1);
+
+      hc.ini_h = ALEAT(8, 12); /* Sortear horário de início da reunião */
+      hc.ini_m = ALEAT(0, 3) * 15; /* Sortear minutos de início da reunião */
+      hc.fim_h = hc.ini_h + ALEAT(1, 4); /* Sortear horário de fim da reunião */
+      hc.fim_m = hc.ini_m; /* Sortear minutos de fim da reunião */
+      dia = ALEAT(1, 31); /* Sortear dia da reunião */
+      id_tarefa = ALEAT(0, TAREFAS - 1); /* Sortear tarefa */
 
       lider = escolherLider(funcionarios);
       sprintf(descricao, "REUNIR L %.2d %.2d/%.2d %.2d:%.2d %.2d:%.2d T %.2d", lider->id, dia, mes_atual,
               hc.ini_h, hc.ini_m, hc.fim_h, hc.fim_m, id_tarefa);
-              printf("%s\n", descricao);
+      printf("%s\n", descricao);
 
-      compromisso = cria_compromisso(hc, id_tarefa, descricao); /* Criar compromisso */  
+      compromisso = cria_compromisso(hc, id_tarefa, descricao); /* Criar compromisso */
 
       /* Se o líder tem disponibilidade em sua agenda nos horários escolhidos */
       marcar = marca_compromisso_agenda(lider->agenda, dia, compromisso);
 
       if (marcar == 1) {
-          /* Sortear ALEAT(2,6) membros (funcionários) 
-            - Para cada membro verificar 
-              se liderança líder > liderança membro +ALEAT(-20,10)  
-                - Se sim, tentar marcar a reunião na agenda do membro
-            - Se nenhum dos membros puder participar, remova a reunião da 
-              agenda do líder.*/
-        aleatorio = ALEAT(2,6);
-        control = 0;
+        /* Sortear ALEAT(2,6) membros (funcionários)
+          - Para cada membro verificar
+            se liderança líder > liderança membro +ALEAT(-20,10)
+              - Se sim, tentar marcar a reunião na agenda do membro
+          - Se nenhum dos membros puder participar, remova a reunião da
+            agenda do líder.*/
+        aleatorio = ALEAT(2, 6);
+        control = 0; /* Controla se algum membro pode participar */
         printf("\tMEMBROS:");
         for (int i = 0; i < aleatorio; i++) {
           membro = &funcionarios[ALEAT(0, FUNCIONARIOS - 1)];
-          if (lider->lideranca > membro->lideranca + ALEAT(-20, 10)){
+          if (lider->lideranca > membro->lideranca + ALEAT(-20, 10)) {
             marcar = marca_compromisso_agenda(membro->agenda, dia, compromisso);
             if (marcar == 1)
               control = 1;
-            printf("%.2d, %s", membro->id, marcar == 1 ? "OK" : "IN");
+            printf("%.2d, %s", membro->id, marcar == 1 ? "OK" : "IN"); /* OK se marcar = 1, IN se marcar = 0 */
           }
-        } 
+        }
         if (control == 0) {
-          desmarca_compromisso_agenda(lider->agenda, dia, compromisso);
+          desmarca_compromisso_agenda(lider->agenda, dia, compromisso); 
           printf("\tVAZIA \n");
         }
       } else {
-        desmarca_compromisso_agenda(lider->agenda, dia, compromisso);
+        desmarca_compromisso_agenda(lider->agenda, dia, compromisso); /* Remover compromisso */
         printf("\tLIDER INDISPONIVEL \n");
       }
     }
     /* Atualizar a agenda dos funcionários */
-    for (int i = 0; i < FUNCIONARIOS; i++){
-      prox_mes_agenda(funcionarios[i].agenda);
+    for (int i = 0; i < FUNCIONARIOS; i++) {
+      prox_mes_agenda(funcionarios[i].agenda); /* Avançar para o próximo mês */
     }
   }
 }
 
 /* Realizar todas as reuniões marcadas*/
-void realizarReuniao ()
+void realizarReuniao()
 {
-  for (int mes_atual = 1; mes_atual <= MES; mes_atual++) {
-    for (int dia = 1; dia <= 31; dia++) {
-      for (int i = 0; i < FUNCIONARIOS; i++) {
+  for (int mes_atual = 1; mes_atual <= MES; mes_atual++) /* para cada mês */{
+    for (int dia = 1; dia <= 31; dia++) {/* para cada dia do mês */
+      for (int i = 0; i < FUNCIONARIOS; i++) /* para cada funcionário */{
         compromisso_t *compromisso = primeiro_compromisso_dia(funcionario[i].agenda, dia);
-        while (compromisso != NULL) {
-          if (compromisso->id < TAREFAS && tarefa[compromisso->id].tempo_conclusao > 0) {
-            int min_trab = (horario_compromisso->fim_h - horario_compromisso->inicio) * 60 + 
-            (horario_compromisso->fim_m - horario_compromisso->inicio);
+        while (compromisso != NULL) /* enquanto houver compromisso */{
+          if (compromisso->id < TAREFAS && tarefa[compromisso->id].tempo_conclusao > 0) /* se a tarefa não foi concluída */{
+            int min_trab = (horario_compromisso->fim_h - horario_compromisso->inicio) * 60 +
+                           (horario_compromisso->fim_m - horario_compromisso->inicio);
             /* fórmula fornecida */
-            tarefas[compromisso->id].tempo_conclusao -= min_trab * (funcionarios[i].experiencia / 100.0) * 
-            ((100 - tarefas[compromisso->id].dificuldade) / 100.0);
-              
-              printf("%.2d/%.2d F %.2d: %s \n", dia, mes_atual, funcionarios[i].id, compromisso->descricao);
+            tarefas[compromisso->id].tempo_conclusao -= min_trab * (funcionarios[i].experiencia / 100.0) *
+                                                        ((100 - tarefas[compromisso->id].dificuldade) / 100.0);
 
-              if (tarefas[compromisso->id].tempo_conclusao <= 0) {
-                tarefas[compromisso->id].tempo_conclusao = 0;
-                printf("CONCLUÍDA");
-              } else {
-                printf("\tT %.2d D %.2d TCR %.2d\n", tarefa->id, tarefa->dificuldade, tarefa->tempo_conclusao);
-              };
-            }
-            funcionarios[i].experiencia++;
-            if (funcionarios[i].experiencia > 100)
-              funcionarios[i].experiencia = 100;
+            printf("%.2d/%.2d F %.2d: %s \n", dia, mes_atual, funcionarios[i].id, compromisso->descricao);
+
+            if (tarefas[compromisso->id].tempo_conclusao <= 0) {
+              tarefas[compromisso->id].tempo_conclusao = 0;
+              printf("CONCLUÍDA");
+              qtde_tarefas_tempo_restante_zero++; /* incrementa o contador*/
+            } else {
+              printf("\tT %.2d D %.2d TCR %.2d\n", tarefa->id, tarefa->dificuldade, tarefa->tempo_conclusao);
+            };
           }
-          compromisso = proximo_compromisso_dia(funcionarios[i].agenda, dia);
+          funcionarios[i].experiencia++; /* incrementa a experiência do funcionário */
+          if (funcionarios[i].experiencia > 100) 
+            funcionarios[i].experiencia = 100; /* experiência máxima é 100 */
         }
+        compromisso = proximo_compromisso_dia(funcionarios[i].agenda, dia); /* próximo compromisso */ 
       }
     }
+    qtde_reunioes_realizadas++; /* incrementa o contador */
   }
+}
+
+int mensagemFinal()
+{
+  printf("REUNIOES REALIZADAS", qtdes_reunioes_realizadas);
+  printf("TAREFAS CONCLUIDAS", qtde_tarefas_tempo_restante_zero);
+}
 
 /*------------------------------------------------------------------------*/
 int main()
@@ -181,6 +191,7 @@ int main()
   iniciarTarefas(tarefas);
   marcarReunioes(funcionarios);
   realizarReuniao(funcionarios, tarefas);
+  mensagemFinal();
 
   return 0;
 }
