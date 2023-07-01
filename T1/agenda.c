@@ -70,7 +70,7 @@ Funcionario *escolherLider(Funcionario *funcionarios)
   return lider;
 }
 
-/* Marcar reuniões */
+/* Marcar todas reuniões */
 void marcarReunioes (Funcionario *funcionarios)
 {
   Funcionario *lider, *membro;
@@ -137,6 +137,7 @@ void marcarReunioes (Funcionario *funcionarios)
   }
 }
 
+/* Realizar todas as reuniões marcadas*/
 void realizarReuniao ()
 {
   for (int mes_atual = 1; mes_atual <= MES; mes_atual++) {
@@ -145,10 +146,21 @@ void realizarReuniao ()
         compromisso_t *compromisso = primeiro_compromisso_dia(funcionario[i].agenda, dia);
         while (compromisso != NULL) {
           if (compromisso->id < TAREFAS && tarefa[compromisso->id].tempo_conclusao > 0) {
-            int min_trab = (horario_compromisso->fim_h - horario_compromisso->inicio) * 60 + (horario_compromisso->fim_m - horario_compromisso->inicio);
-            tarefas[compromisso->id].tempo_conclusao -= min_trab * (funcionarios[i].experiencia / 100.0) * ((100 - tarefas[compromisso->id].dificuldade) / 100.0);
-            if (tarefas[compromisso->id].tempo_conclusao <= 0)
-              tarefas[compromisso->id].tempo_conclusao = 0;
+            int min_trab = (horario_compromisso->fim_h - horario_compromisso->inicio) * 60 + 
+            (horario_compromisso->fim_m - horario_compromisso->inicio);
+            /* fórmula fornecida */
+            tarefas[compromisso->id].tempo_conclusao -= min_trab * (funcionarios[i].experiencia / 100.0) * 
+            ((100 - tarefas[compromisso->id].dificuldade) / 100.0);
+              
+              printf("%.2d/%.2d F %.2d: %s \n", dia, mes_atual, funcionarios[i].id, compromisso->descricao);
+
+              if (tarefas[compromisso->id].tempo_conclusao <= 0) {
+                tarefas[compromisso->id].tempo_conclusao = 0;
+                printf("CONCLUÍDA");
+              } else {
+                printf("\tT %.2d D %.2d TCR %.2d\n", tarefa, tarefa_dificuldade, tarefa_tempo_conclusao);
+              };
+            }
             funcionarios[i].experiencia++;
             if (funcionarios[i].experiencia > 100)
               funcionarios[i].experiencia = 100;
@@ -158,7 +170,7 @@ void realizarReuniao ()
       }
     }
   }
-}
+
 /*------------------------------------------------------------------------*/
 int main()
 {
