@@ -124,8 +124,6 @@ function media_nota_aprovados() {
     fi
 }
 
-
-
 #5)qual eh a media de nota dos aprovados (no periodo total e por ano)?
 function media_nota_aprovados() {
     declare -A notas
