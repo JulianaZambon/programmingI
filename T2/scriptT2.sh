@@ -33,7 +33,7 @@ function aprovacao() {
     # $() eh executado e seu resultado eh atribuido a variavel
 
     #extrair os aprovados
-    matriculas=$(awk -F',' '$10 == "Aprovado" {print $1}' historico-alg1_SIGA_ANONIMIZADO.csv)
+    matriculas=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -E 'Aprovado' | cut -d',' -f1)   
 
     #inicializa as var para rastrear o maximo de vezes cursadas e o numero de individuos com esse maximo
     max_cursadas=0
@@ -194,24 +194,27 @@ function porcentagem_evasoes() {
         return
     fi
 
-    #porcentagem de evasoes total
-    evasoes_total=$(grep -c "Cancelado" "historico-alg1_SIGA_ANONIMIZADO.csv")
-    porcentagem_total=$(awk -v total_alunos="$total_alunos" -v evasoes_total="$evasoes_total" 'BEGIN { printf "%.2f", (evasoes_total / total_alunos) * 100 }')
+    #quantidade de alunos que cancelaram
+    cancelados=$(grep -c 'Cancelado' historico-alg1_SIGA_ANONIMIZADO.csv)
 
-    echo "Porcentagem de evasões total: $porcentagem_total%"
+    #porcentagem de evasoes
+    porcentagem=$(bc <<< "scale=2; ($cancelados / $total_alunos) * 100")
 
-    #porcentagem de evasoes para cada ano
-    echo "Porcentagem de evasões anualmente:"
-    cut -d',' -f5 "historico-alg1_SIGA_ANONIMIZADO.csv" | sort | uniq -c | while read -r count ano; do
-        if [[ $ano == "Cancelado" || ! $ano =~ ^[0-9]{4}$ ]]; then
-            continue
+    printf "Porcentagem de evasões: %.2f%%\n" "$porcentagem"
+
+    #porcentagem de evasoes por ano
+    declare -A count_cancelados
+    while IFS=',' read -r ano status; do
+        if [[ $status == Cancelado ]]; then
+            ((count_cancelados[$ano]++))
         fi
+    done < historico-alg1_SIGA_ANONIMIZADO.csv
 
-        porcentagem_anual=$(awk -v total_alunos="$total_alunos" -v count="$count" 'BEGIN { printf "%.2f", (count / total_alunos) * 100 }')
-        if (( $(bc <<< "$porcentagem_anual > 0") )); then
-            echo "$ano: $porcentagem_anual%"
-        fi
-    done | sed -e '1d' -e '/[0-9]\{4\}: 0.00%/d'
+    printf "Ano: Porcentagem de evasões:\n"
+    for ano in $(printf '%s\n' "${!count_cancelados[@]}" | sort -n); do
+        porcentagem=$(bc <<< "scale=2; (${count_cancelados[$ano]} / $total_alunos) * 100")
+        printf "%s: %.2f%%\n" "$ano" "$porcentagem"
+    done
 }
 
 #9)como os anos de pandemia impactaram no rendimento dos estudantes em relacao aos anos anteriores? 
@@ -219,20 +222,32 @@ function porcentagem_evasoes() {
 #considere como anos de pandemia os anos de 2020 e 2021. 
 #(EXEMPLO: qual o percentual de aumento ou diminuicao de notas, frequencias, aprovacoes/reprovacoes e cancelamentos).
 function rendimento_pandemia() {
-    total_aprovados=$(awk -F',' '/Aprovado/ && /2020|2021/ {count++} END {print count}' historico-alg1_SIGA_ANONIMIZADO.csv)
-    total_cancelamentos=$(awk -F',' '/Cancelado/ && /2020|2021/ {count++} END {print count}' historico-alg1_SIGA_ANONIMIZADO.csv)
-    total_reprovados=$(awk -F',' '/R-/ && /2020|2021/ {count++} END {print count}' historico-alg1_SIGA_ANONIMIZADO.csv)
+    #aprovacoes, reprovacoes e cancelamentos durante a pandemia (2020 e 2021)
+    aprovados_pandemia=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -E -c '2020|2021,Aprovado')
+    reprovados_pandemia=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -E -c '2020|2021,R-')
+    cancelamentos_pandemia=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -E -c '2020|2021,Cancelado')
 
-    #pandemia
-    total_pandemia=$(awk -F',' '/2020|2021/ {count++} END {print count}' historico-alg1_SIGA_ANONIMIZADO.csv)
-    aprovados_pandemia=$(awk -F',' '/Aprovado/ && /2020|2021/ {count++} END {print count}' historico-alg1_SIGA_ANONIMIZADO.csv)
-    cancelamentos_pandemia=$(awk -F',' '/Cancelado/ && /2020|2021/ {count++} END {print count}' historico-alg1_SIGA_ANONIMIZADO.csv)
-    reprovados_pandemia=$(awk -F',' '/R-/ && /2020|2021/ {count++} END {print count}' historico-alg1_SIGA_ANONIMIZADO.csv)
+    #aprovacoes, reprovacoes e cancelamentos nos anos anteriores a 2022
+    aprovados_anteriores=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -Ev -c '2020|2021|2022,Aprovado')
+    reprovados_anteriores=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -Ev -c '2020|2021|2022,R-')
+    cancelamentos_anteriores=$(cut -d',' -f4,5,10 historico-alg1_SIGA_ANONIMIZADO.csv | grep -Ev -c '2020|2021|2022,Cancelado')
 
-    percent_aprovados=$(awk "BEGIN { printf \"%.2f\", ($aprovados_pandemia / $total_pandemia) * 100 }")
-    percent_cancelamentos=$(awk "BEGIN { printf \"%.2f\", ($cancelamentos_pandemia / $total_pandemia) * 100 }")
-    percent_reprovados=$(awk "BEGIN { printf \"%.2f\", ($reprovados_pandemia / $total_pandemia) * 100 }")
+    #total de alunos durante a pandemia (2020 e 2021)
+    total_alunos_pandemia=$((aprovados_pandemia + reprovados_pandemia + cancelamentos_pandemia))
 
+    #total de alunos nos anos anteriores a 2022
+    total_alunos_anteriores=$((aprovados_anteriores + reprovados_anteriores + cancelamentos_anteriores))
+
+    #porcentagem de aprovados durante a pandemia (2020 e 2021)
+    percent_aprovados=$(bc <<< "scale=2; ($aprovados_pandemia / $total_alunos_pandemia) * 100")
+
+    #porcentagem de cancelamentos durante a pandemia (2020 e 2021)
+    percent_cancelamentos=$(bc <<< "scale=2; ($cancelamentos_pandemia / $total_alunos_pandemia) * 100")
+
+    #porcentagem de reprovados durante a pandemia (2020 e 2021)
+    percent_reprovados=$(bc <<< "scale=2; ($reprovados_pandemia / $total_alunos_pandemia) * 100")
+
+    #saida
     printf "Rendimento dos aprovados durante a pandemia (2020 e 2021): %.2f%%\n" "$percent_aprovados"
     printf "Taxa de cancelamento durante a pandemia (2020 e 2021): %.2f%%\n" "$percent_cancelamentos"
     printf "Taxa de reprovação durante a pandemia (2020 e 2021): %.2f%%\n" "$percent_reprovados"
