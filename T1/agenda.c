@@ -105,12 +105,14 @@ void marcarReunioes(Funcionario *funcionarios)
       marcar = marca_compromisso_agenda(lider->agenda, dia, compromisso);
 
       if (marcar == 1) {
+
         /* Sortear ALEAT(2,6) membros (funcionários)
           - Para cada membro verificar
             se liderança líder > liderança membro +ALEAT(-20,10)
               - Se sim, tentar marcar a reunião na agenda do membro
           - Se nenhum dos membros puder participar, remova a reunião da
             agenda do líder.*/
+
         aleatorio = ALEAT(2, 6);
         control = 0; /* Controla se algum membro pode participar */
         printf("\tMEMBROS:");
@@ -147,34 +149,48 @@ void realizarReuniao()
   qtde_tarefas_tempo_restante_zero = 0;
   Funcionario *funcionario;
   compromisso_t *compromisso;
-  Tarefa *tarefa;            
+  Tarefa *tarefa;
+
+  /*- Voltar para o mês 1 da agenda para "TRABALHAR":
+  - Para cada dia entre 1 e 31 e para cada funcionário X 
+      - Obter lista de compromissos e para cada compromisso
+          - Se a tarefa[T] ainda não foi concluída 
+            (tarefas[T].tempo_conclusao > 0):
+              - Reduzir o tempo restante para concluir a tarefa de acordo com a
+                seguinte fórmula: 
+                  tarefas[T].tempo_conclusao -= min_trab * (funcs[X].experiencia / 100.0) * ((100 - tarefas[T].dificuldade) / 100.0);
+
+              - Se o tempo restante para concluir a tarefa for menor ou igual 
+                a zero:
+                  tarefas[T].tempo_conclusao = 0;
+
+              - Incrementar a experiência do funcionário em uma unidade 
+                (limitar em 100)*/            
 
   for (int mes_atual = 1; mes_atual <= MES; mes_atual++) { /* Para cada mês de 1 até 12 */
-    printf("M %.2d\n", mes_atual);
     for (int dia = 1; dia <= 31; dia++) { /* Para cada dia entre 1 e 31 */
-      for (int i = 0; i < FUNCIONARIOS; i++) { /* Para cada funcionário X */
-        funcionario = &funcionario[i]; /* Obter lista de compromissos */
-        compromisso = funcionario->agenda->ptr_mes_atual;
+      for (int i = 0; i < FUNCIONARIOS; i++) { /* Para cada funcionário X*/
+        funcionario = &funcionarios[i]; /* Obter lista de compromissos */
+        compromisso = funcionario->agenda->ptr_mes_atual->dias[dia - 1].compromissos; /* Para cada compromisso */
+
         while (compromisso != NULL) { /* Se a tarefa[T] ainda não foi concluída */
-          tarefa = &tarefa[compromisso->id]; /* Reduzir o tempo restante para concluir a tarefa */
-          if (tarefa->tempo_conclusao > 0) { /* Se o tempo restante para concluir a tarefa for menor ou igual a zero */
-            int min_trab = compromisso->fim - compromisso->inicio; 
+          tarefa = &tarefas[compromisso->id]; 
+
+          if (tarefa->tempo_conclusao > 0) { /* Reduzir o tempo restante para concluir a tarefa */
             /* Fórmula fornecida */
             tarefa->tempo_conclusao -= min_trab * (funcionario->experiencia / 100.0) * ((100 - tarefa->dificuldade) / 100.0);
-            if (tarefa->tempo_conclusao <= 0) { /* Marcar a tarefa como concluída */
-              printf("CONCLUIDA\n");
-              tarefa->tempo_conclusao = 0;
-              qtde_tarefas_tempo_restante_zero++; /* Incrementar a quantidade de tarefas concluídas */
+
+            if (tarefa->tempo_conclusao <= 0) { /* Se o tempo restante para concluir a tarefa for menor ou igual a zero */
+              tarefa->tempo_conclusao = 0; /* Tempo restante para concluir a tarefa = 0 */
               funcionario->experiencia++; /* Incrementar a experiência do funcionário em uma unidade */
+              qtde_tarefas_tempo_restante_zero++; /* Incrementar a quantidade de tarefas com tempo restante igual a zero */
+
               if (funcionario->experiencia > 100)
-                funcionario->experiencia = 100; /*(limitar em 100) */
-            } else {
-                printf("\tT %.2d D %.2d TCR %.2d\n", tarefa->id, tarefa->dificuldade, tarefa->tempo_conclusao);
+                funcionario->experiencia = 100; /* Limitar em 100 */
             }
           }
-          compromisso = compromisso->prox;
           qtde_reunioes_realizadas++; /* Incrementar a quantidade de reuniões realizadas */
-          printf("%.2d/%.2d F %.2d: %s \n", dia, mes_atual, funcionario->id, compromisso->descricao);
+          compromisso = compromisso->prox; /* Próximo compromisso */
         }
       }
     }
