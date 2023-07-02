@@ -72,6 +72,7 @@ Funcionario *escolherLider(Funcionario *funcionarios)
   return lider;
 }
 
+/*------------------------------------------------------------------------*/
 /* Marcar todas reuniões */
 void marcarReunioes(Funcionario *funcionarios)
 {
@@ -141,6 +142,7 @@ void marcarReunioes(Funcionario *funcionarios)
   }
 }
 
+/*------------------------------------------------------------------------*/
 /* Realizar todas as reuniões marcadas*/
 void realizarReuniao()
 {
@@ -171,7 +173,7 @@ void realizarReuniao()
     for (int dia = 1; dia <= 31; dia++) { /* Para cada dia entre 1 e 31 */
       for (int i = 0; i < FUNCIONARIOS; i++) { /* Para cada funcionário X*/
         funcionario = &funcionario[i]; /* Obter lista de compromissos */
-        compromisso = funcionario->agenda->ptr_mes_atual->dias[dia - 1].compromissos; /* Para cada compromisso */
+        compromisso = funcionario->agenda->ptr_mes_atual->dias->comprs; /* Para cada compromisso */
 
         while (compromisso != NULL) { /* Se a tarefa[T] ainda não foi concluída */
           tarefa = &tarefa[compromisso->id]; 
@@ -196,13 +198,8 @@ void realizarReuniao()
       }
     }
   }
-}
-
-void mensagemFinal()
-{
-  int qtdes_reunioes_realizadas, qtde_tarefas_tempo_restante_zero;
-  /* imprime as mensagens finais */
-  printf("REUNIOES REALIZADAS %.2d", qtdes_reunioes_realizadas);
+  /* Infos finais */
+  printf("REUNIOES REALIZADAS %.2d", qtde_reunioes_realizadas);
   printf("TAREFAS CONCLUIDAS %.2d", qtde_tarefas_tempo_restante_zero);
 }
 
@@ -216,7 +213,6 @@ int main()
   iniciarTarefas(tarefas);
   marcarReunioes(funcionarios);
   realizarReuniao(funcionarios, tarefas);
-  mensagemFinal();
 
   return 0;
 }
