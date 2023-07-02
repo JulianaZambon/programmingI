@@ -120,46 +120,57 @@ int marca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
    if (agenda == NULL || compr == NULL)
       return 0;
 
-   /* para percorrer a lista de compromissos */
-   mes_t *atual = agenda->ptr_mes_atual;
-   mes_t *anterior = NULL;
-
    /* verifica se o dia informado como parametro existe */
    if (dia < 1 || dia > 31)
       return 0;
 
    /* verifica se o compromisso tem interseccao com outro */
+   mes_t *atual = agenda->ptr_mes_atual;
+
    while (atual != NULL) {
-         /* para percorrer a lista de compromissos */
-         compromisso_t *atual_compromisso = atual->dias->comprs;
-         compromisso_t *anterior_compromisso = NULL;
-
-         while (atual_compromisso != NULL) {
-            /* verifica se o compromisso atual tem interseccao com o compromisso a ser inserido */
-            if (atual_compromisso->inicio < compr->fim && compr->inicio < atual_compromisso->fim)
-               return -1;
-
-            /* proximo compromisso */
-            anterior_compromisso = atual_compromisso;
-            atual_compromisso = atual_compromisso->prox;
+      dia_t *dia_atual = atual->dias;
+      
+      while (dia_atual != NULL) {
+         /* verifica se é o dia desejado */
+         if (dia_atual->dia == dia) {
+            compromisso_t *atual_compromisso = dia_atual->comprs;
+            
+            /* verifica se há interseção com outros compromissos */
+            while (atual_compromisso != NULL) {
+               if (atual_compromisso->inicio < compr->fim && compr->inicio < atual_compromisso->fim)
+                  return -1;
+               
+               atual_compromisso = atual_compromisso->prox;
+            }
+            
+            /* insere o compromisso no final da lista de compromissos */
+            compr->prox = dia_atual->comprs;
+            dia_atual->comprs = compr;
+            
+            return 1;
          }
+         
+         dia_atual = dia_atual->prox;
+      }
 
-         /* insere o compromisso na lista */
-         if (anterior_compromisso == NULL) {
-            /* compromisso a ser inserido é o primeiro da lista */
-            atual->dias->comprs = compr;
-         } else {
-            /* compromisso a ser inserido não é o primeiro da lista */
-            anterior_compromisso->prox = compr;
-         }
-
-         /* sucesso */
-         return 1;
-
-      /* proximo dia */
       atual = atual->prox;
-      compr->prox = atual->prox;
    }
+
+   /* cria um novo dia e insere o compromisso */
+   mes_t *novo_mes = malloc(sizeof(mes_t));
+   if (novo_mes == NULL)
+      return 0;  /* Erro na alocação de memória */
+
+   novo_mes->dias = malloc(sizeof(dia_t));
+   if (novo_mes->dias == NULL)
+      return 0;  /* Erro na alocação de memória */
+
+   novo_mes->dias->dia = dia;
+   novo_mes->dias->comprs = compr;
+   novo_mes->prox = agenda->ptr_mes_atual;
+   agenda->ptr_mes_atual = novo_mes;
+
+   /* Sucesso */
    return 1;
 }
 
@@ -173,31 +184,28 @@ int desmarca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
    if (agenda == NULL || compr == NULL)
       return 0;
 
-   /* para percorrer a lista de compromissos */
-   compromisso_t *atual = agenda->ptr_mes_atual;
-   compromisso_t *anterior = NULL;
+   /* verifica se o dia informado como parametro existe */
+   if (dia < 1 || dia > 31)
+      return 0;
+   
+   /* verifica se o compromisso existe */
+   mes_t *atual = agenda->ptr_mes_atual;
 
    while (atual != NULL) {
-      /* verifica se o compromisso atual é o compromisso a ser removido */
-      if (atual == compr) {
-         /* remove o compromisso da lista */
-         if (anterior == NULL) {
-            /* compromisso a ser removido é o primeiro da lista */
-            agenda->ptr_mes_atual = atual->prox;
-         } else {
-            /* compromisso a ser removido não é o primeiro da lista */
-            anterior->prox = atual->prox;
+         /* para percorrer a lista de compromissos */
+         compromisso_t *atual_compromisso = atual->dias->comprs;
+
+         while (atual_compromisso != NULL) {
+            /* verifica se o compromisso atual tem interseccao com o compromisso a ser inserido */
+            if (atual_compromisso->inicio < compr->fim && compr->inicio < atual_compromisso->fim) {
+               /* remove o compromisso da lista */
+               compromisso_t *prox_compromisso = atual_compromisso->prox;
+               destroi_compromisso(atual_compromisso);
+               atual_compromisso = prox_compromisso;
+               return 1;
+            }
+            atual = atual->prox;
          }
-
-         /* libera a memoria alocada para o compromisso */
-         destroi_descricao_compromisso(atual);
-         free(atual);
-         return 1;
-      }
-
-      /* proximo compromisso */
-      anterior = atual;
-      atual = atual->prox;
    }
    return 0;
 }
@@ -300,7 +308,7 @@ compromisso_t *compr_agenda(agenda_t *agenda, int dia)
    if (agenda == NULL)
       return NULL;
 
-   compromisso_t *compr = agenda->ptr_mes_atual;
+   compromisso_t *compr = agenda->ptr_mes_atual->dias->comprs;
 
    while (compr != NULL) {
       /* procura compromissos que tenham o mesmo dia informado como parametro */
