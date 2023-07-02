@@ -170,11 +170,11 @@ void realizarReuniao()
   for (int mes_atual = 1; mes_atual <= MES; mes_atual++) { /* Para cada mês de 1 até 12 */
     for (int dia = 1; dia <= 31; dia++) { /* Para cada dia entre 1 e 31 */
       for (int i = 0; i < FUNCIONARIOS; i++) { /* Para cada funcionário X*/
-        funcionario = &funcionarios[i]; /* Obter lista de compromissos */
+        funcionario = &funcionario[i]; /* Obter lista de compromissos */
         compromisso = funcionario->agenda->ptr_mes_atual->dias[dia - 1].compromissos; /* Para cada compromisso */
 
         while (compromisso != NULL) { /* Se a tarefa[T] ainda não foi concluída */
-          tarefa = &tarefas[compromisso->id]; 
+          tarefa = &tarefa[compromisso->id]; 
 
           if (tarefa->tempo_conclusao > 0) { /* Reduzir o tempo restante para concluir a tarefa */
             /* Fórmula fornecida */
