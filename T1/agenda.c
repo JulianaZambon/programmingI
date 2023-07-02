@@ -144,7 +144,7 @@ void marcarReunioes(Funcionario *funcionarios)
 /* Realizar todas as reuniões marcadas*/
 void realizarReuniao()
 {
-  int qtde_reunioes_realizadas, qtde_tarefas_tempo_restante_zero;
+  int qtde_reunioes_realizadas, qtde_tarefas_tempo_restante_zero, min_trab;
   qtde_reunioes_realizadas = 0;
   qtde_tarefas_tempo_restante_zero = 0;
   Funcionario *funcionario;
@@ -178,6 +178,7 @@ void realizarReuniao()
 
           if (tarefa->tempo_conclusao > 0) { /* Reduzir o tempo restante para concluir a tarefa */
             /* Fórmula fornecida */
+            min_trab = (compromisso->fim - compromisso->inicio) * 60; /* minutos trabalhados*/
             tarefa->tempo_conclusao -= min_trab * (funcionario->experiencia / 100.0) * ((100 - tarefa->dificuldade) / 100.0);
 
             if (tarefa->tempo_conclusao <= 0) { /* Se o tempo restante para concluir a tarefa for menor ou igual a zero */
