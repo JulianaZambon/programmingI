@@ -25,13 +25,13 @@ agenda_t* cria_agenda()
    armazenamento para receber a string descricao. */
 compromisso_t *cria_compromisso(horario_compromisso_t hc, int id, char *descricao)
 {
-   compromisso_t *novo_compromisso = malloc(sizeof(compromisso_t));
+   compromisso_t *novo_compromisso = malloc(sizeof(compromisso_t)); /* aloca memoria para o compromisso */
 
    if (novo_compromisso == NULL)
       return NULL; /* caso tenha falha na alocacao de memoria */
 
-   novo_compromisso->inicio = hc.inicio;
-   novo_compromisso->fim = hc.fim;
+   novo_compromisso->inicio = hc.ini_h;
+   novo_compromisso->fim = hc.fim_h;
    novo_compromisso->id = id;
    novo_compromisso->descricao = malloc(sizeof(char) * (strlen(descricao) + 1));
 
@@ -158,7 +158,7 @@ void imprime_agenda_mes(agenda_t *agenda)
    compromisso_t *compr = agenda->ptr_mes_atual;
 
    while (compr != NULL) {
-      printf("%d %d %d %d %d %d %d %s\n", agenda->mes_atual, compr->inicio, compr->fim,
+      printf("%d %d %d %d %s\n", agenda->mes_atual, compr->inicio, compr->fim,
              compr->id, compr->descricao);
       compr = compr->prox;
    }

@@ -145,17 +145,18 @@ void realizarReuniao()
   int qtde_reunioes_realizadas, qtde_tarefas_tempo_restante_zero;
   qtde_reunioes_realizadas = 0;
   qtde_tarefas_tempo_restante_zero = 0;
+  horario_compromisso_t hc;
   Funcionario *funcionario;
   Tarefa *tarefa;                           
 
-  for (int mes_atual = 1; mes_atual <= MES; mes_atual++) /* para cada mês */{
+  for (int mes_atual = 1; mes_atual <= MES; mes_atual++){ /* para cada mês */
     for (int dia = 1; dia <= 31; dia++) {/* para cada dia do mês */
-      for (int i = 0; i < FUNCIONARIOS; i++) /* para cada funcionário */{
+      for (int i = 0; i < FUNCIONARIOS; i++) {/* para cada funcionário */
         compromisso_t *compromisso = primeiro_compromisso_dia(funcionario[i].agenda, dia);
-        while (compromisso != NULL) /* enquanto houver compromisso */{
-          if (compromisso->id < TAREFAS && tarefa[compromisso->id].tempo_conclusao > 0) /* se a tarefa não foi concluída */{
-            int min_trab = (horario_compromisso->fim_h - horario_compromisso->inicio) * 60 +
-                           (horario_compromisso->fim_m - horario_compromisso->inicio);
+        while (compromisso != NULL) {/* enquanto houver compromisso */
+          if (compromisso->id < TAREFAS && tarefa[compromisso->id].tempo_conclusao > 0) {/* se a tarefa não foi concluída */
+            int min_trab = (hc.fim_h - hc.ini_h) * 60 +
+                           (hc.fim_m - hc.ini_m);
             /* fórmula fornecida */
             tarefa[compromisso->id].tempo_conclusao -= min_trab * (funcionario[i].experiencia / 100.0) *
                                                         ((100 - tarefa[compromisso->id].dificuldade) / 100.0);
@@ -183,8 +184,10 @@ void realizarReuniao()
 
 void mensagemFinal()
 {
-  printf("REUNIOES REALIZADAS", qtdes_reunioes_realizadas);
-  printf("TAREFAS CONCLUIDAS", qtde_tarefas_tempo_restante_zero);
+  int qtdes_reunioes_realizadas, qtde_tarefas_tempo_restante_zero;
+  /* imprime as mensagens finais */
+  printf("REUNIOES REALIZADAS %.2d", qtdes_reunioes_realizadas);
+  printf("TAREFAS CONCLUIDAS %.2d", qtde_tarefas_tempo_restante_zero);
 }
 
 /*------------------------------------------------------------------------*/
