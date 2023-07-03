@@ -98,7 +98,7 @@ void marcarReunioes(Funcionario *funcionarios)
       lider = escolherLider(funcionarios);
       sprintf(descricao, "REUNIR L %.2d %.2d/%.2d %.2d:%.2d %.2d:%.2d T %.2d", lider->id, dia, mes_atual,
               hc.ini_h, hc.ini_m, hc.fim_h, hc.fim_m, id_tarefa);
-      printf("%s\n", descricao);
+      printf("%s", descricao);
 
       compromisso = cria_compromisso(hc, id_tarefa, descricao); /* Criar compromisso */
 
@@ -116,20 +116,21 @@ void marcarReunioes(Funcionario *funcionarios)
 
         aleatorio = ALEAT(2, 6);
         control = 0; /* Controla se algum membro pode participar */
-        printf("\tMEMBROS:");
+        printf("\tMEMBROS: ");
         for (int i = 0; i < aleatorio; i++) {
           membro = &funcionarios[ALEAT(0, FUNCIONARIOS - 1)];
           if (lider->lideranca > membro->lideranca + ALEAT(-20, 10)) {
             marcar = marca_compromisso_agenda(membro->agenda, dia, compromisso);
             if (marcar == 1)
               control = 1;
-            printf("%.2d, %s", membro->id, marcar == 1 ? " OK" : " IN"); /* OK se marcar = 1, IN se marcar = 0 */
+            printf("%.2d:%s", membro->id, marcar == 1 ? "OK " : "IN "); /* OK se marcar = 1, IN se marcar = 0 */
           }
         }
         if (control == 0) {
           desmarca_compromisso_agenda(lider->agenda, dia, compromisso); 
-          printf("\tVAZIA \n");
+          printf("VAZIA ");
         }
+        printf("\n");
       } else {
         desmarca_compromisso_agenda(lider->agenda, dia, compromisso); /* Remover compromisso */
         printf("\tLIDER INDISPONIVEL \n");
