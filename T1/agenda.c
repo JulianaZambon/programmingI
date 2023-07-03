@@ -157,16 +157,16 @@ void realizarReuniao( Funcionario *funcionario, Tarefa *tarefa)
         compromisso = compr_agenda(funcionario[i].agenda, dia); /* Obter lista de compromissos */
 
         while (compromisso != NULL) {
-          tarefa = &tarefa[compromisso->id]; /* Para cada compromisso */ 
+          Tarefa *tarefa_atual = &tarefa[compromisso->id];
 
-          if (tarefa != NULL){
-            if (tarefa->tempo_conclusao > 0) { /* Reduzir o tempo restante para concluir a tarefa */
+          if (tarefa_atual != NULL) {
+            if (tarefa_atual->tempo_conclusao > 0) { /* Reduzir o tempo restante para concluir a tarefa */
               /* Fórmula fornecida */
               min_trab = (compromisso->fim - compromisso->inicio) * 60; /* minutos trabalhados*/
-              tarefa->tempo_conclusao -= min_trab * (funcionario[i].experiencia / 100.0) * ((100 - tarefa->dificuldade) / 100.0);
+              tarefa_atual->tempo_conclusao -= min_trab * (funcionario[i].experiencia / 100.0) * ((100 - tarefa_atual->dificuldade) / 100.0);
 
-              if (tarefa->tempo_conclusao <= 0) { /* Se o tempo restante para concluir a tarefa for menor ou igual a zero */
-                tarefa->tempo_conclusao = 0; /* Tempo restante para concluir a tarefa = 0 */
+              if (tarefa_atual->tempo_conclusao <= 0) { /* Se o tempo restante para concluir a tarefa for menor ou igual a zero */
+                tarefa_atual->tempo_conclusao = 0; /* Tempo restante para concluir a tarefa = 0 */
                 funcionario[i].experiencia++; /* Incrementar a experiência do funcionário em uma unidade */
                 qtde_tarefas_tempo_restante_zero++; /* Incrementar a quantidade de tarefas com tempo restante igual a zero */
 
@@ -175,15 +175,15 @@ void realizarReuniao( Funcionario *funcionario, Tarefa *tarefa)
               }
             }
             qtde_reunioes_realizadas++; /* Incrementar a quantidade de reuniões realizadas */
-            compromisso = NULL; 
           }
+          compromisso = prox_compr(compromisso); /* Avançar para o próximo compromisso */
         }
       }
     }
   }
   /* Infos finais */
-  printf("REUNIOES REALIZADAS %.2d", qtde_reunioes_realizadas);
-  printf("TAREFAS CONCLUIDAS %.2d", qtde_tarefas_tempo_restante_zero);
+  printf("REUNIOES REALIZADAS %.2d\n", qtde_reunioes_realizadas);
+  printf("TAREFAS CONCLUIDAS %.2d\n", qtde_tarefas_tempo_restante_zero);
 }
 
 /*------------------------------------------------------------------------*/

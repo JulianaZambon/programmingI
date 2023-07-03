@@ -167,6 +167,7 @@ int marca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
 
    novo_mes->dias->dia = dia;
    novo_mes->dias->comprs = compr;
+   novo_mes->dias->prox = NULL;
    novo_mes->prox = agenda->ptr_mes_atual;
    agenda->ptr_mes_atual = novo_mes;
 
