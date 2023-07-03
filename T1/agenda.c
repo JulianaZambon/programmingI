@@ -149,13 +149,13 @@ void realizarReuniao( Funcionario *funcionario, Tarefa *tarefa)
           Tarefa *tarefa_atual = &tarefa[compromisso->id];
 
           if (tarefa_atual != NULL) {
-            printf("%.2d/%.2d F %.2d: %s \n", dia, mes_atual, funcionario->id, compromisso->descricao);
+            printf("%.2d/%.2d F %.2d: %s \n", dia, mes_atual, funcionario[i].id, compromisso->descricao);
 
             if (tarefa_atual->tempo_conclusao > 0) { 
               /* Fórmula fornecida */
               min_trab = (compromisso->fim - compromisso->inicio) * 60; /* minutos trabalhados*/
               tarefa_atual->tempo_conclusao -= min_trab * (funcionario[i].experiencia / 100.0) * 
-              ((100 - tarefa_atual->dificuldade) / 100.0);
+                                                ((100 - tarefa_atual->dificuldade) / 100.0);
 
               if (tarefa_atual->tempo_conclusao <= 0) { 
                 printf("\tCONCLUÍDA \n");
@@ -167,7 +167,7 @@ void realizarReuniao( Funcionario *funcionario, Tarefa *tarefa)
                   funcionario[i].experiencia = 100; /* Limitar em 100 */
               } else {
                 printf("\tT %.2d D %.2d TCR %.2d\n", tarefa_atual->id, tarefa_atual->dificuldade,
-                 tarefa_atual->tempo_conclusao);
+                        tarefa_atual->tempo_conclusao);
               }
             }
             qtde_reunioes_realizadas++;
