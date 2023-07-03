@@ -123,7 +123,7 @@ void marcarReunioes(Funcionario *funcionarios)
             marcar = marca_compromisso_agenda(membro->agenda, dia, compromisso);
             if (marcar == 1)
               control = 1;
-            printf("%.2d, %s", membro->id, marcar == 1 ? "OK" : "IN"); /* OK se marcar = 1, IN se marcar = 0 */
+            printf("%.2d, %s", membro->id, marcar == 1 ? " OK" : " IN"); /* OK se marcar = 1, IN se marcar = 0 */
           }
         }
         if (control == 0) {

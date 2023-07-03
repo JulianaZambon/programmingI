@@ -261,7 +261,6 @@ void imprime_agenda_mes(agenda_t *agenda)
 }
 
 /* Retorna o mes atual da agenda. */
-/*OK*/
 int mes_atual_agenda(agenda_t *agenda)
 {
    if (agenda == NULL)
@@ -272,7 +271,6 @@ int mes_atual_agenda(agenda_t *agenda)
 
 /* Ajusta o mes_atual para 1; caso o mes esteja alocado, ptr_mes_atual
  * apontara para o mes 1, caso contrario para NULL. */
-/*OK*/
 void prim_mes_agenda(agenda_t *agenda)
 {
    if (agenda == NULL)
@@ -354,7 +352,6 @@ compromisso_t *compr_agenda(agenda_t *agenda, int dia)
 
 /* Retorna o primeiro compromisso da lista de compromissos compr e avanca
  * para o prox. Retorna NULL se a lista esta vazia, ou seja, sem compromissos. */
-/*OK*/
 compromisso_t *prox_compr(compromisso_t *compr)
 {
    if (compr == NULL)
@@ -366,7 +363,6 @@ compromisso_t *prox_compr(compromisso_t *compr)
 /*------------------------------------------------------------------------*/
 /* As funcoes abaixo sao usadas para acessar os membros da struct compromisso
    obtidos com a funcao prox_compr. */
-   /*OK*/
 horario_compromisso_t hc_compr(compromisso_t *compr)
 {
    horario_compromisso_t hc;
@@ -377,13 +373,11 @@ horario_compromisso_t hc_compr(compromisso_t *compr)
    return hc;
 }
 
-/*OK*/
 int id_compr(compromisso_t *compr)
 {
    return compr->id;
 }
 
-/*OK*/
 char *descricao_compr(compromisso_t *compr)
 {
    return compr->descricao;
