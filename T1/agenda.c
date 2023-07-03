@@ -144,56 +144,39 @@ void marcarReunioes(Funcionario *funcionarios)
 
 /*------------------------------------------------------------------------*/
 /* Realizar todas as reuniões marcadas*/
-void realizarReuniao()
+void realizarReuniao( Funcionario *funcionario, Tarefa *tarefa)
 {
   int qtde_reunioes_realizadas, qtde_tarefas_tempo_restante_zero, min_trab;
   qtde_reunioes_realizadas = 0;
-  qtde_tarefas_tempo_restante_zero = 0;
-  Funcionario *funcionario;
-  compromisso_t *compromisso;
-  Tarefa *tarefa;
-
-  /*- Voltar para o mês 1 da agenda para "TRABALHAR":
-  - Para cada dia entre 1 e 31 e para cada funcionário X 
-      - Obter lista de compromissos e para cada compromisso
-          - Se a tarefa[T] ainda não foi concluída 
-            (tarefas[T].tempo_conclusao > 0):
-              - Reduzir o tempo restante para concluir a tarefa de acordo com a
-                seguinte fórmula: 
-                  tarefas[T].tempo_conclusao -= min_trab * (funcs[X].experiencia / 100.0) * ((100 - tarefas[T].dificuldade) / 100.0);
-
-              - Se o tempo restante para concluir a tarefa for menor ou igual 
-                a zero:
-                  tarefas[T].tempo_conclusao = 0;
-
-              - Incrementar a experiência do funcionário em uma unidade 
-                (limitar em 100)*/            
+  qtde_tarefas_tempo_restante_zero = 0; 
+  compromisso_t *compromisso;         
 
   for (int mes_atual = 1; mes_atual <= MES; mes_atual++) { /* Para cada mês de 1 até 12 */
     for (int dia = 1; dia <= 31; dia++) { /* Para cada dia entre 1 e 31 */
-      for (int i = 0; i < FUNCIONARIOS; i++) { /* Para cada funcionário X*/
-        funcionario = &funcionario[i]; /* Obter lista de compromissos */
-        compromisso = funcionario->agenda->ptr_mes_atual->dias->comprs; /* Para cada compromisso */
+      for (int i = 0; i < FUNCIONARIOS; i++) { 
+        compromisso = compr_agenda(funcionario[i].agenda, dia); /* Obter lista de compromissos */
 
-        while (compromisso != NULL) { /* Se a tarefa[T] ainda não foi concluída */
-          tarefa = &tarefa[compromisso->id]; 
+        while (compromisso != NULL) {
+          tarefa = &tarefa[compromisso->id]; /* Para cada compromisso */ 
 
-          if (tarefa->tempo_conclusao > 0) { /* Reduzir o tempo restante para concluir a tarefa */
-            /* Fórmula fornecida */
-            min_trab = (compromisso->fim - compromisso->inicio) * 60; /* minutos trabalhados*/
-            tarefa->tempo_conclusao -= min_trab * (funcionario->experiencia / 100.0) * ((100 - tarefa->dificuldade) / 100.0);
+          if (tarefa != NULL){
+            if (tarefa->tempo_conclusao > 0) { /* Reduzir o tempo restante para concluir a tarefa */
+              /* Fórmula fornecida */
+              min_trab = (compromisso->fim - compromisso->inicio) * 60; /* minutos trabalhados*/
+              tarefa->tempo_conclusao -= min_trab * (funcionario[i].experiencia / 100.0) * ((100 - tarefa->dificuldade) / 100.0);
 
-            if (tarefa->tempo_conclusao <= 0) { /* Se o tempo restante para concluir a tarefa for menor ou igual a zero */
-              tarefa->tempo_conclusao = 0; /* Tempo restante para concluir a tarefa = 0 */
-              funcionario->experiencia++; /* Incrementar a experiência do funcionário em uma unidade */
-              qtde_tarefas_tempo_restante_zero++; /* Incrementar a quantidade de tarefas com tempo restante igual a zero */
+              if (tarefa->tempo_conclusao <= 0) { /* Se o tempo restante para concluir a tarefa for menor ou igual a zero */
+                tarefa->tempo_conclusao = 0; /* Tempo restante para concluir a tarefa = 0 */
+                funcionario[i].experiencia++; /* Incrementar a experiência do funcionário em uma unidade */
+                qtde_tarefas_tempo_restante_zero++; /* Incrementar a quantidade de tarefas com tempo restante igual a zero */
 
-              if (funcionario->experiencia > 100)
-                funcionario->experiencia = 100; /* Limitar em 100 */
+                if (funcionario[i].experiencia > 100)
+                  funcionario[i].experiencia = 100; /* Limitar em 100 */
+              }
             }
+            qtde_reunioes_realizadas++; /* Incrementar a quantidade de reuniões realizadas */
+            compromisso = NULL; 
           }
-          qtde_reunioes_realizadas++; /* Incrementar a quantidade de reuniões realizadas */
-          compromisso = compromisso->prox; /* Próximo compromisso */
         }
       }
     }

@@ -328,15 +328,26 @@ compromisso_t *compr_agenda(agenda_t *agenda, int dia)
    if (agenda == NULL)
       return NULL;
 
-   compromisso_t *compr = agenda->ptr_mes_atual->dias->comprs;
+   /* verifica se o dia informado como parametro existe */
+   if (dia < 1 || dia > 31)
+      return NULL;
 
-   while (compr != NULL) {
-      /* procura compromissos que tenham o mesmo dia informado como parametro */
-      if (compr->inicio == dia)
-         return compr;
+   mes_t *atual = agenda->ptr_mes_atual;
 
-      compr = compr->prox;
+   while (atual->dias != NULL) {
+      dia_t *dia_atual = atual->dias;
+      
+      while (dia_atual != NULL) {
+         /* verifica se é o dia desejado */
+         if (dia_atual->dia == dia)
+            return dia_atual->comprs;
+         
+         dia_atual = dia_atual->prox;
+      }
+
+      atual = atual->prox;
    }
+
    return NULL;
 }
 
