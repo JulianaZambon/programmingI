@@ -168,6 +168,9 @@ void realizarReuniao( Funcionario *funcionario, Tarefa *tarefa)
                 printf("\tT %.2d D %.2d TCR %.2d\n", tarefa_atual->id, tarefa_atual->dificuldade,
                         tarefa_atual->tempo_conclusao);
               }
+            } else {
+              printf("\tT %.2d D %.2d TCR %.2d\n", tarefa_atual->id, tarefa_atual->dificuldade,
+                      tarefa_atual->tempo_conclusao);
             }
           qtde_reunioes_realizadas++;
           compromisso = prox_compr(compromisso); /* Avançar para o próximo compromisso */
