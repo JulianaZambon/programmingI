@@ -153,6 +153,8 @@ void realizarReuniao( Funcionario *funcionario, Tarefa *tarefa)
   compromisso_t *compromisso;         
 
   for (int mes_atual = 1; mes_atual <= MES; mes_atual++) { /* Para cada mês de 1 até 12 */
+    printf("M %.2d\n", mes_atual);
+
     for (int dia = 1; dia <= 31; dia++) { /* Para cada dia entre 1 e 31 */
       for (int i = 0; i < FUNCIONARIOS; i++) { 
         compromisso = compr_agenda(funcionario[i].agenda, dia); /* Obter lista de compromissos */
@@ -161,18 +163,23 @@ void realizarReuniao( Funcionario *funcionario, Tarefa *tarefa)
           Tarefa *tarefa_atual = &tarefa[compromisso->id];
 
           if (tarefa_atual != NULL) {
-            if (tarefa_atual->tempo_conclusao > 0) { /* Reduzir o tempo restante para concluir a tarefa */
+            printf("%.2d/%.2d F %.2d: %s \n", dia, mes_atual, funcionario->id, compromisso->descricao);
+
+            if (tarefa_atual->tempo_conclusao > 0) { 
               /* Fórmula fornecida */
               min_trab = (compromisso->fim - compromisso->inicio) * 60; /* minutos trabalhados*/
               tarefa_atual->tempo_conclusao -= min_trab * (funcionario[i].experiencia / 100.0) * ((100 - tarefa_atual->dificuldade) / 100.0);
 
               if (tarefa_atual->tempo_conclusao <= 0) { /* Se o tempo restante para concluir a tarefa for menor ou igual a zero */
-                tarefa_atual->tempo_conclusao = 0; /* Tempo restante para concluir a tarefa = 0 */
-                funcionario[i].experiencia++; /* Incrementar a experiência do funcionário em uma unidade */
-                qtde_tarefas_tempo_restante_zero++; /* Incrementar a quantidade de tarefas com tempo restante igual a zero */
+                printf("\tCONCLUÍDA \n");
+                tarefa_atual->tempo_conclusao = 0;
+                funcionario[i].experiencia++; 
+                qtde_tarefas_tempo_restante_zero++; 
 
                 if (funcionario[i].experiencia > 100)
                   funcionario[i].experiencia = 100; /* Limitar em 100 */
+              } else {
+                printf("\tT %.2d D %.2d TCR %.2d\n", tarefa_atual->id, tarefa_atual->dificuldade, tarefa_atual->tempo_conclusao);
               }
             }
             qtde_reunioes_realizadas++; /* Incrementar a quantidade de reuniões realizadas */
