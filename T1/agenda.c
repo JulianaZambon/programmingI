@@ -154,9 +154,10 @@ void realizarReuniao( Funcionario *funcionario, Tarefa *tarefa)
             if (tarefa_atual->tempo_conclusao > 0) { 
               /* Fórmula fornecida */
               min_trab = (compromisso->fim - compromisso->inicio) * 60; /* minutos trabalhados*/
-              tarefa_atual->tempo_conclusao -= min_trab * (funcionario[i].experiencia / 100.0) * ((100 - tarefa_atual->dificuldade) / 100.0);
+              tarefa_atual->tempo_conclusao -= min_trab * (funcionario[i].experiencia / 100.0) * 
+              ((100 - tarefa_atual->dificuldade) / 100.0);
 
-              if (tarefa_atual->tempo_conclusao <= 0) { /* Se o tempo restante para concluir a tarefa for menor ou igual a zero */
+              if (tarefa_atual->tempo_conclusao <= 0) { 
                 printf("\tCONCLUÍDA \n");
                 tarefa_atual->tempo_conclusao = 0;
                 funcionario[i].experiencia++; 
@@ -165,7 +166,8 @@ void realizarReuniao( Funcionario *funcionario, Tarefa *tarefa)
                 if (funcionario[i].experiencia > 100)
                   funcionario[i].experiencia = 100; /* Limitar em 100 */
               } else {
-                printf("\tT %.2d D %.2d TCR %.2d\n", tarefa_atual->id, tarefa_atual->dificuldade, tarefa_atual->tempo_conclusao);
+                printf("\tT %.2d D %.2d TCR %.2d\n", tarefa_atual->id, tarefa_atual->dificuldade,
+                 tarefa_atual->tempo_conclusao);
               }
             }
             qtde_reunioes_realizadas++;
