@@ -14,13 +14,12 @@ agenda_t* cria_agenda()
 
    /* Alocar memória para a estrutura mes_t */
    nova_agenda->ptr_mes_atual = malloc(sizeof(mes_t));
-   nova_agenda->mes_atual = 1; /* mes_atual deve ser inicializado com 1 */
-
    if (nova_agenda->ptr_mes_atual == NULL) {
       free(nova_agenda);
-      return NULL;
+      return NULL; /* caso tenha falha na alocacao de memoria */
    }
-   
+
+   nova_agenda->mes_atual = 1; /* mes_atual deve ser inicializado com 1 */
    nova_agenda->ptr_mes_atual->dias = NULL; /* dias deve ser inicializado com NULL */
    nova_agenda->ptr_mes_atual->prox = nova_agenda->ptr_mes_atual; /* prox deve ser inicializado com ele mesmo */
    nova_agenda->ptr_mes_atual->ant = nova_agenda->ptr_mes_atual; /* ant deve ser inicializado com ele mesmo */
@@ -40,7 +39,7 @@ compromisso_t *cria_compromisso(horario_compromisso_t hc, int id, char *descrica
    if (novo_compromisso == NULL)
       return NULL; /* caso tenha falha na alocacao de memoria */
 
-   novo_compromisso->inicio = (hc.ini_h * 60 )+ hc.ini_m; /* converte o horario para minutos */
+   novo_compromisso->inicio = (hc.ini_h * 60) + hc.ini_m; /* converte o horario para minutos */
    novo_compromisso->fim = (hc.fim_h * 60) + hc.fim_m; /* converte o horario para minutos */
    novo_compromisso->id = id;
    novo_compromisso->descricao = malloc(sizeof(char) * (strlen(descricao) + 1));
@@ -128,7 +127,7 @@ int marca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
 
    while (atual->dias != NULL) {
       dia_t *dia_atual = atual->dias;
-      
+
       while (dia_atual != NULL) {
          /* verifica se é o dia desejado */
          if (dia_atual->dia == dia) {
@@ -154,7 +153,7 @@ int marca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
             compr->prox = atual_compromisso;
             return 1;
          }
-         
+
          dia_atual = dia_atual->prox;
       }
 
@@ -164,12 +163,12 @@ int marca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
    /* cria um novo dia e insere o compromisso */
    mes_t *novo_mes = malloc(sizeof(mes_t));
    if (novo_mes == NULL)
-      return 0;  /* Erro na alocação de memória */
+      return 0; /* Erro na alocação de memória */
 
    novo_mes->dias = malloc(sizeof(dia_t));
    if (novo_mes->dias == NULL) {
       free(novo_mes);
-      return 0;  /* Erro na alocação de memória */
+      return 0; /* Erro na alocação de memória */
    }
 
    novo_mes->dias->dia = dia;
@@ -179,7 +178,6 @@ int marca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
    novo_mes->prox = agenda->ptr_mes_atual;
    agenda->ptr_mes_atual = novo_mes;
 
-   /* Sucesso */
    return 1;
 }
 
