@@ -11,7 +11,6 @@
 #define FUNCIONARIOS 30 /* qntd de funcionarios */
 
 /*------------------------------------------------------------------------*/
-
 /* struct para o funcionario */
 typedef struct funcionario
 {
@@ -28,15 +27,12 @@ typedef struct tarefa
   int tempo_conclusao;
   int dificuldade;
 } Tarefa;
-
 /*------------------------------------------------------------------------*/
-
 /* função ALEAT(MIN,MAX) que gera inteiros aleatórios entre MIN e MAX. */
 int ALEAT(int MIN, int MAX)
 {
   return MIN + rand() % (MAX - MIN + 1);
 }
-
 /*------------------------------------------------------------------------*/
 /* Inicialização dos vetores */
 void iniciarFuncionarios(Funcionario *funcionarios)
@@ -57,7 +53,6 @@ void iniciarTarefas(Tarefa *tarefas)
     tarefas[T].dificuldade = ALEAT(30, 80);
   }
 }
-
 /*------------------------------------------------------------------------*/
 /* Escolher aleatoriamente um líder entre os funcionários cuja
           liderança esteja entre 30 e 70. */
@@ -71,7 +66,6 @@ Funcionario *escolherLider(Funcionario *funcionarios)
 
   return lider;
 }
-
 /*------------------------------------------------------------------------*/
 /* Marcar todas reuniões */
 void marcarReunioes(Funcionario *funcionarios)
@@ -106,14 +100,6 @@ void marcarReunioes(Funcionario *funcionarios)
       marcar = marca_compromisso_agenda(lider->agenda, dia, compromisso);
 
       if (marcar == 1) {
-
-        /* Sortear ALEAT(2,6) membros (funcionários)
-          - Para cada membro verificar
-            se liderança líder > liderança membro +ALEAT(-20,10)
-              - Se sim, tentar marcar a reunião na agenda do membro
-          - Se nenhum dos membros puder participar, remova a reunião da
-            agenda do líder.*/
-
         aleatorio = ALEAT(2, 6);
         control = 0; /* Controla se algum membro pode participar */
         printf("\tMEMBROS: ");
@@ -182,7 +168,7 @@ void realizarReuniao( Funcionario *funcionario, Tarefa *tarefa)
                 printf("\tT %.2d D %.2d TCR %.2d\n", tarefa_atual->id, tarefa_atual->dificuldade, tarefa_atual->tempo_conclusao);
               }
             }
-            qtde_reunioes_realizadas++; /* Incrementar a quantidade de reuniões realizadas */
+            qtde_reunioes_realizadas++;
           }
           compromisso = prox_compr(compromisso); /* Avançar para o próximo compromisso */
         }
@@ -193,7 +179,6 @@ void realizarReuniao( Funcionario *funcionario, Tarefa *tarefa)
   printf("REUNIOES REALIZADAS %.2d\n", qtde_reunioes_realizadas);
   printf("TAREFAS CONCLUIDAS %.2d\n", qtde_tarefas_tempo_restante_zero);
 }
-
 /*------------------------------------------------------------------------*/
 int main()
 {
