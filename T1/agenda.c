@@ -147,9 +147,8 @@ void realizarReuniao( Funcionario *funcionario, Tarefa *tarefa)
 
         while (compromisso != NULL) {
           Tarefa *tarefa_atual = &tarefa[compromisso->id];
-
-          if (tarefa_atual != NULL) {
-            printf("%.2d/%.2d F %.2d: %s \n", dia, mes_atual, funcionario[i].id, compromisso->descricao);
+ 
+          printf("%.2d/%.2d F %.2d: %s \n", dia, mes_atual, funcionario[i].id, compromisso->descricao);
 
             if (tarefa_atual->tempo_conclusao > 0) { 
               /* Fórmula fornecida */
@@ -170,8 +169,7 @@ void realizarReuniao( Funcionario *funcionario, Tarefa *tarefa)
                         tarefa_atual->tempo_conclusao);
               }
             }
-            qtde_reunioes_realizadas++;
-          }
+          qtde_reunioes_realizadas++;
           compromisso = prox_compr(compromisso); /* Avançar para o próximo compromisso */
         }
       }
