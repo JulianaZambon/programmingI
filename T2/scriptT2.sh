@@ -72,7 +72,6 @@ function porcentagem_aprovacao_reprovacao() {
         ((total_alunos[$ano]++)) #array do total de alunos
     done < historico-alg1_SIGA_ANONIMIZADO.csv
 
-
     printf "Ano: Aprovados: Reprovados:\n"
     #percorre tanto as chaves do array count_aprovados quanto as chaves do array count_reprovados
     #faz com que garanta que 2012 esteja na saida, por ex, ja que ese ano nao tem aprovados
@@ -87,41 +86,6 @@ function porcentagem_aprovacao_reprovacao() {
 
         printf "%s: %.2f%% %.2f%%\n" "$ano" "$porcentagem_aprovados" "$porcentagem_reprovados"
     done
-}
-
-#5)qual eh a media de nota dos aprovados (no periodo total e por ano)?
-function media_nota_aprovados() {
-    declare -A notas
-    declare -A count
-    local total_media=0
-    local total_alunos=0
-
-    while IFS=',' read -r ano nota status; do
-        nota=${nota/,/.}  # substituir vírgula por ponto para calcular certo a media depois
-        #atualiza o valor da media                  #o antigo valor eh acessado e somado com a nova
-        notas[$ano]=$(awk -v nota="$nota" -v total="${notas[$ano]}" 'BEGIN { printf "%.2f", total + nota }')
-        #incrementa
-        count[$ano]=$((${count[$ano]} + 1))
-    done < <(grep 'Aprovado' historico-alg1_SIGA_ANONIMIZADO.csv | cut -d',' -f5,8,10)
-
-    printf "Ano: Média de nota dos aprovados:\n"
-    for ano in $(printf '%s\n' "${!notas[@]}" | sort -n); do
-        local media=0
-        if [ "${count[$ano]}" -ne 0 ]; then
-            media=$(awk -v total="${notas[$ano]}" -v count="${count[$ano]}" 'BEGIN { printf "%.2f", total / count }')
-        fi
-        printf "%s: %.2f\n" "$ano" "$media"
-        #atualiza o valor da media total
-        total_media=$(awk -v total_media="$total_media" -v count="${count[$ano]}" -v media="$media" 'BEGIN { printf "%.2f", total_media + (media * count) }')
-        total_alunos=$((total_alunos + ${count[$ano]}))
-    done | sort -k1n #ordena a primeira coluna numericamente 
-
-    if [ "$total_alunos" -ne 0 ]; then
-        local media_total=$(awk -v total_media="$total_media" -v total_alunos="$total_alunos" 'BEGIN { printf "%.2f", total_media / total_alunos }')
-        printf "Média de nota dos aprovados no período total: %.2f\n" "$media_total"
-    else
-        printf "Não há alunos aprovados no período.\n"
-    fi
 }
 
 #5)qual eh a media de nota dos aprovados (no periodo total e por ano)?

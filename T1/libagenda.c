@@ -127,7 +127,7 @@ int marca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
    /* verifica se o compromisso tem interseccao com outro */
    mes_t *atual = agenda->ptr_mes_atual;
 
-   while (atual != NULL) {
+   while (atual->dias != NULL) {
       dia_t *dia_atual = atual->dias;
       
       while (dia_atual != NULL) {
@@ -187,26 +187,46 @@ int desmarca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
    /* verifica se o dia informado como parametro existe */
    if (dia < 1 || dia > 31)
       return 0;
-   
-   /* verifica se o compromisso existe */
+
    mes_t *atual = agenda->ptr_mes_atual;
 
-   while (atual != NULL) {
-         /* para percorrer a lista de compromissos */
-         compromisso_t *atual_compromisso = atual->dias->comprs;
-
-         while (atual_compromisso != NULL) {
-            /* verifica se o compromisso atual tem interseccao com o compromisso a ser inserido */
-            if (atual_compromisso->inicio < compr->fim && compr->inicio < atual_compromisso->fim) {
-               /* remove o compromisso da lista */
-               compromisso_t *prox_compromisso = atual_compromisso->prox;
-               destroi_compromisso(atual_compromisso);
-               atual_compromisso = prox_compromisso;
-               return 1;
+   while (atual->dias != NULL) {
+      dia_t *dia_atual = atual->dias;
+      
+      while (dia_atual != NULL) {
+         /* verifica se é o dia desejado */
+         if (dia_atual->dia == dia) {
+            compromisso_t *atual_compromisso = dia_atual->comprs;
+            compromisso_t *ant_compromisso = NULL;
+            
+            /* procura o compromisso */
+            while (atual_compromisso != NULL) {
+               if (atual_compromisso == compr) {
+                  /* remove o compromisso da lista */
+                  if (ant_compromisso == NULL)
+                     dia_atual->comprs = atual_compromisso->prox;
+                  else
+                     ant_compromisso->prox = atual_compromisso->prox;
+                  
+                  /* libera a memoria alocada para o compromisso */
+                  destroi_compromisso(atual_compromisso);
+                  
+                  return 1;
+               }
+               
+               ant_compromisso = atual_compromisso;
+               atual_compromisso = atual_compromisso->prox;
             }
-            atual = atual->prox;
+            
+            return 0;
          }
+         
+         dia_atual = dia_atual->prox;
+      }
+
+      atual = atual->prox;
    }
+
    return 0;
 }
 
