@@ -59,7 +59,7 @@ compromisso_t *cria_compromisso(horario_compromisso_t hc, int id, char *descrica
 /* destroi a descricao de um compromisso */
 void destroi_descricao_compromisso(compromisso_t* compr)
 {
-   if (compr == NULL)
+   if (compr->descricao == NULL)
       return;
 
    free(compr->descricao);
@@ -97,7 +97,6 @@ void destroi_agenda(agenda_t* agenda)
 
          while (compromisso_atual != NULL) {
             compromisso_prox = compromisso_atual->prox;
-            destroi_descricao_compromisso(compromisso_atual); /* libera a memoria alocada para a string descricao */
             destroi_compromisso(compromisso_atual); /* libera a memoria alocada para o compromisso */
             compromisso_atual = compromisso_prox;
          }
