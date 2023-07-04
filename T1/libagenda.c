@@ -3,9 +3,6 @@
 #include <string.h>
 #include "libagenda.h"
 
-#define DIA_MIN 1
-#define DIA_MAX 31
-
 /* Cria uma agenda vazia:
    O mes_atual deve ser inicializado com 1; ptr_mes_atual deve ser definido. */
 agenda_t* cria_agenda()
@@ -48,7 +45,7 @@ compromisso_t *cria_compromisso(horario_compromisso_t hc, int id, char *descrica
       destroi_compromisso(novo_compromisso);
       return NULL; 
    }
-   
+
    /* preenche os campos do compromisso */
    novo_compromisso->inicio = hc.ini_h * 60 + hc.ini_m;
    novo_compromisso->fim = hc.fim_h * 60 + hc.fim_m;
@@ -56,7 +53,6 @@ compromisso_t *cria_compromisso(horario_compromisso_t hc, int id, char *descrica
    strcpy(novo_compromisso->descricao, descricao);
    novo_compromisso->prox = NULL;
 
-   free(descricao); /* libera a memoria alocada para a string descricao */
    return novo_compromisso;
 }
 
@@ -163,11 +159,11 @@ int marca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
    /* cria um novo dia e insere o compromisso */
    mes_t *novo_mes = malloc(sizeof(mes_t));
    if (novo_mes == NULL)
-      return 0;  /* Erro na alocação de memória */
+      return 0; 
 
    novo_mes->dias = malloc(sizeof(dia_t));
    if (novo_mes->dias == NULL)
-      return 0;  /* Erro na alocação de memória */
+      return 0; 
 
    novo_mes->dias->dia = dia;
    novo_mes->dias->comprs = compr;
@@ -175,7 +171,6 @@ int marca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
    novo_mes->prox = agenda->ptr_mes_atual;
    agenda->ptr_mes_atual = novo_mes;
 
-   /* Sucesso */
    return 1;
 }
 
