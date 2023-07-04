@@ -41,7 +41,6 @@ compromisso_t *cria_compromisso(horario_compromisso_t hc, int id, char *descrica
       return NULL; 
 
    if (novo_compromisso->descricao == NULL) {
-      destroi_descricao_compromisso(novo_compromisso);
       destroi_compromisso(novo_compromisso);
       return NULL; 
    }
