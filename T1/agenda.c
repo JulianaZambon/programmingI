@@ -131,9 +131,9 @@ void marcarReunioes(Funcionario *funcionarios)
 
 /*------------------------------------------------------------------------*/
 /* Realizar todas as reuniões marcadas*/
-void realizarReuniao( Funcionario *funcionario, Tarefa *tarefa)
+void realizarReuniao(Funcionario *funcionario, Tarefa *tarefa)
 {
-  int qtde_reunioes_realizadas, qtde_tarefas_tempo_restante_zero, min_trab, i;
+  int qtde_reunioes_realizadas, qtde_tarefas_tempo_restante_zero, min_trab;
   qtde_reunioes_realizadas = 0;
   qtde_tarefas_tempo_restante_zero = 0; 
   compromisso_t *compromisso;         
@@ -177,7 +177,6 @@ void realizarReuniao( Funcionario *funcionario, Tarefa *tarefa)
         }
       }
     }
-    mes_atual = prox_mes_agenda(funcionario[i].agenda); /* Avançar para o próximo mês */
   }
   /* Infos finais */
   printf("REUNIOES REALIZADAS %.2d\n", qtde_reunioes_realizadas);
