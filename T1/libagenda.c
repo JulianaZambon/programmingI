@@ -39,18 +39,18 @@ compromisso_t *cria_compromisso(horario_compromisso_t hc, int id, char *descrica
    if (novo_compromisso == NULL)
       return NULL; /* caso tenha falha na alocacao de memoria */
 
-   novo_compromisso->inicio = (hc.ini_h * 60) + hc.ini_m; /* converte o horario para minutos */
-   novo_compromisso->fim = (hc.fim_h * 60) + hc.fim_m; /* converte o horario para minutos */
-   novo_compromisso->id = id;
+   /* Alocar memória para a string descricao */
    novo_compromisso->descricao = malloc(sizeof(char) * (strlen(descricao) + 1));
-
    if (novo_compromisso->descricao == NULL) {
-      free(novo_compromisso);
+      destroi_descricao_compromisso(novo_compromisso);
       return NULL; /* caso tenha falha na alocacao de memoria */
    }
 
-   strcpy(novo_compromisso->descricao, descricao); /* copia a descricao para o compromisso */
-   novo_compromisso->prox = NULL; /* prox deve ser inicializado com NULL */
+   novo_compromisso->inicio = hc.ini_h * 60 + hc.ini_m;
+   novo_compromisso->fim = hc.fim_h * 60 + hc.fim_m;
+   novo_compromisso->id = id;
+   strcpy(novo_compromisso->descricao, descricao);
+   novo_compromisso->prox = NULL;
 
    return novo_compromisso;
 }
@@ -89,7 +89,7 @@ void destroi_agenda(agenda_t* agenda)
          compromisso_t *atual_compromisso = atual_dia->comprs;
          while (atual_compromisso != NULL) {
             compromisso_t *proximo_compromisso = atual_compromisso->prox;
-            free(atual_compromisso);
+            destroi_compromisso(atual_compromisso); /* libera a memoria alocada para o compromisso */
             atual_compromisso = proximo_compromisso;
          }
          dia_t *proximo_dia = atual_dia->prox;
@@ -125,58 +125,51 @@ int marca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
    /* verifica se o compromisso tem interseccao com outro */
    mes_t *atual = agenda->ptr_mes_atual;
 
-   while (atual->dias != NULL) {
-      dia_t *dia_atual = atual->dias;
+   dia_t *dia_atual = atual->dias;
+   dia_t *dia_ant = dia_atual;
 
-      while (dia_atual != NULL) {
-         /* verifica se é o dia desejado */
-         if (dia_atual->dia == dia) {
-            compromisso_t *atual_compromisso = dia_atual->comprs;
-            compromisso_t *anterior_compromisso = NULL;
+   while (dia_atual != NULL) {
+      /* verifica se é o dia desejado */
+      if (dia_atual->dia == dia) {
+         compromisso_t *atual_compromisso = dia_atual->comprs;
+         compromisso_t *anterior_compromisso = NULL;
 
-            /* verifica se há interseção com outros compromissos */
-            while (atual_compromisso != NULL) {
-               if (atual_compromisso->inicio < compr->fim && compr->inicio < atual_compromisso->fim)
-                  return -1;
+         /* verifica se há interseção com outros compromissos */
+         while (atual_compromisso != NULL) {
+            if (atual_compromisso->inicio < compr->fim && compr->inicio < atual_compromisso->fim)
+               return -1;
 
-               anterior_compromisso = atual_compromisso;
-               atual_compromisso = atual_compromisso->prox;
-            }
-
-            /* insere o compromisso na lista de compromissos */
-            if (anterior_compromisso == NULL) {
-               dia_atual->comprs = compr;
-            } else {
-               anterior_compromisso->prox = compr;
-            }
-
-            compr->prox = atual_compromisso;
-            return 1;
+            anterior_compromisso = atual_compromisso;
+            atual_compromisso = atual_compromisso->prox;
          }
 
-         dia_atual = dia_atual->prox;
+         /* insere o compromisso na lista de compromissos */
+         if (anterior_compromisso == NULL) {
+            dia_atual->comprs = compr;
+         } else {
+            anterior_compromisso->prox = compr;
+         }
+
+         compr->prox = atual_compromisso;
+         return 1;
       }
-
-      atual = atual->prox;
+      dia_ant = dia_atual;
+      dia_atual = dia_atual->prox;
    }
 
-   /* cria um novo dia e insere o compromisso */
-   mes_t *novo_mes = malloc(sizeof(mes_t));
-   if (novo_mes == NULL)
-      return 0; /* Erro na alocação de memória */
-
-   novo_mes->dias = malloc(sizeof(dia_t));
-   if (novo_mes->dias == NULL) {
-      free(novo_mes);
+   dia_t *novo_dia = malloc(sizeof(dia_t));
+   if (novo_dia == NULL) {
       return 0; /* Erro na alocação de memória */
    }
 
-   novo_mes->dias->dia = dia;
-   novo_mes->dias->comprs = compr;
-   novo_mes->dias->prox = NULL;
+   novo_dia->dia = dia;
+   novo_dia->comprs = compr;
+   novo_dia->prox = NULL;
 
-   novo_mes->prox = agenda->ptr_mes_atual;
-   agenda->ptr_mes_atual = novo_mes;
+   if(atual->dias == NULL)
+      atual->dias = novo_dia;
+   else
+      dia_ant->prox = novo_dia;
 
    return 1;
 }
@@ -339,7 +332,7 @@ compromisso_t *compr_agenda(agenda_t *agenda, int dia)
 
    mes_t *atual = agenda->ptr_mes_atual;
 
-   while (atual->dias != NULL) {
+   while (atual != NULL) {
       dia_t *dia_atual = atual->dias;
       
       while (dia_atual != NULL) {
