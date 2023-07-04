@@ -42,7 +42,6 @@ compromisso_t *cria_compromisso(horario_compromisso_t hc, int id, char *descrica
    /* Alocar memória para a string descricao */
    novo_compromisso->descricao = malloc(sizeof(char) * (strlen(descricao) + 1));
    if (novo_compromisso->descricao == NULL) {
-      destroi_descricao_compromisso(novo_compromisso);
       return NULL; /* caso tenha falha na alocacao de memoria */
    }
 
@@ -149,8 +148,6 @@ int marca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
          } else {
             anterior_compromisso->prox = compr;
          }
-
-         compr->prox = atual_compromisso;
          return 1;
       }
       dia_ant = dia_atual;
