@@ -37,10 +37,14 @@ compromisso_t *cria_compromisso(horario_compromisso_t hc, int id, char *descrica
    compromisso_t *novo_compromisso = malloc(sizeof(compromisso_t)); /* aloca memoria para o compromisso */
    novo_compromisso->descricao = malloc(sizeof(char) * (strlen(descricao) + 1)); /* aloca memoria para a string descricao */
 
-   if (novo_compromisso == NULL)
+   if (novo_compromisso == NULL){
+      free(novo_compromisso);
+      destroi_compromisso(novo_compromisso);
       return NULL; 
+   }
 
    if (novo_compromisso->descricao == NULL) {
+      free(novo_compromisso);
       destroi_compromisso(novo_compromisso);
       return NULL; 
    }
@@ -73,6 +77,7 @@ void destroi_compromisso(compromisso_t* compr)
 
    destroi_descricao_compromisso(compr);
    free(compr);
+   compr = NULL;
 }
 
 /* Libera toda memoria associado a agenda. */
@@ -156,12 +161,16 @@ int marca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
 
    /* cria um novo dia e insere o compromisso */
    mes_t *novo_mes = malloc(sizeof(mes_t));
-   if (novo_mes == NULL)
+   if (novo_mes == NULL){
+      free(novo_mes);
       return 0; 
+   }
 
    novo_mes->dias = malloc(sizeof(dia_t));
-   if (novo_mes->dias == NULL)
+   if (novo_mes->dias == NULL){
+      free(novo_mes);
       return 0; 
+   }
 
    novo_mes->dias->dia = dia;
    novo_mes->dias->comprs = compr;
