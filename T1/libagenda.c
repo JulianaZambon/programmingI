@@ -3,6 +3,7 @@
 #include <string.h>
 #include "libagenda.h"
 
+/*------------------------------------------------------------------------*/
 /* Cria uma agenda vazia:
    O mes_atual deve ser inicializado com 1; ptr_mes_atual deve ser definido. */
 agenda_t* cria_agenda()
@@ -121,9 +122,7 @@ void destroi_agenda(agenda_t *agenda)
    free(agenda);
 }
 
-
 /*------------------------------------------------------------------------*/
-
 /* Marca um compromisso na agenda:
    valores de retorno possiveis:
     -1: compromisso tem interseccao com outro
@@ -253,6 +252,8 @@ int desmarca_compromisso_agenda(agenda_t *agenda, int dia, compromisso_t *compr)
    return 0;
 }
 
+/*------------------------------------------------------------------------*/
+
 /* Imprime a agenda do mes atual */
 void imprime_agenda_mes(agenda_t *agenda)
 {
@@ -281,6 +282,7 @@ void imprime_agenda_mes(agenda_t *agenda)
    }
 }
 
+/*------------------------------------------------------------------------*/
 /* Retorna o mes atual da agenda. */
 int mes_atual_agenda(agenda_t *agenda)
 {

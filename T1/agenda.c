@@ -27,6 +27,7 @@ typedef struct tarefa
   int tempo_conclusao;
   int dificuldade;
 } Tarefa;
+
 /*------------------------------------------------------------------------*/
 /* função ALEAT(MIN,MAX) que gera inteiros aleatórios entre MIN e MAX. */
 int ALEAT(int MIN, int MAX)
@@ -53,6 +54,7 @@ void iniciarTarefas(Tarefa *tarefas)
     tarefas[T].dificuldade = ALEAT(30, 80);
   }
 }
+
 /*------------------------------------------------------------------------*/
 /* Escolher aleatoriamente um líder entre os funcionários cuja
           liderança esteja entre 30 e 70. */
@@ -66,6 +68,7 @@ Funcionario *escolherLider(Funcionario *funcionarios)
 
   return lider;
 }
+
 /*------------------------------------------------------------------------*/
 /* Marcar todas reuniões */
 void marcarReunioes(Funcionario *funcionarios)
@@ -136,8 +139,9 @@ void realizarReuniao(Funcionario *funcionario, Tarefa *tarefa)
   int qtde_reunioes_realizadas, qtde_tarefas_tempo_restante_zero, min_trab;
   qtde_reunioes_realizadas = 0;
   qtde_tarefas_tempo_restante_zero = 0; 
-  compromisso_t *compromisso;         
-
+  compromisso_t *compromisso;     
+  
+  /*voltar para o mes 1*/
   for (int mes_atual = 1; mes_atual <= MES; mes_atual++) { /* Para cada mês de 1 até 12 */
     printf("M %.2d\n", mes_atual);
 
@@ -150,8 +154,9 @@ void realizarReuniao(Funcionario *funcionario, Tarefa *tarefa)
  
           printf("%.2d/%.2d F %.2d: %s \n", dia, mes_atual, funcionario[i].id, compromisso->descricao);
 
+            /* se a tarefa[T] ainda nao foi concluida*/
             if (tarefa_atual->tempo_conclusao > 0) { 
-              /* Fórmula fornecida */
+              /* Fórmula fornecida para reduzir o tempo restante */
               min_trab = (compromisso->fim - compromisso->inicio) * 60; /* minutos trabalhados*/
               tarefa_atual->tempo_conclusao -= min_trab * (funcionario[i].experiencia / 100.0) * 
                                                 ((100 - tarefa_atual->dificuldade) / 100.0);
@@ -178,10 +183,12 @@ void realizarReuniao(Funcionario *funcionario, Tarefa *tarefa)
       }
     }
   }
+
   /* Infos finais */
   printf("REUNIOES REALIZADAS %.2d\n", qtde_reunioes_realizadas);
   printf("TAREFAS CONCLUIDAS %.2d\n", qtde_tarefas_tempo_restante_zero);
 }
+
 /*------------------------------------------------------------------------*/
 int main()
 {
