@@ -193,5 +193,8 @@ int main()
   marcarReunioes(funcionarios);
   realizarReuniao(funcionarios, tarefas);
 
+  for (int i = 0; i < FUNCIONARIOS; i++)
+    destroi_agenda(funcionarios[i].agenda); /* Destruir agenda do funcionário */
+
   return 0;
 }
