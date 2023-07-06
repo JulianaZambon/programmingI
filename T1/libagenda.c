@@ -90,7 +90,8 @@ void destroi_mes(mes_t *mes)
 
       while (compromisso_atual != NULL) {
          compromisso_prox = compromisso_atual->prox;
-         destroi_compromisso(compromisso_atual); 
+         destroi_compromisso(compromisso_atual);
+         free(compromisso_atual);
          compromisso_atual = compromisso_prox;
       }
       free(dia_atual);
@@ -112,11 +113,13 @@ void destroi_agenda(agenda_t *agenda)
 
    while (mes_atual != NULL) {
       mes_prox = mes_atual->prox;
-      destroi_mes(mes_atual); 
+      destroi_mes(mes_atual);
+      free(mes_atual);
       mes_atual = mes_prox;
    }
    agenda->ptr_mes_atual = NULL;
    free(agenda);
+   agenda = NULL;
 }
 
 /* Marca um compromisso na agenda:
