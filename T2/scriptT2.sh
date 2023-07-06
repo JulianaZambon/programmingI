@@ -86,6 +86,7 @@ function porcentagem_aprovacao_reprovacao() {
     done
 }
 
+
 #5)qual eh a media de nota dos aprovados (no periodo total e por ano)?
 function media_nota_aprovados() {
     declare -A notas
@@ -107,8 +108,7 @@ function media_nota_aprovados() {
             if [ "${count[$ano]}" -ne 0 ]; then
                 media=$(awk -v total="${notas[$ano]}" -v count="${count[$ano]}" 'BEGIN { printf "%.2f", total / count }')
                 printf "%s: Média de nota dos aprovados: %.2f\n" "$ano" "$media"
-                total_media=$(awk -v total_media="$total_media" -v count="${count[$ano]}" -v media="$media" 'BEGIN 
-                { printf "%.2f", total_media + (media * count) }')
+                total_media=$(awk -v total_media="$total_media" -v count="${count[$ano]}" -v media="$media" 'BEGIN { printf "%.2f", total_media + (media * count) }')
                 total_alunos=$((total_alunos + ${count[$ano]}))
             else
                 printf "%s: Não há alunos aprovados no período.\n" "$ano"
@@ -119,8 +119,7 @@ function media_nota_aprovados() {
     done
 
     if [ "$total_alunos" -ne 0 ]; then
-        local media_total=$(awk -v total_media="$total_media" -v total_alunos="$total_alunos" 'BEGIN 
-        { printf "%.2f", total_media / total_alunos }')
+        local media_total=$(awk -v total_media="$total_media" -v total_alunos="$total_alunos" 'BEGIN { printf "%.2f", total_media / total_alunos }')
         printf "Média de nota dos aprovados no período total: %.2f\n" "$media_total"
     else
         printf "Não há alunos aprovados no período.\n"
@@ -151,8 +150,7 @@ function media_nota_reprovados() {
             if [ "${count[$ano]}" -ne 0 ]; then
                 media=$(awk -v total="${notas[$ano]}" -v count="${count[$ano]}" 'BEGIN { printf "%.2f", total / count }')
                 printf "%s: Média de nota dos reprovados: %.2f\n" "$ano" "$media"
-                total_media=$(awk -v total_media="$total_media" -v count="${count[$ano]}" -v media="$media" 'BEGIN 
-                { printf "%.2f", total_media + (media * count) }')
+                total_media=$(awk -v total_media="$total_media" -v count="${count[$ano]}" -v media="$media" 'BEGIN { printf "%.2f", total_media + (media * count) }')
                 total_alunos=$((total_alunos + ${count[$ano]}))
             else
                 printf "%s: Não há alunos reprovados no período.\n" "$ano"
@@ -163,13 +161,13 @@ function media_nota_reprovados() {
     done
 
     if [ "$total_alunos" -ne 0 ]; then
-        local media_total=$(awk -v total_media="$total_media" -v total_alunos="$total_alunos" 'BEGIN 
-        { printf "%.2f", total_media / total_alunos }')
+        local media_total=$(awk -v total_media="$total_media" -v total_alunos="$total_alunos" 'BEGIN { printf "%.2f", total_media / total_alunos }')
         printf "Média de nota dos reprovados no período total: %.2f\n" "$media_total"
     else
         printf "Não há alunos reprovados no período.\n"
     fi
 }
+
 
 #7)qual eh a media da frequencia dos reprovados por nota (periodo total e por ano)?
 #seleciona os reprovados, analisa as frequencia e realiza o calculo da media
@@ -313,7 +311,8 @@ function comparacao() {
 main() {
     clear
 
-    #"menu" para facilitar a visualizacao das respostas/saidas de cada pergunta
+    #especie de "menu" para facilitar a visualizacao das respostas/saidas 
+    #de cada pergunta
 
     printf "Analise de Dados do Curso de Algoritmos e Estrutura de Dados 1\n\n"
     printf "1) Remover 2º semestre de 2022\n"
