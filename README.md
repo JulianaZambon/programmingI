@@ -1,73 +1,31 @@
-# Programação I (CI1001)
-Trabalhos solicitados na disciplina de programação I (ci1001).
+# Programming I (CI1001)
+Projects requested in the Programming I course (ci1001).
 
-### Trabalho Pequeno 2 
-Este trabalho é uma variante de implementaçãoo do mesmo problema do
-TP1, o desafio  é aprender a passar parâmetros usando ponteiros (endereços)
-para evitar cópias de estruturas que podem ser complexas e ocupar muito
-espaço na STACK.
-<br /> 
-### Trabalho Pequeno 3
-Este trabalho consiste na implementação do programa libpilha.c com base
-no libpilha.h fornecido.
-Sua implementaçãoo deve usar uma lista ligada com nodo cabeça que
-implementa a política LIFO (Last In First Out), isto é, uma política que
-implementa um Tipo Abstrato de Dados Pilha.
-O desafio é aprender a usar alocação dinâmica e manter a lista sempre
-ligada, sem perder ponteiros.
-<br /> 
-### Trabalho Pequeno 3b (parenteses) 
-Implementar um programa que verifica se uma expressão aritimética digitada pelo usuário está com 
-os parênteses balanceados, considerando que existem alguns tipos de “parênteses” tais como os próprio
-parênteses ((, )), colchetes ([ ]), chaves ({, }), dentre outros.
-Não é necessário fazer a conta, é só para verificar os parênteses. Basta
-não fazer nada com os números lidos.
-O programa vai ler uma expressão da entrada padrão e verificar se os
-símbolos de precedencia (parentesis, colchetes e chaves) foram corretamente
-utilizados
-<br /> 
-### Trabalho Pequeno 4 
-Este trabalho consiste na implementação do programa libfila.c com base
-no libfila.h fornecido.
-Sua implementação deve usar uma lista ligada com nodo cabeça que
-implementa a política FIFO (First In First Out), isto  é, uma política que
-implementa um Tipo Abstrato de Dados Fila.
-O desafio é aprender a usar alocaçãoo dinâmica e manter a lista sempre
-ligada, sem perder ponteiros. Desta vez, observe que o tipo fila contém dois
-apontadores para a lista ligada, um que aponta para a cabeça da lista (início
-dela) e outro que aponta sempre para a cauda da lista (final dela).
-<br /> 
-### Preparatório 1 para o T1
-Este trabalho preparatório consiste na implementação do programa liblista_ordenada.c
-com base no liblista_ordenada.h fornecido e de um testador para ele
-como programa main.Os desafios são:
-• Aprender a inserir e remover ordenadamente;
-• Lidar com a diferença entre o nodo conter um int e agora ele conter
-um apontador para int.
-Para testar sua implementação, construa um arquivo testa_lista_ordenada.c 
-<br />
-### Preparatório 2 para o T1
-Este trabalho preparatório consiste na implementaçãoo do programa liblista_circular.c
-com base no liblista_circular.h fornecido e de um testador para ele
-como programa main.
-Basicamente, consiste em modificar o preparatório 1 para implementar
-uma lista circular duplamente encadeada. Tome as decisões que quiser neste
-preparatório.
-DICA: ao criar a lista, crie um nodo adicional para ser um sentinela. Se
-este sentinela for sempre o primeiro da lista sua implementação será mais
-simples.
-Os desafios são:
-• Aprender a implementar uma lista circular duplamente encadeada com
-sentinela.
-Para testar sua implementaçãoo, construa um arquivo testa_lista_circular.c 
-<br />
-### T1 - parte 01
-Este trabalho consiste na implementação do programa libagenda.c com
-base no libagenda.h fornecido.
-Basicamente, consiste em adaptar os seus programas feitos nos prepa ratórios 1 e 2, implementando as listas ligadas ordenadas (uma simples e
-outra dupla circular), modificadas para atender às novas especificações.
-Os desafios são:
-• Adaptar os códigos já feitos;
-• Implementar as funções adicionais.
+### Small Project 2
+This project is a variant of implementation of the same problem from TP1. The challenge is to learn how to pass parameters using pointers (addresses) to avoid copying complex structures that can occupy a lot of space on the STACK.
+
+### Small Project 3
+This project involves implementing the program `libpilha.c` based on the provided `libpilha.h`. Your implementation should use a linked list with a head node that implements the Last In First Out (LIFO) policy, i.e., a policy that implements an Abstract Data Type (ADT) Stack. The challenge is to learn how to use dynamic allocation and keep the list always linked without losing pointers.
+
+### Small Project 3b (Parentheses)
+Implement a program that checks if an arithmetic expression entered by the user has balanced parentheses, considering that there are different types of "parentheses" such as regular parentheses ((, )), square brackets ([ ]), curly braces ({, }), among others. The program will read an expression from the standard input and verify if the symbols of precedence (parentheses, brackets, and braces) were correctly used.
+
+### Small Project 4
+This project involves implementing the program `libfila.c` based on the provided `libfila.h`. Your implementation should use a linked list with a head node that implements the First In First Out (FIFO) policy, i.e., a policy that implements an Abstract Data Type (ADT) Queue. The challenge is to learn how to use dynamic allocation and keep the list always linked without losing pointers. This time, notice that the queue type contains two pointers to the linked list, one that points to the head of the list (its beginning) and another that always points to the tail of the list (its end).
+
+### Preparation 1 for T1
+This preparatory work involves implementing the program `liblista_ordenada.c` based on the provided `liblista_ordenada.h`, and creating a tester for it as the main program. The challenges are:
+- Learning to insert and remove items in an ordered way.
+- Dealing with the difference between the node containing an integer and now containing a pointer to an integer. To test your implementation, build a file `testa_lista_ordenada.c`.
+
+### Preparation 2 for T1
+This preparatory work involves implementing the program `liblista_circular.c` based on the provided `liblista_circular.h`, and creating a tester for it as the main program. Essentially, it involves modifying Preparation 1 to implement a doubly linked circular list. You can make decisions as you see fit for this preparatory work. Tip: When creating the list, add an additional node to serve as a sentinel. If this sentinel is always the first in the list, your implementation will be simpler. The challenges are:
+- Learning to implement a doubly linked circular list with a sentinel. To test your implementation, build a file `testa_lista_circular.c`.
+
+### T1 - Part 01
+This project involves implementing the program `libagenda.c` based on the provided `libagenda.h`. It mainly consists of adapting the programs you created in the preparation work 1 and 2, implementing linked ordered lists (one simple and one doubly circular), modified to meet the new specifications. The challenges are:
+- Adapting the codes you've already created.
+- Implementing the additional functions.
+
 ### T2 - Shell
-Faça um script shell com funções que respondam as questões a respeito do rendimento de alunos de um curso em algumas disciplinas ao longo dos anos.
+Create a shell script with functions that answer questions about the performance of students in a course across different subjects over the years.
